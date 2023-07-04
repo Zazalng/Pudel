@@ -19,7 +19,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 public class Puddle{
-    public static void PuddleSaid(String preText){
+    public static void PuddleLog(String preText){
         System.out.println("Puddle: "+ preText);
     }
 
@@ -42,8 +42,8 @@ public class Puddle{
                     .build();
             } catch(IOException e){
                 e.printStackTrace();
-                PuddleSaid("Unable to locate file .env");
-                PuddleSaid("Recheck locate of file .env then press [Enter]");
+                PuddleLog("Unable to locate file .env");
+                PuddleLog("Recheck locate of file .env then press [Enter]");
                 new Scanner(System.in).nextLine();
             }
         }

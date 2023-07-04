@@ -1,0 +1,9 @@
+#Discord API Key
+discord.api.key=
+
+#Mysql Setting for connect
+mysql.host=
+mysql.port=
+mysql.database=
+mysql.username=
+mysql.password=
