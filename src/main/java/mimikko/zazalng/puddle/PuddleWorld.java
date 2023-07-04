@@ -2,19 +2,28 @@ package mimikko.zazalng.puddle;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.Properties;
 import java.util.Scanner;
+import javax.security.auth.login.LoginException;
 import mimikko.zazalng.puddle.listenerEvent.PromptDeclare;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.SessionControllerAdapter;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class PuddleWorld {
     protected static PuddleWorld puddleWorld;
     private boolean isWorldOnline;
     private Properties env;
     private final Scanner prompt;
-    private JDA jda;
+    private ShardManager shardManger = null;
     
     public PuddleWorld(){
         PuddleWorld.puddleWorld = this;
@@ -22,6 +31,32 @@ public class PuddleWorld {
         this.env = new Properties();
         this.prompt = new Scanner(System.in);
     }
+    
+    private ShardManager buildShardManager() throws LoginException{
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.create(EnumSet.of(
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_VOICE_STATES,
+            GatewayIntent.GUILD_PRESENCES,
+            GatewayIntent.GUILD_MESSAGES,
+            GatewayIntent.GUILD_MESSAGE_REACTIONS,
+            GatewayIntent.DIRECT_MESSAGES,
+            GatewayIntent.DIRECT_MESSAGE_REACTIONS
+        ))
+                .setToken(getPuddleWorldEnvironment().getProperty("discord.api.key"))
+                .setSessionController(new SessionControllerAdapter())
+                .setActivity(Activity.watching("Generating Puddle's World Instance..."))
+                .setBulkDeleteSplittingEnabled(false)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .setChunkingFilter(ChunkingFilter.NONE)
+                .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+                .setEnableShutdownHook(true)
+                .setAutoReconnect(true)
+                .setContextEnabled(true)
+                .setShardsTotal(1);
+        
+        builder.addEventListeners(new PromptDeclare());
+    }
+    
     public void PuddleLog(String preText){
         System.out.println("Puddle: "+ preText);
     }
@@ -55,20 +90,6 @@ public class PuddleWorld {
     }
     
     public void startPuddleWorld(){
-        String botToken = this.env.getProperty("discord.api.key");
-        PuddleLog("Initializ Discord API Connector");
-        try{
-            this.jda = JDABuilder.createDefault(botToken)
-                    .enableIntents(GatewayIntent.DIRECT_MESSAGES,
-                    GatewayIntent.GUILD_MESSAGES,
-                    GatewayIntent.MESSAGE_CONTENT,
-                    GatewayIntent.GUILD_MEMBERS)
-                    .addEventListeners(new PromptDeclare())
-                    .build();
-            this.jda.awaitReady();
-            setPuddleWorldOnline(true);
-        } catch(Exception e){
-            e.printStackTrace();
-        }
+        
     }
 }
