@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package mimikko.zazalng.puddle;
 
 import java.io.FileInputStream;
@@ -13,17 +9,15 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-/**
- *
- * @author kengh
- */
 public class PuddleWorld {
+    protected static PuddleWorld puddleWorld;
     private boolean isWorldOnline;
     private Properties env;
     private final Scanner prompt;
-    private static JDA jda;
+    private JDA jda;
     
-    PuddleWorld(){
+    public PuddleWorld(){
+        PuddleWorld.puddleWorld = this;
         this.isWorldOnline = false;
         this.env = new Properties();
         this.prompt = new Scanner(System.in);
@@ -41,6 +35,7 @@ public class PuddleWorld {
     }
     
     public void setPuddleWorldEnvironment(String fileName){
+        PuddleLog("Getting World's Environment with \""+fileName+"\"");
         while(!getPuddleWorldOnline()){
             try(FileInputStream fileInputStream = new FileInputStream(fileName)){
                 this.env.load(fileInputStream);
@@ -61,14 +56,19 @@ public class PuddleWorld {
     
     public void startPuddleWorld(){
         String botToken = this.env.getProperty("discord.api.key");
-        PuddleLog(botToken);
-        PuddleWorld.jda = JDABuilder.createLight(botToken,
-                GatewayIntent.DIRECT_MESSAGES,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.MESSAGE_CONTENT,
-                GatewayIntent.GUILD_MEMBERS)
-                .addEventListeners(new PromptDeclare())
-                .build();
-        setPuddleWorldOnline(true);
+        PuddleLog("Initializ Discord API Connector");
+        try{
+            this.jda = JDABuilder.createDefault(botToken)
+                    .enableIntents(GatewayIntent.DIRECT_MESSAGES,
+                    GatewayIntent.GUILD_MESSAGES,
+                    GatewayIntent.MESSAGE_CONTENT,
+                    GatewayIntent.GUILD_MEMBERS)
+                    .addEventListeners(new PromptDeclare())
+                    .build();
+            this.jda.awaitReady();
+            setPuddleWorldOnline(true);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
