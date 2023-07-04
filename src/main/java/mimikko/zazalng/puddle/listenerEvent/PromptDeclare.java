@@ -7,13 +7,12 @@ package mimikko.zazalng.puddle.listenerEvent;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import mimikko.zazalng.puddle.Message;
 
 /**
  *
  * @author User
  */
-public class CommandParser extends ListenerAdapter{
+public class PromptDeclare extends ListenerAdapter{
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
@@ -44,9 +43,13 @@ public class CommandParser extends ListenerAdapter{
             //Homework: Command Varidator Process String
             
             if(event.getMessage().getContentRaw().equalsIgnoreCase("greet")){
-                //event.getChannel().sendMessage("Hello!").queue();
+                event.getChannel().sendMessage("Hello!").queue();
                 //Message.sendMesage(event.getChannel(), "Hello!");
             }
         }
+    }
+    
+    public boolean isCommand(String preText){
+        return false;
     }
 }
