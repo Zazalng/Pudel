@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class PuddleWorld {
     protected static PuddleWorld puddleWorld;
+    private DatabaseHandler dbHandler;
     private boolean isWorldOnline;
     private Properties env;
     private final Scanner prompt;
@@ -54,7 +55,9 @@ public class PuddleWorld {
                 .setContextEnabled(true)
                 .setShardsTotal(1);
         
-        builder.addEventListeners(new PromptDeclare());
+        builder.addEventListeners(new PromptDeclare(this));
+        
+        return builder.build();
     }
     
     public void PuddleLog(String preText){

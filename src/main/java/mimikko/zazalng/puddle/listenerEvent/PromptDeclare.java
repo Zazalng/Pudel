@@ -1,10 +1,15 @@
 package mimikko.zazalng.puddle.listenerEvent;
 
+import mimikko.zazalng.puddle.PuddleWorld;
+import mimikko.zazalng.puddle.handlers.EventHandler;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class PromptDeclare extends ListenerAdapter{
+public class PromptDeclare extends EventHandler{
+    public PromptDeclare(PuddleWorld puddleWorld){
+        super(puddleWorld);
+    }
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
