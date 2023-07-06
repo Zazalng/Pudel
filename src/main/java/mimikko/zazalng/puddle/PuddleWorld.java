@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
+import mimikko.zazalng.puddle.handlers.DatabaseHandler;
 import mimikko.zazalng.puddle.listenerEvent.PromptDeclare;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -36,8 +37,10 @@ public class PuddleWorld {
     private ShardManager buildShardManager() throws LoginException{
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.create(EnumSet.of(
             GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_MODERATION,
             GatewayIntent.GUILD_VOICE_STATES,
             GatewayIntent.GUILD_PRESENCES,
+            GatewayIntent.MESSAGE_CONTENT,
             GatewayIntent.GUILD_MESSAGES,
             GatewayIntent.GUILD_MESSAGE_REACTIONS,
             GatewayIntent.DIRECT_MESSAGES,
@@ -93,6 +96,12 @@ public class PuddleWorld {
     }
     
     public void startPuddleWorld(){
-        
+        this.PuddleLog("Starting Puddle World called \"Eden\"");
+        try {
+            shardManger = this.buildShardManager();
+            shardManger.setActivity(Activity.listening("My Master"));
+        } catch (LoginException ex) {
+            Logger.getLogger(PuddleWorld.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

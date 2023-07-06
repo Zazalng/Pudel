@@ -4,7 +4,6 @@ import mimikko.zazalng.puddle.PuddleWorld;
 import mimikko.zazalng.puddle.handlers.EventHandler;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class PromptDeclare extends EventHandler{
     public PromptDeclare(PuddleWorld puddleWorld){
@@ -15,7 +14,7 @@ public class PromptDeclare extends EventHandler{
         if (event.getAuthor().isBot()) {
             return; // Ignore messages from other bots
         }
-        
+        String preText = event.getGuild().getName()+"@"+event.getChannel().getName()+" By "+event.getMember().getEffectiveName()+": "+event.getMessage().getContentRaw();
         if (event.isFromType(ChannelType.PRIVATE))
         {
             System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(),
@@ -23,26 +22,18 @@ public class PromptDeclare extends EventHandler{
         }
         else
         {
-            System.out.printf("[%s][%s] %s: %s\n", event.getGuild().getName()
-                    ,event.getChannel().getName()
-                    , event.getMember().getEffectiveName()
-                    ,event.getMessage().getContentDisplay()
-            );
-            
-            System.out.println(
-                    //event.getMessage().
-            );
-            
-            System.out.println(
-                    event.getMessage().getContentDisplay().equalsIgnoreCase("greet")
-            );
-            
+            System.out.printf(preText);
             //Homework: Command Varidator Process String
             
             if(event.getMessage().getContentRaw().equalsIgnoreCase("greet")){
-                event.getChannel().sendMessage("Hello!").queue();
+                event.getChannel().sendMessage("Hello!"+" I'm from "+event.getGuild().getName()).queue();
                 //Message.sendMesage(event.getChannel(), "Hello!");
             }
+            event.getChannel().sendMessage("Puddle's Wolrd: "+String.valueOf(super.puddleWorld.getPuddleWorldOnline())
+            +"\nMessage to: "+event.getChannel().getId()
+            +"\nAt Guild: "+event.getGuild().getId()
+            +"\n\nMessage Raw Prefix: "
+            +preText).queue();
         }
     }
     
