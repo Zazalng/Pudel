@@ -14,15 +14,15 @@ public class PromptDeclare extends EventHandler{
         if (event.getAuthor().isBot()) {
             return; // Ignore messages from other bots
         }
-        String preText = event.getGuild().getName()+"@"+event.getChannel().getName()+" By "+event.getMember().getEffectiveName()+": "+event.getMessage().getContentRaw();
+        String preText = event.getGuild().getName()+"@"+event.getChannel().getName()+" By "+event.getAuthor().getEffectiveName()+": "+event.getMessage().getContentRaw();
         if (event.isFromType(ChannelType.PRIVATE))
         {
-            System.out.printf("[PM] %s: %s\n", event.getAuthor().getName(),
-                                    event.getMessage().getContentDisplay());
+            preText = "[PM] "+preText;
+            System.out.println(preText);
         }
         else
         {
-            System.out.printf(preText);
+            System.out.println(preText);
             //Homework: Command Varidator Process String
             
             if(event.getMessage().getContentRaw().equalsIgnoreCase("greet")){

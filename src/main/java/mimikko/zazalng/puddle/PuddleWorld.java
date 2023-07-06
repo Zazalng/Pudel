@@ -23,7 +23,7 @@ public class PuddleWorld {
     protected static PuddleWorld puddleWorld;
     private DatabaseHandler dbHandler;
     private boolean isWorldOnline;
-    private Properties env;
+    private final Properties env;
     private final Scanner prompt;
     private ShardManager shardManger = null;
     
@@ -98,10 +98,11 @@ public class PuddleWorld {
     public void startPuddleWorld(){
         this.PuddleLog("Starting Puddle World called \"Eden\"");
         try {
-            shardManger = this.buildShardManager();
-            shardManger.setActivity(Activity.listening("My Master"));
+            this.shardManger = this.buildShardManager();
+            this.shardManger.setActivity(Activity.listening("My Master"));
         } catch (LoginException ex) {
             Logger.getLogger(PuddleWorld.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.setPuddleWorldOnline(true);
     }
 }
