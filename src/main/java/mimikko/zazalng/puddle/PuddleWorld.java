@@ -20,18 +20,26 @@ import net.dv8tion.jda.api.utils.SessionControllerAdapter;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class PuddleWorld {
+    //Get From other Class
     protected static PuddleWorld puddleWorld;
-    private DatabaseHandler dbHandler;
-    private boolean isWorldOnline;
+    private final DatabaseHandler dbHandler;
     private final Properties env;
     private final Scanner prompt;
-    private ShardManager shardManger = null;
+    private ShardManager shardManger;
+    
+    //Get In Puddle's World Class
+    private boolean isWorldOnline;
     
     public PuddleWorld(){
+        //Get From other Class
         PuddleWorld.puddleWorld = this;
-        this.isWorldOnline = false;
+        this.dbHandler = new DatabaseHandler(getInstance());
         this.env = new Properties();
         this.prompt = new Scanner(System.in);
+        this.shardManger = null;
+        
+        //Get In Puddle's World Class
+        this.isWorldOnline = false;
     }
     
     private ShardManager buildShardManager() throws LoginException{
@@ -62,22 +70,38 @@ public class PuddleWorld {
         
         return builder.build();
     }
-    
-    public void PuddleLog(String preText){
-        System.out.println("Puddle: "+ preText);
+    ///////////////////////////////////////////////////
+    /*Static Area: Whenever this class was called this method should be work without 'new' keyword need*/
+    ///////////////////////////////////////////////////
+    public static PuddleWorld getInstance(){
+        return puddleWorld;
     }
     
-    public void setPuddleWorldOnline(boolean status){
+    public static void PuddleLog(String preText){
+        System.out.println("Puddle: "+ preText);
+    }
+    ///////////////////////////////////////////////////
+    /*Getter/Setter Method: Self-Explain*/
+    ///////////////////////////////////////////////////
+    public void setWorldStatus(boolean status){
         this.isWorldOnline = status;
     }
     
-    public boolean getPuddleWorldOnline(){
+    public boolean getWorldStatus(){
         return this.isWorldOnline;
     }
     
-    public void setPuddleWorldEnvironment(String fileName){
+    public void setDatabase(){
+        //no need to implement
+    }
+    
+    public DatabaseHandler getDatabase(){
+        return this.dbHandler;
+    }
+    
+    public void setEnvironment(String fileName){
         PuddleLog("Getting World's Environment with \""+fileName+"\"");
-        while(!getPuddleWorldOnline()){
+        while(!getWorldStatus()){
             try(FileInputStream fileInputStream = new FileInputStream(fileName)){
                 this.env.load(fileInputStream);
                 fileInputStream.close();
@@ -94,15 +118,17 @@ public class PuddleWorld {
     public Properties getPuddleWorldEnvironment(){
         return this.env;
     }
-    
-    public void startPuddleWorld(){
-        this.PuddleLog("Starting Puddle World called \"Eden\"");
+    ///////////////////////////////////////////////////
+    /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
+    ///////////////////////////////////////////////////
+    public void startWorld(){
+        PuddleLog("Starting Puddle's World called \"Eden\"");
         try {
             this.shardManger = this.buildShardManager();
             this.shardManger.setActivity(Activity.listening("My Master"));
         } catch (LoginException ex) {
-            Logger.getLogger(PuddleWorld.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PuddleWorld.class.getName()).log(Level.ALL, null, ex);
         }
-        this.setPuddleWorldOnline(true);
+        this.setWorldStatus(true);
     }
 }

@@ -14,7 +14,7 @@ public class PromptDeclare extends EventHandler{
         if (event.getAuthor().isBot()) {
             return; // Ignore messages from other bots
         }
-        String preText = event.getGuild().getName()+"@"+event.getChannel().getName()+" By "+event.getAuthor().getEffectiveName()+": "+event.getMessage().getContentRaw();
+        String preText = event.getAuthor().getEffectiveName()+": "+event.getMessage().getContentRaw();
         if (event.isFromType(ChannelType.PRIVATE))
         {
             preText = "[PM] "+preText;
@@ -22,6 +22,7 @@ public class PromptDeclare extends EventHandler{
         }
         else
         {
+            preText = event.getGuild().getName()+"@"+event.getChannel().getName()+" By "+ preText;
             System.out.println(preText);
             //Homework: Command Varidator Process String
             
@@ -29,11 +30,11 @@ public class PromptDeclare extends EventHandler{
                 event.getChannel().sendMessage("Hello!"+" I'm from "+event.getGuild().getName()).queue();
                 //Message.sendMesage(event.getChannel(), "Hello!");
             }
-            event.getChannel().sendMessage("Puddle's Wolrd: "+String.valueOf(super.puddleWorld.getPuddleWorldOnline())
+            /*event.getChannel().sendMessage("Puddle's Wolrd: "+String.valueOf(super.puddleWorld.getPuddleWorldOnline())
             +"\nMessage to: "+event.getChannel().getId()
             +"\nAt Guild: "+event.getGuild().getId()
             +"\n\nMessage Raw Prefix: "
-            +preText).queue();
+            +preText).queue();*/
         }
     }
     
