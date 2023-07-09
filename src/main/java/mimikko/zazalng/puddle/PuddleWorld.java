@@ -25,7 +25,7 @@ public class PuddleWorld {
     private final DatabaseHandler dbHandler;
     private final Properties env;
     private final Scanner prompt;
-    private ShardManager shardManger;
+    private ShardManager shardManager;
     
     //Get In Puddle's World Class
     private boolean isWorldOnline;
@@ -33,10 +33,10 @@ public class PuddleWorld {
     public PuddleWorld(){
         //Get From other Class
         PuddleWorld.puddleWorld = this;
-        this.dbHandler = new DatabaseHandler(getInstance());
+        this.dbHandler = new DatabaseHandler(this);
         this.env = new Properties();
         this.prompt = new Scanner(System.in);
-        this.shardManger = null;
+        this.shardManager = null;
         
         //Get In Puddle's World Class
         this.isWorldOnline = false;
@@ -76,12 +76,8 @@ public class PuddleWorld {
     public static PuddleWorld getInstance(){
         return puddleWorld;
     }
-    
-    public static void PuddleLog(String preText){
-        System.out.println("Puddle: "+ preText);
-    }
     ///////////////////////////////////////////////////
-    /*Getter/Setter Method: Self-Explain*/
+    /*       Getter/Setter Method: Self-Explain      */
     ///////////////////////////////////////////////////
     public void setWorldStatus(boolean status){
         this.isWorldOnline = status;
@@ -89,10 +85,6 @@ public class PuddleWorld {
     
     public boolean getWorldStatus(){
         return this.isWorldOnline;
-    }
-    
-    public void setDatabase(){
-        //no need to implement
     }
     
     public DatabaseHandler getDatabase(){
@@ -121,14 +113,27 @@ public class PuddleWorld {
     ///////////////////////////////////////////////////
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
+    public void PuddleLog(String preText){
+        System.out.println("Puddle: "+ preText);
+    }
+    
     public void startWorld(){
         PuddleLog("Starting Puddle's World called \"Eden\"");
         try {
-            this.shardManger = this.buildShardManager();
-            this.shardManger.setActivity(Activity.listening("My Master"));
+            this.shardManager = this.buildShardManager();
+            this.shardManager.setActivity(Activity.listening("My Master"));
         } catch (LoginException ex) {
             Logger.getLogger(PuddleWorld.class.getName()).log(Level.ALL, null, ex);
         }
         this.setWorldStatus(true);
+    }
+    
+    public void stopPuddleWorld() {
+        if (this.shardManager != null) {
+            shardManager.shutdown();
+            shardManager = null;
+            setWorldStatus(false);
+            PuddleLog("Puddle World stopped.");
+        }
     }
 }

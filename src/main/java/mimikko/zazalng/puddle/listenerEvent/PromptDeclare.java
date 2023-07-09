@@ -28,13 +28,12 @@ public class PromptDeclare extends EventHandler{
             
             if(event.getMessage().getContentRaw().equalsIgnoreCase("greet")){
                 event.getChannel().sendMessage("Hello!"+" I'm from "+event.getGuild().getName()).queue();
-                //Message.sendMesage(event.getChannel(), "Hello!");
             }
-            /*event.getChannel().sendMessage("Puddle's Wolrd: "+String.valueOf(super.puddleWorld.getPuddleWorldOnline())
+            event.getChannel().sendMessage("Puddle's Wolrd: "+String.valueOf(super.puddleWorld.getWorldStatus())
             +"\nMessage to: "+event.getChannel().getId()
             +"\nAt Guild: "+event.getGuild().getId()
             +"\n\nMessage Raw Prefix: "
-            +preText).queue();*/
+            +preText).queue();
         }
     }
     
