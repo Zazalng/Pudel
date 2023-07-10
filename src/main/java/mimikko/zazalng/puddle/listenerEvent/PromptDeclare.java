@@ -29,6 +29,10 @@ public class PromptDeclare extends EventHandler{
             if(event.getMessage().getContentRaw().equalsIgnoreCase("greet")){
                 event.getChannel().sendMessage("Hello!"+" I'm from "+event.getGuild().getName()).queue();
             }
+            
+            if(event.getGuild().getId().equals("559787122018615300")){
+                return;
+            }
             event.getChannel().sendMessage("Puddle's Wolrd: "+String.valueOf(super.puddleWorld.getWorldStatus())
             +"\nMessage to: "+event.getChannel().getId()
             +"\nAt Guild: "+event.getGuild().getId()
