@@ -10,7 +10,6 @@ public class DatabaseHandler {
     private final PuddleWorld puddleWorld;
     private ConnectionMysql connection = null;
     
-    
     public DatabaseHandler(PuddleWorld puddleWorld) {
         this.puddleWorld = puddleWorld;
     }

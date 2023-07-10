@@ -11,6 +11,7 @@ public abstract class ConnectionMysql implements ConnectionInterface{
     private long lastChecked;
 
     public ConnectionMysql(DatabaseHandler databaseHandler){
+        databaseHandler.getPuddleWorld().PuddleLog("Initialize Database Handler...");
         this.databaseHandler = databaseHandler;
     }
     
