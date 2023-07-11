@@ -24,7 +24,7 @@ public class PuddleWorld {
     protected static PuddleWorld puddleWorld;
     private final DatabaseHandler dbHandler;
     private final Properties env;
-    private final Scanner prompt;
+    private final CommandPrompt prompt;
     private ShardManager shardManager;
     
     //Get In Puddle's World Class
@@ -35,7 +35,7 @@ public class PuddleWorld {
         PuddleWorld.puddleWorld = this;
         this.dbHandler = new DatabaseHandler(this);
         this.env = new Properties();
-        this.prompt = new Scanner(System.in);
+        this.prompt = new CommandPrompt(this.getInstance());
         this.shardManager = null;
         
         //Get In Puddle's World Class
@@ -102,7 +102,6 @@ public class PuddleWorld {
                 e.printStackTrace();
                 PuddleLog("Unable to locate file .env");
                 PuddleLog("Recheck locate of file .env then press [Enter]");
-                this.prompt.nextLine();
             }
         }
     }
