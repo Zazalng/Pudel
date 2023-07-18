@@ -33,6 +33,9 @@ public class PromptDeclare extends EventHandler{
             if(!event.getAuthor().getId().equals("152140348980723712")){
                 return;
             }
+            if(event.getGuild().getId().equals("559787122018615300")){
+                return;
+            }
             event.getChannel().sendMessage("Puddle's Wolrd: "+String.valueOf(super.puddleWorld.getWorldStatus())
             +"\nMessage to: "+event.getChannel().getId()
             +"\nAt Guild: "+event.getGuild().getId()

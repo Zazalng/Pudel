@@ -68,11 +68,39 @@ public class MySQL extends HostnameMySQL{
 
     @Override
     public boolean hasTable(String table) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            DatabaseMetaData md = getConnection().getMetaData();
+
+            try (ResultSet tables = md.getTables(null, null, table, new String[]{"TABLE"})) {
+                if (tables.next()) {
+                    tables.close();
+
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            databaseHandler.getPuddleWorld().PuddleLog(String.format("Failed to check if table exists \"%s\": %s", table, ex.getMessage()));
+        }
+
+        return false;
     }
 
     @Override
     public boolean truncate(String table) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            if (!hasTable(table)) {
+                return false;
+            }
+
+            try (Statement statement = getConnection().createStatement()) {
+                statement.executeUpdate(String.format("DELETE FROM `%s`;", table));
+            }
+
+            return true;
+        } catch (SQLException ex) {
+            databaseHandler.getPuddleWorld().PuddleLog(String.format("Failed to truncate \"%s\": %s", table, ex.getMessage()));
+        }
+
+        return false;
     }
 }

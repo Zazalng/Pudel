@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
@@ -35,7 +34,7 @@ public class PuddleWorld {
         PuddleWorld.puddleWorld = this;
         this.dbHandler = new DatabaseHandler(this);
         this.env = new Properties();
-        this.prompt = new CommandPrompt(this.getInstance());
+        this.prompt = new CommandPrompt(this);
         this.shardManager = null;
         
         //Get In Puddle's World Class
@@ -113,7 +112,7 @@ public class PuddleWorld {
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
     public void PuddleLog(String preText){
-        System.out.println("Puddle: "+ preText);
+        System.out.printf("Puddle: "+ preText);
     }
     
     public void startWorld(){
