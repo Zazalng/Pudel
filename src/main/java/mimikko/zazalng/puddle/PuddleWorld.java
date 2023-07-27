@@ -112,7 +112,7 @@ public class PuddleWorld {
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
     public void PuddleLog(String preText){
-        System.out.printf("Puddle: "+ preText);
+        System.out.printf("Puddle: %s", preText);
     }
     
     public void startWorld(){
