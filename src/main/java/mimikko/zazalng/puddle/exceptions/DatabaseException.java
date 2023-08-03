@@ -1,4 +1,4 @@
-package mimikko.zazalng.puddle.exceptions.database;
+package mimikko.zazalng.puddle.exceptions;
 
 public class DatabaseException extends RuntimeException {
 

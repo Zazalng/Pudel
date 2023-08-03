@@ -1,4 +1,4 @@
-package mimikko.zazalng.puddle.handlers;
+package mimikko.zazalng.puddle.handlers.database;
 
 import java.sql.*;
 import java.util.HashSet;
@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import mimikko.zazalng.puddle.PuddleWorld;
 import mimikko.zazalng.puddle.contracts.database.BatchQueryFunction;
-import mimikko.zazalng.puddle.exceptions.database.DatabaseException;
+import mimikko.zazalng.puddle.exceptions.DatabaseException;
 import mimikko.zazalng.puddle.handlers.connection.ConnectionMysql;
-import mimikko.zazalng.puddle.handlers.connection.MySQL.MySQL;
+import mimikko.zazalng.puddle.handlers.database.connection.MySQL;
 import mimikko.zazalng.puddle.handlers.connection.MySQL.QueryBuilder;
 
 import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;

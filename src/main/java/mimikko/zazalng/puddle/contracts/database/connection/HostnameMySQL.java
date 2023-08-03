@@ -1,6 +1,6 @@
-package mimikko.zazalng.puddle.handlers.connection.MySQL;
+package mimikko.zazalng.puddle.contracts.database.connection;
 
-import mimikko.zazalng.puddle.handlers.DatabaseHandler;
+import mimikko.zazalng.puddle.handlers.database.DatabaseHandler;
 import mimikko.zazalng.puddle.handlers.connection.ConnectionMysql;
 
 public abstract class HostnameMySQL extends ConnectionMysql{

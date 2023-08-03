@@ -7,8 +7,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
-import mimikko.zazalng.puddle.handlers.DatabaseHandler;
-import mimikko.zazalng.puddle.listenerEvent.PromptDeclare;
+import mimikko.zazalng.puddle.handlers.EventHandler;
+import mimikko.zazalng.puddle.handlers.database.DatabaseHandler;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -42,17 +42,20 @@ public class PuddleWorld {
     }
     
     private ShardManager buildShardManager() throws LoginException{
-        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.create(EnumSet.of(
-            GatewayIntent.GUILD_MEMBERS,
-            GatewayIntent.GUILD_MODERATION,
-            GatewayIntent.GUILD_VOICE_STATES,
-            GatewayIntent.GUILD_PRESENCES,
-            GatewayIntent.MESSAGE_CONTENT,
-            GatewayIntent.GUILD_MESSAGES,
-            GatewayIntent.GUILD_MESSAGE_REACTIONS,
-            GatewayIntent.DIRECT_MESSAGES,
-            GatewayIntent.DIRECT_MESSAGE_REACTIONS
-        ))
+        DefaultShardManagerBuilder builder = 
+                DefaultShardManagerBuilder.create(
+                    EnumSet.of(
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.GUILD_MODERATION,
+                        GatewayIntent.GUILD_VOICE_STATES,
+                        GatewayIntent.GUILD_PRESENCES,
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                        GatewayIntent.DIRECT_MESSAGES,
+                        GatewayIntent.DIRECT_MESSAGE_REACTIONS
+                    )
+                )
                 .setToken(getPuddleWorldEnvironment().getProperty("discord.api.key"))
                 .setSessionController(new SessionControllerAdapter())
                 .setActivity(Activity.watching("Generating Puddle's World Instance..."))
@@ -65,7 +68,7 @@ public class PuddleWorld {
                 .setContextEnabled(true)
                 .setShardsTotal(1);
         
-        builder.addEventListeners(new PromptDeclare(this));
+        builder.addEventListeners(new EventHandler(this) {});
         
         return builder.build();
     }

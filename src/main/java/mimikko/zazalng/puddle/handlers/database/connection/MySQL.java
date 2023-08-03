@@ -1,9 +1,10 @@
-package mimikko.zazalng.puddle.handlers.connection.MySQL;
+package mimikko.zazalng.puddle.handlers.database.connection;
 
 import java.sql.*;
 import java.util.concurrent.Executors;
-import mimikko.zazalng.puddle.handlers.DatabaseHandler;
-import mimikko.zazalng.puddle.handlers.connection.StatementInterface;
+import mimikko.zazalng.puddle.contracts.database.connection.HostnameMySQL;
+import mimikko.zazalng.puddle.handlers.database.DatabaseHandler;
+import mimikko.zazalng.puddle.contracts.database.StatementInterface;
 
 public class MySQL extends HostnameMySQL{
     public MySQL(DatabaseHandler databaseHandler){

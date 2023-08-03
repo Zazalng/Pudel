@@ -1,4 +1,4 @@
-package mimikko.zazalng.puddle.handlers.connection;
+package mimikko.zazalng.puddle.contracts.database;
 
 import java.sql.SQLException;
 

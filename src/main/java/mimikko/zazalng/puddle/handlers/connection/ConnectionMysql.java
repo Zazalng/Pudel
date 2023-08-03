@@ -1,6 +1,7 @@
 package mimikko.zazalng.puddle.handlers.connection;
 
-import mimikko.zazalng.puddle.handlers.DatabaseHandler;
+import mimikko.zazalng.puddle.contracts.database.ConnectionInterface;
+import mimikko.zazalng.puddle.handlers.database.DatabaseHandler;
 import java.sql.*;
 
 public abstract class ConnectionMysql implements ConnectionInterface{

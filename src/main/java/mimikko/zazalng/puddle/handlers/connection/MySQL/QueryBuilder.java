@@ -5,7 +5,8 @@
 package mimikko.zazalng.puddle.handlers.connection.MySQL;
 
 import java.sql.SQLException;
-import mimikko.zazalng.puddle.handlers.DatabaseHandler;
+import mimikko.zazalng.puddle.handlers.database.DatabaseHandler;
+import mimikko.zazalng.puddle.handlers.database.collection.Collection;
 
 import java.util.*;
 

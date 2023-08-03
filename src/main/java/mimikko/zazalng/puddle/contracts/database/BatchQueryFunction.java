@@ -1,6 +1,6 @@
 package mimikko.zazalng.puddle.contracts.database;
 
-import mimikko.zazalng.puddle.handlers.DatabaseHandler;
+import mimikko.zazalng.puddle.handlers.database.DatabaseHandler;
 
 import java.sql.SQLException;
 
