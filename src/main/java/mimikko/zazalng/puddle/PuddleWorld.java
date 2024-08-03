@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
 import mimikko.zazalng.puddle.handlers.EventHandler;
-import mimikko.zazalng.puddle.handlers.database.DatabaseHandler;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -21,9 +20,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class PuddleWorld {
     //Get From other Class
     protected static PuddleWorld puddleWorld;
-    private final DatabaseHandler dbHandler;
     private final Properties env;
-    private final CommandPrompt prompt;
     private ShardManager shardManager;
     
     //Get In Puddle's World Class
@@ -32,9 +29,7 @@ public class PuddleWorld {
     public PuddleWorld(){
         //Get From other Class
         PuddleWorld.puddleWorld = this;
-        this.dbHandler = new DatabaseHandler(this);
         this.env = new Properties();
-        this.prompt = new CommandPrompt(this);
         this.shardManager = null;
         
         //Get In Puddle's World Class
@@ -87,10 +82,6 @@ public class PuddleWorld {
     
     public boolean getWorldStatus(){
         return this.isWorldOnline;
-    }
-    
-    public DatabaseHandler getDatabase(){
-        return this.dbHandler;
     }
     
     public void setEnvironment(String fileName){
