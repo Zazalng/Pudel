@@ -37,6 +37,6 @@ public class Puddle {
 
         PuddleWorld Eden = new PuddleWorld();
         Eden.setEnvironment(envFilePath);
-        Eden.startWorld();
+        Eden.initalRun();
     }
 }
