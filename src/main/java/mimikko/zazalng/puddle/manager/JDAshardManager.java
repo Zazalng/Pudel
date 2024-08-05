@@ -34,15 +34,11 @@ public class JDAshardManager implements ShardManager {
         this.shardManager = shardManager;
     }
 
-    public ShardManager buildJDAshardManager() throws LoginException {
-        return buildManager(puddleWorld.getEnvironment().getProperty("discord.api.key"));
-    }
-
     public void setShardManagerNull(){
         this.shardManager = null;
     }
 
-    private ShardManager buildManager(String discordAPI){
+    public ShardManager buildJDAshardManager(String discordAPI){
         builder = DefaultShardManagerBuilder.create(
                         EnumSet.of(
                                 GatewayIntent.GUILD_MEMBERS,

@@ -3,11 +3,12 @@ package mimikko.zazalng.puddle.handlers;
 import mimikko.zazalng.puddle.PuddleWorld;
 import mimikko.zazalng.puddle.handlers.CommandLineInputHandler.CommandProcessing;
 import mimikko.zazalng.puddle.manager.JDAshardManager;
+
 import net.dv8tion.jda.api.entities.Activity;
 
-import javax.security.auth.login.LoginException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 
 
 public class CommandLineHandler implements Runnable{
@@ -24,7 +25,7 @@ public class CommandLineHandler implements Runnable{
         new CommandProcessing(this).run();
     }
 
-    public boolean getWolrdStatus(){
+    public boolean getWorldStatus(){
         return puddleWorld.getWorldStatus();
     }
 
@@ -33,18 +34,54 @@ public class CommandLineHandler implements Runnable{
             puddleWorld.getJDAshardManager().getShardManager().shutdown();
             puddleWorld.getJDAshardManager().setShardManagerNull();
             puddleWorld.setWorldStatus(false);
-            puddleWorld.PuddleLog("Puddle World stopped.");
+            puddleWorld.puddleReply("World stopped.");
         }
     }
 
     public void startWorld(){
-        puddleWorld.PuddleLog("Starting Puddle's World called \"Eden\"");
-        try {
-            puddleWorld.setJDAshardManager(puddleShard.buildJDAshardManager());
-            puddleWorld.getJDAshardManager().getShardManager().setActivity(Activity.listening("My Master"));
-            puddleWorld.setWorldStatus(true);
-        } catch (LoginException ex) {
-            Logger.getLogger(PuddleWorld.class.getName()).log(Level.ALL, null, ex);
+        puddleWorld.puddleReply("Starting World called \""+puddleWorld.getEnvironment().getWorldName()+"\"");
+        puddleWorld.setJDAshardManager(puddleShard.buildJDAshardManager(puddleWorld.getEnvironment().getDiscordAPI()));
+        puddleWorld.getJDAshardManager().getShardManager().setActivity(Activity.listening("My Master"));
+        puddleWorld.setWorldStatus(true);
+    }
+
+    public void setStatus(String text){
+        puddleWorld.getJDAshardManager().getShardManager().setActivity(Activity.customStatus(text));
+    }
+
+    public void unloadEnv() {
+        if(puddleWorld.getWorldStatus()) {
+            puddleWorld.puddleReply("I'm still seeing " + puddleWorld.getEnvironment().getWorldName() + " world is running.");
+        } else{
+            puddleWorld.getEnvironment().unloadEnv();
+            puddleWorld.puddleReply(puddleWorld.getEnvironment().getWorldName() + "World is empty now.");
         }
+    }
+
+    public void loadEnv() {
+        puddleWorld.puddleReply("Getting an Environment setting, where should I be?");
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Environment files", "env");
+        fileChooser.setFileFilter(filter);
+        fileChooser.setAcceptAllFileFilterUsed(false);  // Only show the filtered files
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);  // Ensure only files are selectable
+        fileChooser.setFileHidingEnabled(false); // Show hidden files
+
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (selectedFile.isFile() && selectedFile.getName().equals(".env")) {
+                puddleWorld.getEnvironment().loadEnv(selectedFile.getAbsolutePath());
+            } else {
+                System.out.println("Please select a valid .env file. Exiting.");
+            }
+        } else {
+            System.out.println("No file selected. Exiting.");
+        }
+    }
+
+    public void loadEnv(String filePath) {
+        puddleWorld.puddleReply("Getting an Environment setting, where should I be?");
+        puddleWorld.getEnvironment().loadEnv(filePath);
     }
 }

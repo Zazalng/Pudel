@@ -1,48 +1,46 @@
 package mimikko.zazalng.puddle;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 import mimikko.zazalng.puddle.handlers.CommandLineHandler;
+import mimikko.zazalng.puddle.handlers.EnvironmentHandler;
 import mimikko.zazalng.puddle.manager.JDAshardManager;
-import net.dv8tion.jda.api.sharding.ShardManager;
+import mimikko.zazalng.puddle.utility.WorldLogging;
 
-import javax.security.auth.login.LoginException;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 public class PuddleWorld {
     //Get From other Class
-    protected static PuddleWorld puddleWorld;
-
-    private final Properties env;
-
-    protected CommandLineHandler worldCommand;
-    protected JDAshardManager JDAshardManager;
+    protected final PuddleWorld puddleWorld;
+    protected final EnvironmentHandler env;
+    protected final CommandLineHandler worldCommand;
+    protected final JDAshardManager JDAshardManager;
+    protected final WorldLogging worldLogging;
     
     //Get In Puddle's World Class
     private boolean isWorldOnline;
     
     public PuddleWorld(){
         //Get From other Class
-        PuddleWorld.puddleWorld = this;
-        this.env = new Properties();
-        this.JDAshardManager = new JDAshardManager(puddleWorld);
+        this.puddleWorld = this;
+        this.env = new EnvironmentHandler(this);
+        this.JDAshardManager = new JDAshardManager(this);
+        this.worldCommand = new CommandLineHandler(this);
+        this.worldLogging = new WorldLogging(this);
         
         //Get In Puddle's World Class
         this.isWorldOnline = false;
-        this.worldCommand = new CommandLineHandler(this);
-    }
-    ///////////////////////////////////////////////////
-    /*Static Area: Whenever this class was called this method should be work without 'new' keyword need*/
-    ///////////////////////////////////////////////////
-    public static PuddleWorld getInstance(){
-        return puddleWorld;
+        this.worldCommand.run();
     }
 
-    public void initalRun() throws LoginException {
+    public PuddleWorld(String envPath){
+        this();
+    }
+    public PuddleWorld getInstance(){
+        return this.puddleWorld;
+    }
+
+    public void initalRun(){
         if(this.getJDAshardManager().getShardManager()==null){
-            setJDAshardManager(this.getJDAshardManager().buildJDAshardManager());
-            this.worldCommand.run();
+            setJDAshardManager(this.getJDAshardManager().buildJDAshardManager(this.getEnvironment().getDiscordAPI()));
         }
     }
     ///////////////////////////////////////////////////
@@ -68,28 +66,17 @@ public class PuddleWorld {
         this.JDAshardManager.setShardManager(shardManager);
     }
 
-    public Properties getEnvironment(){
+    public EnvironmentHandler getEnvironment(){
         return this.env;
     }
 
-    public void setEnvironment(String fileName){
-        PuddleLog("Getting World's Environment with \""+fileName+"\"");
-        while(!getWorldStatus()){
-            try(FileInputStream fileInputStream = new FileInputStream(fileName)){
-                this.env.load(fileInputStream);
-                fileInputStream.close();
-                return;
-            }catch(IOException e){
-                e.printStackTrace();
-                PuddleLog("Unable to locate file .env");
-                PuddleLog("Recheck locate of file .env then press [Enter]");
-            }
-        }
+    public WorldLogging getWorldLogging(){
+        return this.worldLogging;
     }
     ///////////////////////////////////////////////////
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
-    public void PuddleLog(String preText){
-        System.out.printf("Puddle: %s\n", preText);
+    public void puddleReply(String reply){
+        System.out.printf("%s: %s",getEnvironment().getBotName(),reply);
     }
 }

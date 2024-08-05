@@ -6,7 +6,8 @@ import java.io.File;
 
 public class Puddle {
     public static void main(String[] args) throws Exception {
-        String envFilePath;
+        String envFilePath = "";
+        PuddleWorld world;
 
         if (args.length > 0) {
             // Use the first command-line argument as the path to the .env file
@@ -26,17 +27,17 @@ public class Puddle {
                 if (selectedFile.isFile() && selectedFile.getName().equals(".env")) {
                     envFilePath = selectedFile.getAbsolutePath();
                 } else {
-                    System.out.println("Please select a valid .env file. Exiting.");
-                    return;
+                    System.out.println("Please select a valid .env file. Skipping.");
                 }
             } else {
-                System.out.println("No file selected. Exiting.");
-                return;
+                System.out.println("No file selected. Skipping.");
             }
         }
 
-        PuddleWorld Eden = new PuddleWorld();
-        Eden.setEnvironment(envFilePath);
-        Eden.initalRun();
+        if(envFilePath.isEmpty()){
+            world = new PuddleWorld();
+        } else{
+            world = new PuddleWorld(envFilePath);
+        }
     }
 }

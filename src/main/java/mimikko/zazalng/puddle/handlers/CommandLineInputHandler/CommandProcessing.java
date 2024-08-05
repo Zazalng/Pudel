@@ -2,6 +2,7 @@ package mimikko.zazalng.puddle.handlers.CommandLineInputHandler;
 
 import mimikko.zazalng.puddle.handlers.CommandLineHandler;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class CommandProcessing implements Runnable {
@@ -18,29 +19,43 @@ public class CommandProcessing implements Runnable {
     @Override
     public void run() {
         while (isOperate) {
-            System.out.print(">");
+            System.out.print(">_");
             String command = scanner.nextLine();
             processCommand(command);
         }
     }
 
-    private void processCommand(String command) {
-        switch (command.toLowerCase()) {
+    private void processCommand(String input) {
+        String[] parts = input.split(" ", 2);
+        String command = parts[0].toLowerCase();
+        String args = parts.length > 1 ? parts[1] : "";
+
+        switch (command) {
+            case "exit":
+                isOperate = false;
             case "stop":
                 worldCommand.stopWorld();
-                isOperate = false;
                 break;
             case "start":
                 worldCommand.startWorld();
                 break;
-            // Add more commands as needed
+            case "unloadenv":
+                worldCommand.unloadEnv();
+                break;
+            case "loadenv":
+                if(args.isEmpty()){
+                    worldCommand.loadEnv();
+                } else{
+                    worldCommand.loadEnv(args);
+                }
+                break;
+                //discord related command
+            case "setstatus":
+                worldCommand.setStatus(args);
+                break;
             default:
-                PuddleLog("Unknown command: " + command);
+                System.out.println("Unknown command: \"" + command + "\"");
                 break;
         }
-    }
-
-    public void PuddleLog(String preText){
-        System.out.printf("Puddle: %s\n", preText);
     }
 }
