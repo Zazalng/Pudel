@@ -25,11 +25,12 @@ public class CommandLineHandler implements Runnable{
         new CommandProcessing(this).run();
     }
 
-    public boolean getWorldStatus(){
-        return puddleWorld.getWorldStatus();
+    public void unknownCommand(String command){
+        puddleWorld.puddleReply("What is '"+command+"' that should do, Master?");
     }
 
     public void stopWorld() {
+        puddleWorld.puddleReply("Disconnecting World called \""+puddleWorld.getEnvironment().getWorldName()+"\"");
         if (puddleWorld.getJDAshardManager().getShardManager() != null) {
             puddleWorld.getJDAshardManager().getShardManager().shutdown();
             puddleWorld.getJDAshardManager().setShardManagerNull();
@@ -39,10 +40,14 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void startWorld(){
-        puddleWorld.puddleReply("Starting World called \""+puddleWorld.getEnvironment().getWorldName()+"\"");
-        puddleWorld.setJDAshardManager(puddleShard.buildJDAshardManager(puddleWorld.getEnvironment().getDiscordAPI()));
-        puddleWorld.getJDAshardManager().getShardManager().setActivity(Activity.listening("My Master"));
-        puddleWorld.setWorldStatus(true);
+        if(puddleWorld.getEnvironment().isLoaded()){
+            puddleWorld.puddleReply("Starting World called \""+puddleWorld.getEnvironment().getWorldName()+"\"");
+            puddleWorld.setJDAshardManager(puddleShard.buildJDAshardManager(puddleWorld.getEnvironment().getDiscordAPI()));
+            puddleWorld.getJDAshardManager().getShardManager().setActivity(Activity.listening("My Master"));
+            puddleWorld.setWorldStatus(true);
+        } else{
+            puddleWorld.puddleReply("World Environment is missing, Master");
+        }
     }
 
     public void setStatus(String text){

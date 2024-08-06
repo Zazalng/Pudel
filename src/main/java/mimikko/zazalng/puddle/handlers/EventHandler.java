@@ -1,11 +1,17 @@
 package mimikko.zazalng.puddle.handlers;
 
-import mimikko.zazalng.puddle.PuddleWorld;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public abstract class EventHandler extends EventListener {
-    protected final PuddleWorld puddleWorld;
-    
-    public EventHandler(PuddleWorld puddleWorld){
-        this.puddleWorld = puddleWorld;
+public class EventHandler extends ListenerAdapter{
+
+    public void onMessageReceived(MessageReceivedEvent e){
+        if(e.getAuthor().isBot()){
+            return;
+        } else {
+            //From {guildName} in {channelName} by {userName} said: {contentRaw}
+            String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: "+e.getMessage().getContentRaw();
+            System.out.println(fullRespond);
+        }
     }
 }

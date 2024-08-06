@@ -2,7 +2,6 @@ package mimikko.zazalng.puddle.handlers.CommandLineInputHandler;
 
 import mimikko.zazalng.puddle.handlers.CommandLineHandler;
 
-import java.util.Objects;
 import java.util.Scanner;
 
 public class CommandProcessing implements Runnable {
@@ -54,7 +53,7 @@ public class CommandProcessing implements Runnable {
                 worldCommand.setStatus(args);
                 break;
             default:
-                System.out.println("Unknown command: \"" + command + "\"");
+                worldCommand.unknownCommand(input);
                 break;
         }
     }

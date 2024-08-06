@@ -10,16 +10,18 @@ public class EnvironmentHandler {
     protected final PuddleWorld puddleWorld;
     protected final String classCodename;
     private String responded;
-    private Properties env;
+    private final Properties env;
     private String discordAPI;
     private String devServerID;
     private String worldName;
     private String botName;
+    private boolean isLoaded;
 
     public EnvironmentHandler(PuddleWorld puddleWorld){
         this.puddleWorld = puddleWorld;
         this.env = new Properties();
-        this.classCodename = "EnvorimentHandler";
+        this.isLoaded = false;
+        this.classCodename = "EnvironmentHandler";
         this.responded = "";
     }
 
@@ -31,7 +33,7 @@ public class EnvironmentHandler {
         this.responded += " " + responded;
         switch(type){
             case 'r':
-                logResponed();
+                logResponded();
                 break;
             default:
 
@@ -39,7 +41,7 @@ public class EnvironmentHandler {
         return responded;
     }
 
-    public void logResponed(){
+    public void logResponded(){
         getPuddleWorld().getWorldLogging().logoutput(this.responded);
         this.responded = "";
     }
@@ -64,10 +66,16 @@ public class EnvironmentHandler {
         setWorldName(this.env.getProperty("world.name"));
         //bot.name
         setBotName(this.env.getProperty("bot.name"));
+        setLoaded(true);
     }
 
     public void unloadEnv(){
         this.env.clear();
+        setDiscordAPI(null);
+        setDevServerID(null);
+        setWorldName(null);
+        setBotName(null);
+        setLoaded(false);
     }
 
     public String getDiscordAPI() {
@@ -100,5 +108,13 @@ public class EnvironmentHandler {
 
     public void setBotName(String botName) {
         this.botName = botName;
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(boolean flag) {
+        isLoaded = flag;
     }
 }

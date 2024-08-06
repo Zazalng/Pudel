@@ -22,26 +22,17 @@ public class PuddleWorld {
         //Get From other Class
         this.puddleWorld = this;
         this.env = new EnvironmentHandler(this);
-        this.JDAshardManager = new JDAshardManager(this);
+        this.JDAshardManager = new JDAshardManager();
         this.worldCommand = new CommandLineHandler(this);
         this.worldLogging = new WorldLogging(this);
         
         //Get In Puddle's World Class
         this.isWorldOnline = false;
-        this.worldCommand.run();
     }
 
     public PuddleWorld(String envPath){
         this();
-    }
-    public PuddleWorld getInstance(){
-        return this.puddleWorld;
-    }
-
-    public void initalRun(){
-        if(this.getJDAshardManager().getShardManager()==null){
-            setJDAshardManager(this.getJDAshardManager().buildJDAshardManager(this.getEnvironment().getDiscordAPI()));
-        }
+        this.puddleWorld.getEnvironment().loadEnv(envPath);
     }
     ///////////////////////////////////////////////////
     /*       Getter/Setter Method: Self-Explain      */
@@ -77,6 +68,6 @@ public class PuddleWorld {
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
     public void puddleReply(String reply){
-        System.out.printf("%s: %s",getEnvironment().getBotName(),reply);
+        System.out.printf("%s: %s\n",getEnvironment().getBotName(),reply);
     }
 }
