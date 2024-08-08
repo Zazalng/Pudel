@@ -30,21 +30,25 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void stopWorld() {
-        puddleWorld.puddleReply("Disconnecting World called \""+puddleWorld.getEnvironment().getWorldName()+"\"");
+        puddleWorld.puddleReply("Disconnecting World called '"+puddleWorld.getEnvironment().getWorldName()+"'");
         if (puddleWorld.getJDAshardManager().getShardManager() != null) {
             puddleWorld.getJDAshardManager().getShardManager().shutdown();
             puddleWorld.getJDAshardManager().setShardManagerNull();
             puddleWorld.setWorldStatus(false);
-            puddleWorld.puddleReply("World stopped.");
+            puddleWorld.puddleReply("'"+puddleWorld.getEnvironment().getWorldName()+"' world has stopped.");
         }
     }
 
     public void startWorld(){
         if(puddleWorld.getEnvironment().isLoaded()){
-            puddleWorld.puddleReply("Starting World called \""+puddleWorld.getEnvironment().getWorldName()+"\"");
-            puddleWorld.setJDAshardManager(puddleShard.buildJDAshardManager(puddleWorld.getEnvironment().getDiscordAPI()));
-            puddleWorld.getJDAshardManager().getShardManager().setActivity(Activity.listening("My Master"));
-            puddleWorld.setWorldStatus(true);
+            if(!puddleWorld.getWorldStatus()){
+                puddleWorld.puddleReply("Starting World called \""+puddleWorld.getEnvironment().getWorldName()+"\"");
+                puddleWorld.setJDAshardManager(puddleShard.buildJDAshardManager(puddleWorld.getEnvironment().getDiscordAPI()));
+                puddleWorld.getJDAshardManager().getShardManager().setActivity(Activity.listening("My Master"));
+                puddleWorld.setWorldStatus(true);
+            } else{
+                puddleWorld.puddleReply("'"+puddleWorld.getEnvironment().getWorldName()+"' world is still running");
+            }
         } else{
             puddleWorld.puddleReply("World Environment is missing, Master");
         }
@@ -56,10 +60,10 @@ public class CommandLineHandler implements Runnable{
 
     public void unloadEnv() {
         if(puddleWorld.getWorldStatus()) {
-            puddleWorld.puddleReply("I'm still seeing " + puddleWorld.getEnvironment().getWorldName() + " world is running.");
+            puddleWorld.puddleReply("I'm still seeing '" + puddleWorld.getEnvironment().getWorldName() + "' world is running.");
         } else{
             puddleWorld.getEnvironment().unloadEnv();
-            puddleWorld.puddleReply(puddleWorld.getEnvironment().getWorldName() + "World is empty now.");
+            puddleWorld.puddleReply("Environment is empty now.");
         }
     }
 
@@ -78,10 +82,10 @@ public class CommandLineHandler implements Runnable{
             if (selectedFile.isFile() && selectedFile.getName().equals(".env")) {
                 puddleWorld.getEnvironment().loadEnv(selectedFile.getAbsolutePath());
             } else {
-                System.out.println("Please select a valid .env file. Exiting.");
+                System.out.println("Please select a valid .env file. Exiting command.");
             }
         } else {
-            System.out.println("No file selected. Exiting.");
+            System.out.println("No file selected. Exiting command.");
         }
     }
 
