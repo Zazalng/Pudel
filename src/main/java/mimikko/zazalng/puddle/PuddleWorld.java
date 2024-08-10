@@ -22,7 +22,7 @@ public class PuddleWorld {
         //Get From other Class
         this.puddleWorld = this;
         this.env = new EnvironmentHandler(this);
-        this.JDAshardManager = new JDAshardManager();
+        this.JDAshardManager = new JDAshardManager(this);
         this.worldCommand = new CommandLineHandler(this);
         this.worldLogging = new WorldLogging(this);
         
