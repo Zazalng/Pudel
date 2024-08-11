@@ -25,7 +25,7 @@ public class CommandManager{
         if (command != null) {
             command.execute(e, args);
         } else {
-            e.getChannel().sendMessage("Unknown command!").queue();
+            //e.getChannel().sendMessage("Unknown command!").queue();
         }
     }
 }
