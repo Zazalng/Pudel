@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import mimikko.zazalng.puddle.handlers.AudioPlayerSendHandler;
+import mimikko.zazalng.puddle.handlers.AudioTrackHandler;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
@@ -20,6 +21,7 @@ public class MusicManager {
         this.playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
         this.player = playerManager.createPlayer();
+        this.player.addListener(new AudioTrackHandler(player));
     }
 
     public void loadAndPlay(Guild guild, String trackUrl, VoiceChannel channel) {
