@@ -24,7 +24,7 @@ public class MusicManager {
 
     public MusicManager() {
         this.playerManager = new DefaultAudioPlayerManager();
-        YoutubeAudioSourceManager ytSourceManager = new dev.lavalink.youtube.YoutubeAudioSourceManager(true, new Client[] { new Music(), new Web(), new AndroidTestsuite() });
+        YoutubeAudioSourceManager ytSourceManager = new dev.lavalink.youtube.YoutubeAudioSourceManager();
         playerManager.registerSourceManager(ytSourceManager);
         AudioSourceManagers.registerRemoteSources(playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
         this.player = playerManager.createPlayer();

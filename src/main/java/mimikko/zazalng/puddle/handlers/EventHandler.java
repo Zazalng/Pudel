@@ -21,9 +21,11 @@ public class EventHandler extends ListenerAdapter{
             e.getChannel().sendTyping().queue();
 
             String message = e.getMessage().getContentRaw();
-            String[] parts = message.split(" ");
-            String command = parts[0].substring(1); // Assumes commands start with a prefix like "!"
-            String[] args = java.util.Arrays.copyOfRange(parts, 1, parts.length);
+            if (!message.startsWith(".")) return; // Assuming commands start with "."
+
+            String[] parts = message.split(" ", 2); // Split into command and the rest of the message
+            String command = parts[0].substring(1); // Extract the command without prefix
+            String args = parts.length > 1 ? parts[1] : ""; // Handle arguments as a single string
 
             commandManager.handleCommand(command, e, args);
         }

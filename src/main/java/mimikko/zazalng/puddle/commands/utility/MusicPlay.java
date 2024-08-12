@@ -10,17 +10,22 @@ public class MusicPlay implements Command {
     @Override
     public void execute(MessageReceivedEvent e, String[] args) {
         if (args.length == 0) {
-            e.getChannel().sendMessage("Please provide a YouTube URL.").queue();
+            e.getChannel().sendMessage("Please provide a song title or a YouTube URL.").queue();
             return;
         }
 
-        String url = args[0];
-        boolean isVoiceChannel = false;
-        isVoiceChannel = e.getMember().getVoiceState().inAudioChannel();
+        boolean isVoiceChannel = e.getMember().getVoiceState().inAudioChannel();
 
         if (isVoiceChannel) {
-            musicManager.loadAndPlay(e.getGuild(), url, e.getMember().getVoiceState().getChannel().asVoiceChannel());
-            e.getChannel().sendMessage("Playing music from: " + url).queue();
+            String input = String.join(" ", args);
+
+            // Automatically prepend "ytsearch:" if the input isn't a URL
+            if (!input.startsWith("http://") && !input.startsWith("https://")) {
+                input = "ytsearch:" + input;
+            }
+
+            musicManager.loadAndPlay(e.getGuild(), input, e.getMember().getVoiceState().getChannel().asVoiceChannel());
+            e.getChannel().sendMessage("Searching and playing: " + input).queue();
         } else {
             e.getChannel().sendMessage("You must be in a voice channel to play music!").queue();
         }

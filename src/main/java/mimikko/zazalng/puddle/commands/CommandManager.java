@@ -20,10 +20,13 @@ public class CommandManager{
         commands.put(name, command);
     }
 
-    public void handleCommand(String commandName, MessageReceivedEvent e, String[] args) {
+    public void handleCommand(String commandName, MessageReceivedEvent e, String args) {
         Command command = commands.get(commandName.toLowerCase());
+        System.out.println("Parameters: String commandName, MessageReceivedEvent e, String[] args" +
+                "\ncommandName: "+ commandName+
+                "\nargs: "+ args);
         if (command != null) {
-            command.execute(e, args);
+            command.execute(e, args.split(" "));
         } else {
             //e.getChannel().sendMessage("Unknown command!").queue();
         }
