@@ -67,7 +67,6 @@ local.properties
 ### Eclipse Patch ###
 # Eclipse Core
 .project
-
 .sts4-cache/
 
 ### Git ###
