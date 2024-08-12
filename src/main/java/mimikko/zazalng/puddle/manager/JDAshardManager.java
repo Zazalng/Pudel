@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.utils.SessionControllerAdapter;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.api.utils.cache.ShardCacheView;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.EnumSet;
 
 public class JDAshardManager implements ShardManager {

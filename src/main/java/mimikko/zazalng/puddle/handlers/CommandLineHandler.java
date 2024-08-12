@@ -3,7 +3,6 @@ package mimikko.zazalng.puddle.handlers;
 import mimikko.zazalng.puddle.PuddleWorld;
 import mimikko.zazalng.puddle.handlers.CommandLineInputHandler.CommandProcessing;
 import mimikko.zazalng.puddle.manager.JDAshardManager;
-
 import net.dv8tion.jda.api.entities.Activity;
 
 import javax.swing.*;

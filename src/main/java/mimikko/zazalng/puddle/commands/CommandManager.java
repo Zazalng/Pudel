@@ -1,7 +1,7 @@
 package mimikko.zazalng.puddle.commands;
 
-import mimikko.zazalng.puddle.commands.utility.*;
-
+import mimikko.zazalng.puddle.commands.utility.MusicPlay;
+import mimikko.zazalng.puddle.commands.utility.MusicStop;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
