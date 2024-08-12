@@ -15,7 +15,7 @@ The inspiration behind Puddle's creation stems from the discontinuation of the h
 
 ## Dependencies
 
-- JDA: version 5.0.0-beta.10
+- JDA: version 5.0.2
 - Twitter4J Core: version 4.0.7
 - Logback Classic: version 1.2.8
 - MySQL Connector/J: version 8.0.33
@@ -33,9 +33,6 @@ To get started with Puddle, follow these steps:
 
 Puddle is an open-source project, and contributions are welcome. If you'd like to contribute to the development of Puddle, feel free to submit pull requests or open issues on the GitHub repository.
 
-## License
-Puddle is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](LICENSE), allowing for non-commercial use, modification, and distribution of the codebase with proper attribution and under the same license terms.
-<br /><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
 
 ## Acknowledgments
 
