@@ -179,3 +179,5 @@ target
 README.html
 .exercism
 .env
+/out
+/out/*
