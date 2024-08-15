@@ -8,12 +8,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import mimikko.zazalng.puddle.manager.MusicManager;
 
 public class AudioTrackHandler extends AudioEventAdapter {
-    private final AudioPlayer player;
     private final MusicManager musicManager;
 
-
-    public AudioTrackHandler(AudioPlayer player, MusicManager musicManager) {
-        this.player = player;
+    public AudioTrackHandler(MusicManager musicManager) {
         this.musicManager = musicManager;
     }
 
@@ -37,6 +34,8 @@ public class AudioTrackHandler extends AudioEventAdapter {
         if (endReason.mayStartNext) {
             // Start next track
             musicManager.nextTrack();
+        } else if(endReason == AudioTrackEndReason.STOPPED){
+            player.destroy();
         }
 
         // endReason == FINISHED: A track finished or died by an exception (mayStartNext = true).

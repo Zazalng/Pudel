@@ -19,8 +19,8 @@ import java.util.List;
 
 public class MusicManager {
     private final AudioPlayerManager playerManager;
-    private final AudioPlayer player;
     private final List<AudioTrack> playlist;
+    private final AudioPlayer player;
 
     public MusicManager() {
         this.playerManager = new DefaultAudioPlayerManager();
@@ -34,7 +34,7 @@ public class MusicManager {
         AudioSourceManagers.registerRemoteSources(playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
         this.player = playerManager.createPlayer();
         this.playlist = new ArrayList<>();
-        this.player.addListener(new AudioTrackHandler(player,this));
+        this.player.addListener(new AudioTrackHandler(this));
     }
 
     public void loadAndPlay(Guild guild, String trackUrl, VoiceChannel channel) {
@@ -74,26 +74,29 @@ public class MusicManager {
     }
 
     private void queueUp(AudioPlaylist playlist){
-        if(player.getPlayingTrack() == null){
+        if(playlist.isSearchResult()){
+            this.playlist.add(playlist.getTracks().get(0));
+        } else{
             this.playlist.addAll(playlist.getTracks());
+        }
+        if(player.getPlayingTrack() == null){
             player.playTrack(this.playlist.get(0));
         }else{
-            this.playlist.addAll(playlist.getTracks());
             player.startTrack(this.playlist.get(0), true);
         }
     }
 
     public void nextTrack() {
         this.playlist.remove(0);
-        if(this.playlist.isEmpty()){
-
-        }else{
+        if(!this.playlist.isEmpty()){
             player.startTrack(this.playlist.get(0), true);
         }
     }
 
     public void stop(Guild guild) {
+        playlist.clear();
         player.stopTrack();
+        player.destroy();
         guild.getAudioManager().closeAudioConnection();
     }
 
