@@ -9,30 +9,32 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-import dev.lavalink.youtube.clients.Music;
-import dev.lavalink.youtube.clients.Web;
-import dev.lavalink.youtube.clients.skeleton.Client;
 import mimikko.zazalng.puddle.handlers.AudioPlayerSendHandler;
 import mimikko.zazalng.puddle.handlers.AudioTrackHandler;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MusicManager {
     private final AudioPlayerManager playerManager;
     private final AudioPlayer player;
+    private final List<AudioTrack> playlist;
 
     public MusicManager() {
         this.playerManager = new DefaultAudioPlayerManager();
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
                 true,   // Allow direct video IDs
-                true,   // Allow direct playlist IDs
-                new Client[]{new Music(), new Web()}  // Clients
+                true/*,   // Allow direct playlist IDs
+                new Client[]{new Music(), new Web()} */ // Clients
         );
         playerManager.registerSourceManager(ytSourceManager);
         AudioSourceManagers.registerRemoteSources(playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
         this.player = playerManager.createPlayer();
-        this.player.addListener(new AudioTrackHandler(player));
+        this.playlist = new ArrayList<>();
+        this.player.addListener(new AudioTrackHandler(player,this));
     }
 
     public void loadAndPlay(Guild guild, String trackUrl, VoiceChannel channel) {
@@ -40,13 +42,13 @@ public class MusicManager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 connectToVoiceChannel(guild, channel);
-                player.playTrack(track);
+                queueUp(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                // Handle playlists, but for now, let's just play the first track.
-                trackLoaded(playlist.getTracks().get(0));
+                connectToVoiceChannel(guild, channel);
+                queueUp(playlist);
             }
 
             @Override
@@ -61,13 +63,42 @@ public class MusicManager {
         });
     }
 
-    private void connectToVoiceChannel(Guild guild, VoiceChannel channel) {
-        guild.getAudioManager().openAudioConnection(channel);
-        guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
+    private void queueUp(AudioTrack track){
+        if(player.getPlayingTrack() == null){
+            playlist.add(track);
+            player.playTrack(playlist.get(0));
+        } else{
+            playlist.add(track);
+            player.startTrack(playlist.get(0), true);
+        }
+    }
+
+    private void queueUp(AudioPlaylist playlist){
+        if(player.getPlayingTrack() == null){
+            this.playlist.addAll(playlist.getTracks());
+            player.playTrack(this.playlist.get(0));
+        }else{
+            this.playlist.addAll(playlist.getTracks());
+            player.startTrack(this.playlist.get(0), true);
+        }
+    }
+
+    public void nextTrack() {
+        this.playlist.remove(0);
+        if(this.playlist.isEmpty()){
+
+        }else{
+            player.startTrack(this.playlist.get(0), true);
+        }
     }
 
     public void stop(Guild guild) {
         player.stopTrack();
         guild.getAudioManager().closeAudioConnection();
+    }
+
+    private void connectToVoiceChannel(Guild guild, VoiceChannel channel) {
+        guild.getAudioManager().openAudioConnection(channel);
+        guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
     }
 }

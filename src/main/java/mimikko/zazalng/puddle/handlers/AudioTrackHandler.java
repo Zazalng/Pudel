@@ -5,12 +5,16 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import mimikko.zazalng.puddle.manager.MusicManager;
 
 public class AudioTrackHandler extends AudioEventAdapter {
-    protected AudioPlayer player;
+    private final AudioPlayer player;
+    private final MusicManager musicManager;
 
-    public AudioTrackHandler(AudioPlayer player) {
+
+    public AudioTrackHandler(AudioPlayer player, MusicManager musicManager) {
         this.player = player;
+        this.musicManager = musicManager;
     }
 
     @Override
@@ -32,6 +36,7 @@ public class AudioTrackHandler extends AudioEventAdapter {
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
             // Start next track
+            musicManager.nextTrack();
         }
 
         // endReason == FINISHED: A track finished or died by an exception (mayStartNext = true).
