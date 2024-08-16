@@ -2,6 +2,7 @@ package mimikko.zazalng.puddle;
 
 import mimikko.zazalng.puddle.handlers.CommandLineHandler;
 import mimikko.zazalng.puddle.handlers.EnvironmentHandler;
+import mimikko.zazalng.puddle.manager.GuildManager;
 import mimikko.zazalng.puddle.manager.JDAshardManager;
 import mimikko.zazalng.puddle.utility.WorldLogging;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -11,6 +12,7 @@ public class PuddleWorld {
     protected final PuddleWorld puddleWorld;
     protected final EnvironmentHandler env;
     protected final CommandLineHandler worldCommand;
+    protected final GuildManager guildManager;
     protected final JDAshardManager JDAshardManager;
     protected final WorldLogging worldLogging;
     
@@ -20,11 +22,12 @@ public class PuddleWorld {
     public PuddleWorld(){
         //Get From other Class
         this.puddleWorld = this;
-        this.env = new EnvironmentHandler(this);
-        this.JDAshardManager = new JDAshardManager(this);
+        this.env = new EnvironmentHandler();
+        this.JDAshardManager = new JDAshardManager();
+        this.worldLogging = new WorldLogging();
+        this.guildManager = new GuildManager();
+
         this.worldCommand = new CommandLineHandler(this);
-        this.worldLogging = new WorldLogging(this);
-        
         //Get In Puddle's World Class
         this.isWorldOnline = false;
     }
@@ -62,6 +65,10 @@ public class PuddleWorld {
 
     public WorldLogging getWorldLogging(){
         return this.worldLogging;
+    }
+
+    public GuildManager getGuildManager(){
+        return this.guildManager;
     }
     ///////////////////////////////////////////////////
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/

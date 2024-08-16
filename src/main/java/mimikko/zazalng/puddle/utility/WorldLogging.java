@@ -3,16 +3,10 @@ package mimikko.zazalng.puddle.utility;
 import mimikko.zazalng.puddle.PuddleWorld;
 
 public class WorldLogging {
-    protected final PuddleWorld puddleWorld;
     private String mergeRespond;
 
-    public WorldLogging(PuddleWorld puddleWorld){
-        this.puddleWorld = puddleWorld;
+    public WorldLogging(){
         this.mergeRespond = "";
-    }
-
-    public PuddleWorld getPuddleWorld() {
-        return this.puddleWorld;
     }
 
     public void logoutput(String mergeRespond){

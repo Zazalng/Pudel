@@ -10,19 +10,13 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import mimikko.zazalng.puddle.handlers.AudioPlayerSendHandler;
-import mimikko.zazalng.puddle.handlers.AudioTrackHandler;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MusicManager {
     private final AudioPlayerManager playerManager;
-    private final List<AudioTrack> playlist;
-    private final AudioPlayer player;
 
-    public MusicManager() {
+    public MusicManager(){
         this.playerManager = new DefaultAudioPlayerManager();
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
@@ -32,23 +26,18 @@ public class MusicManager {
         );
         playerManager.registerSourceManager(ytSourceManager);
         AudioSourceManagers.registerRemoteSources(playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
-        this.player = playerManager.createPlayer();
-        this.playlist = new ArrayList<>();
-        this.player.addListener(new AudioTrackHandler(this));
     }
 
     public void loadAndPlay(Guild guild, String trackUrl, VoiceChannel channel) {
         playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                connectToVoiceChannel(guild, channel);
-                queueUp(track);
+
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                connectToVoiceChannel(guild, channel);
-                queueUp(playlist);
+
             }
 
             @Override
@@ -61,6 +50,11 @@ public class MusicManager {
                 exception.printStackTrace();
             }
         });
+    }
+
+    public getGuildConnection(Guild guild, VoiceChannel channel){
+        guild.getAudioManager().openAudioConnection(channel);
+        guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
     }
 
     private void queueUp(AudioTrack track){
@@ -101,7 +95,6 @@ public class MusicManager {
     }
 
     private void connectToVoiceChannel(Guild guild, VoiceChannel channel) {
-        guild.getAudioManager().openAudioConnection(channel);
-        guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
+
     }
 }

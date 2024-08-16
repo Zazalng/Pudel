@@ -1,6 +1,5 @@
 package mimikko.zazalng.puddle.manager;
 
-import mimikko.zazalng.puddle.PuddleWorld;
 import mimikko.zazalng.puddle.handlers.EventHandler;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -16,17 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 
 public class JDAshardManager implements ShardManager {
-    protected PuddleWorld puddleWorld;
     protected ShardManager shardManager;
     protected DefaultShardManagerBuilder builder;
 
-    public JDAshardManager(PuddleWorld puddleWorld){
-        this.puddleWorld = puddleWorld;
+    public JDAshardManager(){
         this.shardManager = null;
-    }
-
-    public PuddleWorld getPuddleWorld(){
-        return this.puddleWorld;
     }
 
     public ShardManager getShardManager() {
@@ -67,7 +60,7 @@ public class JDAshardManager implements ShardManager {
                 .setContextEnabled(true)
                 .setShardsTotal(1);
 
-        builder.addEventListeners(new EventHandler(getPuddleWorld()));
+        builder.addEventListeners(new EventHandler());
 
         return builder.build();
     }

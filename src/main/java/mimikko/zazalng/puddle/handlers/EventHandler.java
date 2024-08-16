@@ -1,19 +1,20 @@
 package mimikko.zazalng.puddle.handlers;
 
-import mimikko.zazalng.puddle.PuddleWorld;
 import mimikko.zazalng.puddle.commands.CommandManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class EventHandler extends ListenerAdapter{
-    protected final PuddleWorld puddleWorld;
     protected final CommandManager commandManager;
 
-    public EventHandler(PuddleWorld puddleWorld) {
-        this.puddleWorld = puddleWorld;
+    public EventHandler() {
         this.commandManager = new CommandManager();
     }
+
+    public void
+
     public void onMessageReceived(MessageReceivedEvent e){
+        e.getMessage().getMentions().getUsers().
         if(!e.getAuthor().isBot()){
             //From {guildName} in {channelName} by {userName} said: {contentRaw}
             String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: "+e.getMessage().getContentRaw();
@@ -29,5 +30,6 @@ public class EventHandler extends ListenerAdapter{
 
             commandManager.handleCommand(command, e, args);
         }
+        if(e.)
     }
 }

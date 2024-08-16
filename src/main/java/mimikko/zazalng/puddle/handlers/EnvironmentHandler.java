@@ -1,13 +1,10 @@
 package mimikko.zazalng.puddle.handlers;
 
-import mimikko.zazalng.puddle.PuddleWorld;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 public class EnvironmentHandler {
-    protected final PuddleWorld puddleWorld;
     protected final String classCodename;
     private String responded;
     private final Properties env;
@@ -17,16 +14,11 @@ public class EnvironmentHandler {
     private String botName;
     private boolean isLoaded;
 
-    public EnvironmentHandler(PuddleWorld puddleWorld){
-        this.puddleWorld = puddleWorld;
+    public EnvironmentHandler(){
         this.env = new Properties();
         this.isLoaded = false;
         this.classCodename = "EnvironmentHandler";
         this.responded = "";
-    }
-
-    public PuddleWorld getPuddleWorld(){
-        return this.puddleWorld;
     }
 
     public String respondBuilder(String responded,char type){
@@ -42,7 +34,7 @@ public class EnvironmentHandler {
     }
 
     public void logResponded(){
-        getPuddleWorld().getWorldLogging().logoutput(this.responded);
+        System.out.println(this.responded);
         this.responded = "";
     }
 
