@@ -15,8 +15,10 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
 public class MusicManager {
     private final AudioPlayerManager playerManager;
+    private boolean isActive;
 
     public MusicManager(){
+        this.isActive = false;
         this.playerManager = new DefaultAudioPlayerManager();
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
@@ -94,7 +96,11 @@ public class MusicManager {
         guild.getAudioManager().closeAudioConnection();
     }
 
-    private void connectToVoiceChannel(Guild guild, VoiceChannel channel) {
+    public boolean isActive() {
+        return isActive;
+    }
 
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

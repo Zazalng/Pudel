@@ -1,35 +1,39 @@
 package mimikko.zazalng.puddle.handlers;
 
-import mimikko.zazalng.puddle.commands.CommandManager;
+import mimikko.zazalng.puddle.entities.GuildEntity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventHandler extends ListenerAdapter{
-    protected final CommandManager commandManager;
+    protected final Map<Guild, GuildEntity> guildsEntity;
 
     public EventHandler() {
-        this.commandManager = new CommandManager();
+        this.guildsEntity = new HashMap<>();
     }
 
-    public void
+    public GuildEntity getGuildEntity(Guild guildEvent){
+        return this.guildsEntity.computeIfAbsent(guildEvent, guild -> new GuildEntity(guildEvent));
+    }
 
+    @Override
+    public void onReady(@NotNull ReadyEvent event) {
+
+    }
+
+    @Override
     public void onMessageReceived(MessageReceivedEvent e){
-        e.getMessage().getMentions().getUsers().
         if(!e.getAuthor().isBot()){
             //From {guildName} in {channelName} by {userName} said: {contentRaw}
-            String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: "+e.getMessage().getContentRaw();
+            String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: \n"+e.getMessage().getContentRaw();
             System.out.println(fullRespond);
-            e.getChannel().sendTyping().queue();
 
-            String message = e.getMessage().getContentRaw();
-            if (!message.startsWith(".")) return; // Assuming commands start with "."
-
-            String[] parts = message.split(" ", 2); // Split into command and the rest of the message
-            String command = parts[0].substring(1); // Extract the command without prefix
-            String args = parts.length > 1 ? parts[1] : ""; // Handle arguments as a single string
-
-            commandManager.handleCommand(command, e, args);
+            new CommandHandler(getGuildEntity(e.getGuild()), e);
         }
-        if(e.)
     }
 }
