@@ -17,8 +17,8 @@ public class EventHandler extends ListenerAdapter{
         this.guildsEntity = new HashMap<>();
     }
 
-    public GuildEntity getGuildEntity(Guild guildEvent){
-        return this.guildsEntity.computeIfAbsent(guildEvent, guild -> new GuildEntity(guildEvent));
+    public GuildEntity getGuildEntity(Guild guild){
+        return this.guildsEntity.computeIfAbsent(guild, Entity -> new GuildEntity(guild));
     }
 
     @Override

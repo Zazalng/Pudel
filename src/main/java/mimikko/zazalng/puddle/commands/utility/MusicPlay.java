@@ -1,12 +1,13 @@
 package mimikko.zazalng.puddle.commands.utility;
 
 import mimikko.zazalng.puddle.commands.Command;
+import mimikko.zazalng.puddle.entities.GuildEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class MusicPlay implements Command {
 
     @Override
-    public void execute(MessageReceivedEvent e, String[] args) {
+    public void execute(GuildEntity guild, MessageReceivedEvent e, String [] args) {
         if (args.length == 0) {
             e.getChannel().sendMessage("Please provide a song title or a YouTube URL.").queue();
             return;
