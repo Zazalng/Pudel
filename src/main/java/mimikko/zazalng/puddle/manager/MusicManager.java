@@ -1,7 +1,6 @@
 package mimikko.zazalng.puddle.manager;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -9,16 +8,22 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import mimikko.zazalng.puddle.entities.GuildEntity;
 import mimikko.zazalng.puddle.handlers.AudioPlayerSendHandler;
-import net.dv8tion.jda.api.entities.Guild;
+import mimikko.zazalng.puddle.handlers.AudioTrackHandler;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
-public class MusicManager {
-    private final AudioPlayerManager playerManager;
-    private boolean isActive;
+import java.util.ArrayList;
+import java.util.List;
 
-    public MusicManager(){
-        this.isActive = false;
+public class MusicManager {
+    private final GuildEntity guild;
+    private final AudioPlayerManager playerManager;
+    private final List<AudioTrack> playlist;
+    private final AudioPlayerSendHandler player;
+
+    public MusicManager(GuildEntity guild){
+        this.guild = guild;
         this.playerManager = new DefaultAudioPlayerManager();
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
@@ -28,18 +33,27 @@ public class MusicManager {
         );
         playerManager.registerSourceManager(ytSourceManager);
         AudioSourceManagers.registerRemoteSources(playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
+        this.player = new AudioPlayerSendHandler(playerManager.createPlayer());
+        this.player.getAudioPlayer().addListener(new AudioTrackHandler(this));
+        this.playlist = new ArrayList<>();
     }
 
-    public void loadAndPlay(Guild guild, String trackUrl, VoiceChannel channel) {
+    public GuildEntity getGuild(){
+        return this.guild;
+    }
+
+    public void loadAndPlay(String trackUrl, VoiceChannel channel) {
         playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-
+                getGuildConnection(getGuild(), channel);
+                queueUp(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-
+                getGuildConnection(getGuild(), channel);
+                queueUp(playlist);
             }
 
             @Override
@@ -53,19 +67,18 @@ public class MusicManager {
             }
         });
     }
-
-    public getGuildConnection(Guild guild, VoiceChannel channel){
-        guild.getAudioManager().openAudioConnection(channel);
-        guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
+    public void getGuildConnection(GuildEntity guild, VoiceChannel channel){
+        guild.getGuild().getAudioManager().openAudioConnection(channel);
+        guild.getGuild().getAudioManager().setSendingHandler(this.player);
     }
 
     private void queueUp(AudioTrack track){
-        if(player.getPlayingTrack() == null){
-            playlist.add(track);
-            player.playTrack(playlist.get(0));
+        if(player.getAudioPlayer().getPlayingTrack() == null){
+            this.playlist.add(track);
+            player.getAudioPlayer().playTrack(playlist.get(0));
         } else{
             playlist.add(track);
-            player.startTrack(playlist.get(0), true);
+            player.getAudioPlayer().startTrack(playlist.get(0), true);
         }
     }
 
@@ -75,32 +88,25 @@ public class MusicManager {
         } else{
             this.playlist.addAll(playlist.getTracks());
         }
-        if(player.getPlayingTrack() == null){
-            player.playTrack(this.playlist.get(0));
+        if(player.getAudioPlayer().getPlayingTrack() == null){
+            player.getAudioPlayer().playTrack(this.playlist.get(0));
         }else{
-            player.startTrack(this.playlist.get(0), true);
+            player.getAudioPlayer().startTrack(this.playlist.get(0), true);
         }
     }
 
     public void nextTrack() {
         this.playlist.remove(0);
         if(!this.playlist.isEmpty()){
-            player.startTrack(this.playlist.get(0), true);
+            player.getAudioPlayer().startTrack(this.playlist.get(0), true);
         }
     }
 
-    public void stop(Guild guild) {
+    public void stop() {
         playlist.clear();
-        player.stopTrack();
-        player.destroy();
-        guild.getAudioManager().closeAudioConnection();
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
+        player.getAudioPlayer().stopTrack();
+        player.getAudioPlayer().destroy();
+        guild.getGuild().getAudioManager().setSendingHandler(null);
+        guild.getGuild().getAudioManager().closeAudioConnection();
     }
 }
