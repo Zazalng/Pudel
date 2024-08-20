@@ -18,12 +18,16 @@ import java.util.List;
 
 public class MusicManager {
     private final GuildEntity guild;
+    private final boolean flagLoop;
+    private final boolean flagShuffle;
     private final AudioPlayerManager playerManager;
     private final List<AudioTrack> playlist;
     private final AudioPlayerSendHandler player;
 
     public MusicManager(GuildEntity guild){
         this.guild = guild;
+        this.flagLoop = false;
+        this.flagShuffle = false;
         this.playerManager = new DefaultAudioPlayerManager();
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search

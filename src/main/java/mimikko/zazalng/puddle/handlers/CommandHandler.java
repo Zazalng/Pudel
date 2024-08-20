@@ -1,6 +1,7 @@
 package mimikko.zazalng.puddle.handlers;
 
 import mimikko.zazalng.puddle.commands.Command;
+import mimikko.zazalng.puddle.commands.utility.GuildPrefix;
 import mimikko.zazalng.puddle.commands.utility.MusicPlay;
 import mimikko.zazalng.puddle.commands.utility.MusicStop;
 import mimikko.zazalng.puddle.entities.GuildEntity;
@@ -19,6 +20,7 @@ public class CommandHandler {
     private CommandHandler(){
         registerCommand("play", new MusicPlay());
         registerCommand("stop", new MusicStop());
+        registerCommand("prefix", new GuildPrefix());
     }
     
     public CommandHandler(GuildEntity guild, UserEntity user, MessageReceivedEvent e){
