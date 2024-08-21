@@ -14,15 +14,18 @@ import mimikko.zazalng.puddle.handlers.AudioTrackHandler;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static mimikko.zazalng.puddle.utility.IntegerUtility.randomInt;
 
 public class MusicManager {
     private final GuildEntity guild;
-    private final boolean flagLoop;
-    private final boolean flagShuffle;
     private final AudioPlayerManager playerManager;
     private final List<AudioTrack> playlist;
     private final AudioPlayerSendHandler player;
+    private boolean flagLoop;
+    private boolean flagShuffle;
 
     public MusicManager(GuildEntity guild){
         this.guild = guild;
@@ -71,10 +74,6 @@ public class MusicManager {
             }
         });
     }
-    public void getGuildConnection(GuildEntity guild, VoiceChannel channel){
-        guild.getGuild().getAudioManager().openAudioConnection(channel);
-        guild.getGuild().getAudioManager().setSendingHandler(this.player);
-    }
 
     private void queueUp(AudioTrack track){
         if(player.getAudioPlayer().getPlayingTrack() == null){
@@ -99,10 +98,54 @@ public class MusicManager {
         }
     }
 
-    public void nextTrack() {
-        this.playlist.remove(0);
+    private AudioTrack trackSelection(boolean isShuffle){
         if(!this.playlist.isEmpty()){
-            player.getAudioPlayer().startTrack(this.playlist.get(0), true);
+            if(isShuffle){
+                return this.playlist.get(randomInt(playlist.size()));
+            } else{
+                return this.playlist.get(0);
+            }
+        } else{
+            return null;
+        }
+    }
+
+    public void getGuildConnection(GuildEntity guild, VoiceChannel channel){
+        guild.getGuild().getAudioManager().openAudioConnection(channel);
+        guild.getGuild().getAudioManager().setSendingHandler(this.player);
+    }
+
+    public boolean isLoop(){
+        return flagLoop;
+    }
+
+    public void setLoop(boolean flag){
+        this.flagLoop = flag;
+    }
+
+    public boolean isShuffle() {
+        return flagShuffle;
+    }
+
+    public void setShuffle(boolean flag) {
+        this.flagShuffle = flag;
+    }
+
+    public void shufflePlaylist(){
+        Collections.shuffle(this.playlist);
+    }
+
+    public void nextTrack(boolean isSkip) {
+        if(isSkip){
+            this.playlist.remove(0);
+            player.getAudioPlayer().playTrack(trackSelection(isShuffle()));
+        } else{
+            if(isLoop()){
+                player.getAudioPlayer().startTrack(this.playlist.get(0), true);
+            } else{
+                playlist.remove(0);
+                player.getAudioPlayer().startTrack(trackSelection(isShuffle()), true);
+            }
         }
     }
 

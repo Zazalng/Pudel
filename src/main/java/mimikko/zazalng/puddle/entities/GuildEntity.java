@@ -3,6 +3,9 @@ package mimikko.zazalng.puddle.entities;
 import mimikko.zazalng.puddle.manager.MusicManager;
 import net.dv8tion.jda.api.entities.Guild;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GuildEntity {
     //Import variable
     private final GuildEntity GuildEntity;
@@ -10,15 +13,22 @@ public class GuildEntity {
     private final MusicManager musicManager;
 
     //Class variable
+    private final List<String> ignoreChannel;
+    private final List<String> disableCommand;
+
+    private String ownerID;
     private String prefix;
-    private String logChannel;
+    private String staffLogChannel;
 
     public GuildEntity(Guild guild){
+        this.ignoreChannel = new ArrayList<>();
+        this.disableCommand = new ArrayList<>();
         this.GuildEntity = this;
         this.guild = guild;
         this.musicManager = new MusicManager(this);
-        this.prefix = "."; // Implement more after MySQL
-        this.logChannel = "";
+        this.ownerID = getOwnerID();
+        this.prefix = "p!"; // Implement more after MySQL
+        this.staffLogChannel = "";
     }
 
     public GuildEntity getGuildEntity() {
@@ -33,6 +43,14 @@ public class GuildEntity {
         return this.musicManager;
     }
 
+    public List<String> getIgnoreChannel() {
+        return ignoreChannel;
+    }
+
+    public List<String> getDisableCommand() {
+        return disableCommand;
+    }
+
     public String getPrefix() {
         return prefix;
     }
@@ -41,11 +59,19 @@ public class GuildEntity {
         //MySQL handler for self variable
     }
 
-    public String getLogChannel() {
-        return logChannel;
+    public String getStaffLogChannel() {
+        return staffLogChannel;
     }
 
-    public void setLogChannel(String logChannel) {
-        this.logChannel = logChannel;
+    public void setStaffLogChannel(String staffLogChannel) {
+        this.staffLogChannel = staffLogChannel;
+    }
+
+    public String getOwnerID() {
+        return getGuild().getOwnerId();
+    }
+
+    public void setOwnerID() {
+        this.ownerID = getGuild().getOwnerId();
     }
 }

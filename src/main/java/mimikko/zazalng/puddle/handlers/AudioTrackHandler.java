@@ -7,9 +7,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import mimikko.zazalng.puddle.manager.MusicManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AudioTrackHandler extends AudioEventAdapter {
     private final MusicManager musicManager;
 
@@ -40,7 +37,7 @@ public class AudioTrackHandler extends AudioEventAdapter {
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
             // Start next track
-            getMusicManager().nextTrack();
+            getMusicManager().nextTrack(false);
         } else if(endReason == AudioTrackEndReason.STOPPED){
 
         }

@@ -1,9 +1,9 @@
 package mimikko.zazalng.puddle.handlers;
 
-import mimikko.zazalng.puddle.commands.Command;
-import mimikko.zazalng.puddle.commands.utility.GuildPrefix;
-import mimikko.zazalng.puddle.commands.utility.MusicPlay;
-import mimikko.zazalng.puddle.commands.utility.MusicStop;
+import mimikko.zazalng.puddle.commands.*;
+import mimikko.zazalng.puddle.commands.music.*;
+import mimikko.zazalng.puddle.commands.settings.*;
+import mimikko.zazalng.puddle.commands.utility.*;
 import mimikko.zazalng.puddle.entities.GuildEntity;
 import mimikko.zazalng.puddle.entities.UserEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -12,14 +12,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandHandler {
-    private MessageReceivedEvent messageReceivedEvent;
     private GuildEntity guild;
     private UserEntity user;
     private final Map<String, Command> commands = new HashMap<>();
 
     private CommandHandler(){
+        //music category
+        registerCommand("loop", new MusicLoop());
         registerCommand("play", new MusicPlay());
+        registerCommand("np", new MusicPlaying());
+        registerCommand("shuffle", new MusicShuffle());
+        registerCommand("next", new MusicSkip());
         registerCommand("stop", new MusicStop());
+        //settings category
         registerCommand("prefix", new GuildPrefix());
     }
     
@@ -49,22 +54,33 @@ public class CommandHandler {
         String[] parts = e.getMessage().getContentRaw().split(" ", 2);
         String commandName = parts[0].substring(guild.getPrefix().length());
         String args = parts.length > 1 ? parts[1] : "";
-        String replyChannel;
+        String replyChannel = e.getChannel().getId();
 
-        if(guild.getLogChannel().isEmpty()){
-            replyChannel = e.getChannel().getId();
-        } else{
-            replyChannel = guild.getLogChannel();
-        }
-
-        Command command = commands.get(commandName.toLowerCase());
-        System.out.println("Parameters: String commandName, MessageReceivedEvent e, String[] args" +
-                "\ncommandName: "+ commandName+
-                "\nargs: "+ args);
-        if (command != null) {
-            command.execute(this.guild, this.user, replyChannel, args);
+        if (commandName.equalsIgnoreCase("help")) {
+            if (args.isEmpty()) {
+                // Show the list of commands
+                StringBuilder helpMessage = new StringBuilder("Available commands:\n");
+                commands.forEach((name, command) -> helpMessage.append("`").append(guild.getPrefix()).append(name).append("` - ").append(command.getDescription()).append("\n"));
+                e.getChannel().sendMessage(helpMessage.toString()).queue();
+            } else {
+                // Show detailed help for a specific command
+                Command command = commands.get(args.toLowerCase());
+                if (command != null) {
+                    e.getChannel().sendMessage(command.getDetailedHelp()).queue();
+                } else {
+                    e.getChannel().sendMessage("Unknown command!").queue();
+                }
+            }
         } else {
-            //e.getChannel().sendMessage("Unknown command!").queue();
+            Command command = commands.get(commandName.toLowerCase());
+            System.out.println("Parameters: String commandName, MessageReceivedEvent e, String[] args" +
+                    "\ncommandName: " + commandName +
+                    "\nargs: " + args);
+            if (command != null) {
+                command.execute(this.guild, this.user, replyChannel, args);
+            } else {
+                //e.getChannel().sendMessage("Unknown command!").queue();
+            }
         }
     }
 }
