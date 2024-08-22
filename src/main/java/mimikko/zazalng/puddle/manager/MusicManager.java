@@ -93,46 +93,48 @@ public class MusicManager {
         });
     }
 
-    private void queueUp(AudioTrack track){
-        if(this.player.getAudioPlayer().getPlayingTrack() == null){
+    private void queueUp(AudioTrack track) {
+        if (this.player.getAudioPlayer().getPlayingTrack() == null) {
             this.playlist.add(track);
+            this.audioTrack = track;
             this.player.getAudioPlayer().playTrack(trackSelection());
-        } else{
+        } else {
             this.playlist.add(track);
-            this.player.getAudioPlayer().startTrack(trackSelection(), true);
         }
     }
 
-    private void queueUp(AudioPlaylist playlist){
-        if(playlist.isSearchResult()){
+    private void queueUp(AudioPlaylist playlist) {
+        if (playlist.isSearchResult()) {
+            // If it's a search result, add the first track to the queue
             this.playlist.add(playlist.getTracks().get(0));
-        } else{
+        } else {
+            // Add all tracks in the playlist to the queue
             this.playlist.addAll(playlist.getTracks());
         }
-        if(player.getAudioPlayer().getPlayingTrack() == null){
+
+        // Play the first track if none is currently playing
+        if (this.player.getAudioPlayer().getPlayingTrack() == null) {
             this.player.getAudioPlayer().playTrack(trackSelection());
-        }else{
-            this.player.getAudioPlayer().startTrack(trackSelection(), true);
         }
     }
 
-    private AudioTrack trackSelection(){
-        if(!this.playlist.isEmpty()) {
-            if(this.flagLoop && audioTrack != null){
-                audioTrack = audioTrack.makeClone();
-            }else if(this.flagLoop && audioTrack == null){
-                audioTrack = this.playlist.get(0);
-            }
-            if(this.flagShuffle){
-                int index = randomInt(this.playlist.size());
-                audioTrack = this.playlist.get(index).makeClone();
-                this.playlist.remove(index);
-            } else{
-                this.playlist.remove(0);
-            }
-            return audioTrack;
-        } else{
-            return null;
+    private AudioTrack trackSelection() {
+        if (flagLoop && audioTrack != null) {
+            // If looping is enabled, replay the current track
+            return audioTrack.makeClone();
+        } else if (flagShuffle && !playlist.isEmpty()) {
+            // If shuffle is enabled, pick a random track from the playlist
+            int index = randomInt(playlist.size());
+            AudioTrack selectedTrack = playlist.remove(index);
+            this.audioTrack = selectedTrack.makeClone();
+            return this.audioTrack;
+        } else if (!playlist.isEmpty()) {
+            // Play the next track in the playlist
+            AudioTrack nextTrack = playlist.remove(0);
+            this.audioTrack = nextTrack.makeClone();
+            return this.audioTrack;
+        } else {
+            return null; // No track to play
         }
     }
 
@@ -146,9 +148,9 @@ public class MusicManager {
     }
 
     public void nextTrack(boolean isSkip) {
-        if(isSkip){
+        if (isSkip || flagLoop) {
             this.player.getAudioPlayer().playTrack(trackSelection());
-        } else{
+        } else {
             this.player.getAudioPlayer().startTrack(trackSelection(), true);
         }
     }

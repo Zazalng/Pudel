@@ -11,10 +11,10 @@ public class MusicShuffle implements Command {
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
         if(isEqualStr("true",args) || isEqualStr("1",args) || isEqualStr("on",args)){
             guild.getMusicManager().setShuffle(true);
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Shuffle player is `"+guild.getMusicManager().isShuffle()+"`").queue();
+            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Shuffle player to `"+guild.getMusicManager().isShuffle()+"`").queue();
         } else if(isEqualStr("false", args) || isEqualStr("0",args) || isEqualStr("off",args)){
             guild.getMusicManager().setShuffle(false);
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Shuffle player is `"+guild.getMusicManager().isShuffle()+"`").queue();
+            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Shuffle player to `"+guild.getMusicManager().isShuffle()+"`").queue();
         } else if(args.isEmpty()){
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current setting for Shuffle player is `"+guild.getMusicManager().isShuffle()+"`").queue();
         } else{

@@ -24,7 +24,7 @@ public class MusicPlay implements Command {
             } else{
                 guild.getMusicManager().loadAndPlay(input,guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().getChannel().asVoiceChannel());
             }
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("Searching and playing: \n" + input).queue();
+            guild.getGuild().getTextChannelById(replyChannel).sendMessage("Searching and playing: \n`" + input + "`").queue();
         } else {
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("You must be in a voice channel to play music!").queue();
         }
@@ -38,7 +38,7 @@ public class MusicPlay implements Command {
     @Override
     public String getDetailedHelp() {
         return "play {args}" +
-                "\nExample: `p!play bubble - veela` || `p!play https://www.youtube.com/watch?v=rDVE6bXdNQ4`" +
+                "\nExample: `p!play bubble - veela` / `p!play https://www.youtube.com/watch?v=rDVE6bXdNQ4`" +
                 "\n\nIf {args} was not URL, it will perform searching {args} into youtube and add top search to queuing." +
                 "\nIf {args} was URL playlist, it will perform queuing all video from that URL playlist." +
                 "\nIf {args} was URL video, it will perform queuing that video.";

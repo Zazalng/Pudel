@@ -22,11 +22,15 @@ public class MusicLoop implements Command {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Toggles the looping of the current track.";
     }
 
     @Override
     public String getDetailedHelp() {
-        return "";
+        return "loop [args]" +
+                "\nExample `p!loop` / `p!loop 0` / `p!loop true`" +
+                "\n\nfalse, 0, off, disable will result as setting loop as off." +
+                "\ntrue, 1, on, enable will result as setting loop as on." +
+                "\nNo argument will result as showing current setting loop.";
     }
 }
