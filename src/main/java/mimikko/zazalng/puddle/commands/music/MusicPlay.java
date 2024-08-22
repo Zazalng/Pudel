@@ -32,11 +32,15 @@ public class MusicPlay implements Command {
 
     @Override
     public String getDescription() {
-        return "p!play - Perform queuing into playlist or loaded entire playlist from given url.";
+        return "Perform queuing into playlist or loaded entire playlist from given url.";
     }
 
     @Override
     public String getDetailedHelp() {
-        return "";
+        return "play {args}" +
+                "\nExample: `p!play bubble - veela` || `p!play https://www.youtube.com/watch?v=rDVE6bXdNQ4`" +
+                "\n\nIf {args} was not URL, it will perform searching {args} into youtube and add top search to queuing." +
+                "\nIf {args} was URL playlist, it will perform queuing all video from that URL playlist." +
+                "\nIf {args} was URL video, it will perform queuing that video.";
     }
 }

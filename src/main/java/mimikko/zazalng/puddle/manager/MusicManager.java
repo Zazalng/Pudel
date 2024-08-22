@@ -24,6 +24,7 @@ public class MusicManager {
     private final AudioPlayerManager playerManager;
     private final List<AudioTrack> playlist;
     private final AudioPlayerSendHandler player;
+    private AudioTrack audioTrack;
     private boolean flagLoop;
     private boolean flagShuffle;
 
@@ -43,10 +44,27 @@ public class MusicManager {
         this.player = new AudioPlayerSendHandler(playerManager.createPlayer());
         this.player.getAudioPlayer().addListener(new AudioTrackHandler(this));
         this.playlist = new ArrayList<>();
+        this.audioTrack = null;
     }
 
     public GuildEntity getGuild(){
         return this.guild;
+    }
+
+    public boolean isLoop(){
+        return this.flagLoop;
+    }
+
+    public void setLoop(boolean flag){
+        this.flagLoop = flag;
+    }
+
+    public boolean isShuffle() {
+        return this.flagShuffle;
+    }
+
+    public void setShuffle(boolean flag) {
+        this.flagShuffle = flag;
     }
 
     public void loadAndPlay(String trackUrl, VoiceChannel channel) {
@@ -76,12 +94,12 @@ public class MusicManager {
     }
 
     private void queueUp(AudioTrack track){
-        if(player.getAudioPlayer().getPlayingTrack() == null){
+        if(this.player.getAudioPlayer().getPlayingTrack() == null){
             this.playlist.add(track);
-            player.getAudioPlayer().playTrack(playlist.get(0));
+            this.player.getAudioPlayer().playTrack(trackSelection());
         } else{
-            playlist.add(track);
-            player.getAudioPlayer().startTrack(playlist.get(0), true);
+            this.playlist.add(track);
+            this.player.getAudioPlayer().startTrack(trackSelection(), true);
         }
     }
 
@@ -92,43 +110,35 @@ public class MusicManager {
             this.playlist.addAll(playlist.getTracks());
         }
         if(player.getAudioPlayer().getPlayingTrack() == null){
-            player.getAudioPlayer().playTrack(this.playlist.get(0));
+            this.player.getAudioPlayer().playTrack(trackSelection());
         }else{
-            player.getAudioPlayer().startTrack(this.playlist.get(0), true);
+            this.player.getAudioPlayer().startTrack(trackSelection(), true);
         }
     }
 
-    private AudioTrack trackSelection(boolean isShuffle){
-        if(!this.playlist.isEmpty()){
-            if(isShuffle){
-                return this.playlist.get(randomInt(playlist.size()));
-            } else{
-                return this.playlist.get(0);
+    private AudioTrack trackSelection(){
+        if(!this.playlist.isEmpty()) {
+            if(this.flagLoop && audioTrack != null){
+                audioTrack = audioTrack.makeClone();
+            }else if(this.flagLoop && audioTrack == null){
+                audioTrack = this.playlist.get(0);
             }
+            if(this.flagShuffle){
+                int index = randomInt(this.playlist.size());
+                audioTrack = this.playlist.get(index).makeClone();
+                this.playlist.remove(index);
+            } else{
+                this.playlist.remove(0);
+            }
+            return audioTrack;
         } else{
             return null;
         }
     }
 
     public void getGuildConnection(GuildEntity guild, VoiceChannel channel){
-        guild.getGuild().getAudioManager().openAudioConnection(channel);
-        guild.getGuild().getAudioManager().setSendingHandler(this.player);
-    }
-
-    public boolean isLoop(){
-        return flagLoop;
-    }
-
-    public void setLoop(boolean flag){
-        this.flagLoop = flag;
-    }
-
-    public boolean isShuffle() {
-        return flagShuffle;
-    }
-
-    public void setShuffle(boolean flag) {
-        this.flagShuffle = flag;
+        getGuild().getGuild().getAudioManager().openAudioConnection(channel);
+        getGuild().getGuild().getAudioManager().setSendingHandler(this.player);
     }
 
     public void shufflePlaylist(){
@@ -137,23 +147,17 @@ public class MusicManager {
 
     public void nextTrack(boolean isSkip) {
         if(isSkip){
-            this.playlist.remove(0);
-            player.getAudioPlayer().playTrack(trackSelection(isShuffle()));
+            this.player.getAudioPlayer().playTrack(trackSelection());
         } else{
-            if(isLoop()){
-                player.getAudioPlayer().startTrack(this.playlist.get(0), true);
-            } else{
-                playlist.remove(0);
-                player.getAudioPlayer().startTrack(trackSelection(isShuffle()), true);
-            }
+            this.player.getAudioPlayer().startTrack(trackSelection(), true);
         }
     }
 
     public void stop() {
-        playlist.clear();
-        player.getAudioPlayer().stopTrack();
-        player.getAudioPlayer().destroy();
-        guild.getGuild().getAudioManager().setSendingHandler(null);
-        guild.getGuild().getAudioManager().closeAudioConnection();
+        this.playlist.clear();
+        this.player.getAudioPlayer().stopTrack();
+        this.player.getAudioPlayer().destroy();
+        getGuild().getGuild().getAudioManager().setSendingHandler(null);
+        getGuild().getGuild().getAudioManager().closeAudioConnection();
     }
 }
