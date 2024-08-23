@@ -21,7 +21,7 @@ public class CommandHandler {
         registerCommand("play", new MusicPlay());
         registerCommand("np", new MusicPlaying());
         registerCommand("shuffle", new MusicShuffle());
-        registerCommand("next", new MusicSkip());
+        registerCommand("skip", new MusicSkip());
         registerCommand("stop", new MusicStop());
         //settings category
         registerCommand("prefix", new GuildPrefix());
