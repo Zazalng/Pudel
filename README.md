@@ -1,7 +1,5 @@
 # Puddle
 
-Puddle is an AI chatbot application developed in Java, designed to provide users with an interactive and enjoyable chatbot experience. It is built upon the JDA library, enabling seamless integration with Discord, where users can engage in conversations with the bot.
-
 ## Motivation
 
 The inspiration behind Puddle's creation stems from the discontinuation of the highly regarded Eli bot, developed by a talented developer. Recognizing the need for a replacement, Puddle was conceived to carry on the legacy of Eli, ensuring users could continue to enjoy a similar chatbot experience.
