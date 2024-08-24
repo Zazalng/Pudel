@@ -4,6 +4,7 @@ import mimikko.zazalng.puddle.entities.GuildEntity;
 import mimikko.zazalng.puddle.entities.UserEntity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -30,7 +31,14 @@ public class EventHandler extends ListenerAdapter{
     }
 
     @Override
-    public void onReady(@NotNull ReadyEvent event) {
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e){
+        if(e.getUser().isBot()){
+
+        }
+    }
+
+    @Override
+    public void onReady(@NotNull ReadyEvent e) {
 
     }
 

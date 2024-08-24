@@ -6,7 +6,6 @@ import java.util.Properties;
 
 public class EnvironmentHandler {
     protected final String classCodename;
-    private String responded;
     private final Properties env;
     private String discordAPI;
     private String devServerID;
@@ -18,29 +17,11 @@ public class EnvironmentHandler {
         this.env = new Properties();
         this.isLoaded = false;
         this.classCodename = "EnvironmentHandler";
-        this.responded = "";
-    }
-
-    public String respondBuilder(String responded,char type){
-        this.responded += " " + responded;
-        switch(type){
-            case 'r':
-                logResponded();
-                break;
-            default:
-
-        }
-        return responded;
-    }
-
-    public void logResponded(){
-        System.out.println(this.responded);
-        this.responded = "";
     }
 
     public void loadEnv(String filepath){
         unloadEnv();
-        respondBuilder("Getting filepath: \""+filepath+"\"",'n');
+        System.out.println("Getting filepath: \""+filepath+"\"");
         try(FileInputStream fileInputStream = new FileInputStream(filepath)){
             this.env.load(fileInputStream);
             assignEnvironment();

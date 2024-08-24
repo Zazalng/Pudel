@@ -56,7 +56,7 @@ public class GuildEntity {
     }
 
     public void setPrefix(String prefix) {
-        //MySQL handler for self variable
+        this.prefix = prefix;
     }
 
     public String getStaffLogChannel() {

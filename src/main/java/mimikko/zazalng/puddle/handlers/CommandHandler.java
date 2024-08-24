@@ -72,8 +72,8 @@ public class CommandHandler {
             }
         } else {
             Command command = commands.get(commandName.toLowerCase());
-            System.out.println("Parameters: String commandName, MessageReceivedEvent e, String[] args" +
-                    "\ncommandName: " + commandName +
+            System.out.println(
+                    "commandName: " + commandName +
                     "\nargs: " + args);
             if (command != null) {
                 command.execute(this.guild, this.user, replyChannel, args);
