@@ -50,8 +50,8 @@ public class CommandHandler {
     }
 
     private void handleCommand(MessageReceivedEvent e) {
-        String[] parts = e.getMessage().getContentRaw().split(" ", 2);
-        String commandName = parts[0].substring(guild.getPrefix().length());
+        String[] parts = e.getMessage().getContentRaw().substring(guild.getPrefix().length()).split(" ", 2);
+        String commandName = parts[0];
         String args = parts.length > 1 ? parts[1] : "";
         String replyChannel = e.getChannel().getId();
 

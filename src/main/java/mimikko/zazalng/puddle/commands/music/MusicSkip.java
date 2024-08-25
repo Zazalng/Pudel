@@ -13,11 +13,14 @@ public class MusicSkip implements Command {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Skip the current track and start up the next track";
     }
 
     @Override
     public String getDetailedHelp() {
-        return "";
+        return "Usage: skip [reason]" +
+                "\nExamples: `p!skip`, `p!skip noob song`, `p!skip wtf?`" +
+                "\n\nAny argument will result as skip with input reason." +
+                "\nNo argument will result as skip for no reason.";
     }
 }

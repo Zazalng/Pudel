@@ -4,20 +4,20 @@ import mimikko.zazalng.puddle.commands.Command;
 import mimikko.zazalng.puddle.entities.GuildEntity;
 import mimikko.zazalng.puddle.entities.UserEntity;
 
-import static mimikko.zazalng.puddle.utility.StringUtility.isEqualStr;
+import static mimikko.zazalng.puddle.utility.BooleanUtility.*;
 
 public class MusicLoop implements Command {
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-        if(isEqualStr("true",args) || isEqualStr("1",args) || isEqualStr("on",args)){
+        if(triggerTrue(args)){
             guild.getMusicManager().setLoop(true);
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Looping to `"+guild.getMusicManager().isLoop()+"`").queue();
-        } else if(isEqualStr("false", args) || isEqualStr("0",args) || isEqualStr("off",args)){
+        } else if(triggerFalse(args)){
             guild.getMusicManager().setLoop(false);
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Looping to `"+guild.getMusicManager().isLoop()+"`").queue();
         } else{
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current setting for Looping is `"+guild.getMusicManager().isLoop()+"`").queue();
+            return;
         }
+        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Looping to `"+guild.getMusicManager().isLoop()+"`").queue();
     }
 
     @Override
@@ -27,10 +27,10 @@ public class MusicLoop implements Command {
 
     @Override
     public String getDetailedHelp() {
-        return "loop [args]" +
-                "\nExample `p!loop` / `p!loop 0` / `p!loop true`" +
-                "\n\nfalse, 0, off, disable will result as setting loop as off." +
-                "\ntrue, 1, on, enable will result as setting loop as on." +
+        return "Usage: loop [args]" +
+                "\nExamples: `p!loop`, `p!loop 0`, `p!loop true`" +
+                "\n\n`false` `0` `off` `disable` will result set loop as `off`." +
+                "\n`true` `1` `on` `enable` will result set loop as `on`." +
                 "\nNo argument will result as showing current setting loop.";
     }
 }

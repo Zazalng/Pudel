@@ -71,13 +71,13 @@ public class MusicManager {
         playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                getGuildConnection(getGuild(), channel);
+                getGuildConnection(channel);
                 queueUp(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                getGuildConnection(getGuild(), channel);
+                getGuildConnection(channel);
                 queueUp(playlist);
             }
 
@@ -138,7 +138,7 @@ public class MusicManager {
         }
     }
 
-    public void getGuildConnection(GuildEntity guild, VoiceChannel channel){
+    private void getGuildConnection(VoiceChannel channel){
         getGuild().getGuild().getAudioManager().openAudioConnection(channel);
         getGuild().getGuild().getAudioManager().setSendingHandler(this.player);
     }

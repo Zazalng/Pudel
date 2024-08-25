@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class EnvironmentHandler {
-    protected final String classCodename;
     private final Properties env;
     private String discordAPI;
     private String devServerID;
@@ -16,7 +15,6 @@ public class EnvironmentHandler {
     public EnvironmentHandler(){
         this.env = new Properties();
         this.isLoaded = false;
-        this.classCodename = "EnvironmentHandler";
     }
 
     public void loadEnv(String filepath){
