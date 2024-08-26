@@ -11,12 +11,13 @@ public class GuildPrefix implements Command {
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("Prefix for this server is `"+guild.getPrefix()+"`").queue();
         } else{
             guild.setPrefix(args); // still bug
+            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Prefix to `"+guild.getPrefix()+"`").queue();
         }
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "Set a custom prefix for the server. I will respond to this new prefix.";
     }
 
     @Override
