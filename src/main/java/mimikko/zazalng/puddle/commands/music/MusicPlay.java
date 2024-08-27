@@ -3,7 +3,6 @@ package mimikko.zazalng.puddle.commands.music;
 import mimikko.zazalng.puddle.commands.Command;
 import mimikko.zazalng.puddle.entities.GuildEntity;
 import mimikko.zazalng.puddle.entities.UserEntity;
-import net.dv8tion.jda.api.entities.Guild;
 
 public class MusicPlay implements Command {
 
