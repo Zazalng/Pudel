@@ -49,7 +49,7 @@ public class EventHandler extends ListenerAdapter{
             String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: \n"+e.getMessage().getContentRaw();
             System.out.println(fullRespond);
 
-            e.getChannel().sendTyping().queue();
+            //e.getChannel().sendTyping().queue();
             new CommandHandler(getGuildEntity(e.getGuild()), getUserEntity(e.getAuthor()), e);
         }
     }
