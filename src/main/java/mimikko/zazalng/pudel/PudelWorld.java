@@ -21,7 +21,7 @@ public class PudelWorld {
     public PudelWorld(){
         //Get From other Class
         this.pudelWorld = this;
-        this.env = new EnvironmentHandler();
+        this.env = new EnvironmentHandler(this);
         this.worldLogging = new WorldLogging(this);
 
         this.worldCommand = new CommandLineHandler(this);

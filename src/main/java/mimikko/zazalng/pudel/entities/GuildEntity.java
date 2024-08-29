@@ -27,7 +27,7 @@ public class GuildEntity {
         this.guild = guild;
         this.musicManager = new MusicManager(this);
         this.ownerID = getOwnerID();
-        this.prefix = "p!"; // Implement more after MySQL
+        this.prefix = "p!";
         this.staffLogChannel = "";
     }
 
