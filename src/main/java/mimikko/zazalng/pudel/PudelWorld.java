@@ -16,6 +16,7 @@ public class PudelWorld {
     protected ShardManager JDAshardManager;
     
     //Get In Puddle's World Class
+    private final String className = "PudelWorld";
     private boolean worldStatus;
     
     public PudelWorld(){
