@@ -8,7 +8,7 @@ public class MusicPlaying implements Command {
 
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-
+        guild.getGuild().getTextChannelById(replyChannel).sendMessage("Now Playing: " + guild.getMusicManager().getTrackInfo()).queue();
     }
 
     @Override

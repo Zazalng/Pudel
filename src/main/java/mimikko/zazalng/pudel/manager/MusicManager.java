@@ -143,6 +143,10 @@ public class MusicManager {
         getGuild().getGuild().getAudioManager().setSendingHandler(this.player);
     }
 
+    public String getTrackInfo(){
+        return "["+this.player.getAudioPlayer().getPlayingTrack().getInfo().title+"]("+this.player.getAudioPlayer().getPlayingTrack().getInfo().uri+")";
+    }
+
     public void shufflePlaylist(){
         Collections.shuffle(this.playlist);
     }
