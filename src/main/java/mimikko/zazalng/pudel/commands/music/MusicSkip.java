@@ -20,7 +20,7 @@ public class MusicSkip implements Command {
     public String getDetailedHelp() {
         return "Usage: skip [reason]" +
                 "\nExamples: `p!skip`, `p!skip noob song`, `p!skip wtf?`" +
-                "\n\nAny argument will result as skip with input reason." +
+                "\n\nAny argument will result as skip with input reason for skip." +
                 "\nNo argument will result as skip for no reason.";
     }
 }

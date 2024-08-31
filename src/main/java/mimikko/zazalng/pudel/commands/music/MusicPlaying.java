@@ -13,11 +13,11 @@ public class MusicPlaying implements Command {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Show current track information.";
     }
 
     @Override
     public String getDetailedHelp() {
-        return "";
+        return "Usage: ";
     }
 }

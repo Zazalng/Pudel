@@ -24,28 +24,28 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void unknownCommand(String command){
-        pudelWorld.puddleReply("What is '"+command+"' that should do, Master?");
+        //pudelWorld.puddleReply("What is '"+command+"' that should do, Master?");
     }
 
     public void stopWorld() {
-        pudelWorld.puddleReply("Disconnecting World called '"+ pudelWorld.getEnvironment().getWorldName()+"'");
+        //pudelWorld.puddleReply("Disconnecting World called '"+ pudelWorld.getEnvironment().getWorldName()+"'");
         pudelWorld.getJDAshardManager().shutdown();
         pudelWorld.setWorldStatus(false);
-        pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world has stopped.");
+        //pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world has stopped.");
     }
 
     public void startWorld(){
         if(pudelWorld.getEnvironment().isLoaded()){
             if(!pudelWorld.getWorldStatus()){
-                pudelWorld.puddleReply("Starting World called \""+ pudelWorld.getEnvironment().getWorldName()+"\"");
+                //pudelWorld.puddleReply("Starting World called \""+ pudelWorld.getEnvironment().getWorldName()+"\"");
                 pudelWorld.setJDAshardManager(buildJDAshardManager(pudelWorld.getEnvironment().getDiscordAPI()));
-                pudelWorld.getJDAshardManager().setActivity(Activity.listening("My Master"));
+                pudelWorld.getJDAshardManager().setActivity(Activity.watching("null servers, null channels"));
                 pudelWorld.setWorldStatus(true);
             } else{
-                pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world is still running");
+                //pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world is still running");
             }
         } else{
-            pudelWorld.puddleReply("World Environment is missing, Master");
+            //pudelWorld.puddleReply("World Environment is missing, Master");
         }
     }
 
@@ -55,15 +55,15 @@ public class CommandLineHandler implements Runnable{
 
     public void unloadEnv() {
         if(pudelWorld.getWorldStatus()) {
-            pudelWorld.puddleReply("I'm still seeing '" + pudelWorld.getEnvironment().getWorldName() + "' world is running.");
+            //pudelWorld.puddleReply("I'm still seeing '" + pudelWorld.getEnvironment().getWorldName() + "' world is running.");
         } else{
             pudelWorld.getEnvironment().unloadEnv();
-            pudelWorld.puddleReply("Environment is empty now.");
+            //pudelWorld.puddleReply("Environment is empty now.");
         }
     }
 
     public void loadEnv() {
-        pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
+        //pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Environment files", "env");
         fileChooser.setFileFilter(filter);
@@ -85,7 +85,7 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void loadEnv(String filePath) {
-        pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
+        //pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
         pudelWorld.getEnvironment().loadEnv(filePath);
     }
 }

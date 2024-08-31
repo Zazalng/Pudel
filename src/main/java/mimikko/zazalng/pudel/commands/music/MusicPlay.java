@@ -36,7 +36,7 @@ public class MusicPlay implements Command {
 
     @Override
     public String getDetailedHelp() {
-        return "play {args}" +
+        return "Usage: play {args}" +
                 "\nExample: `p!play bubble - veela` / `p!play https://www.youtube.com/watch?v=rDVE6bXdNQ4`" +
                 "\n\nIf {args} was not URL, it will perform searching {args} into youtube and add top search to queuing." +
                 "\nIf {args} was URL playlist, it will perform queuing all video from that URL playlist." +

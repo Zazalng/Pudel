@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class EnvironmentHandler {
-    private final String className = "EnvironmentHandler";
     protected final PudelWorld pudelWorld;
     private final Properties env;
     private String discordAPI;
@@ -25,15 +24,15 @@ public class EnvironmentHandler {
     private void Logging(int type, String methodName, String message){
         switch(type){
             case 1:
-                this.pudelWorld.getWorldLogging().debug(className,methodName,message);
+                this.pudelWorld.getWorldLogging().debug(this.getClass().getName(),methodName,message);
                 break;
             default:
-                this.pudelWorld.getWorldLogging().info(className,methodName,message);
+                this.pudelWorld.getWorldLogging().info(this.getClass().getName(),methodName,message);
         }
     }
 
     private void Logging(String methodName, String message, Throwable e){
-        this.pudelWorld.getWorldLogging().error(className,methodName,message,e);
+        this.pudelWorld.getWorldLogging().error(this.getClass().getName(),methodName,message,e);
     }
 
     public void loadEnv(String filepath){

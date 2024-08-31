@@ -64,10 +64,4 @@ public class PudelWorld {
     public void setJDAshardManager(ShardManager shardManager){
         this.JDAshardManager = shardManager;
     }
-    ///////////////////////////////////////////////////
-    /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
-    ///////////////////////////////////////////////////
-    public void puddleReply(String reply){
-        System.out.printf("%s: %s\n",getEnvironment().getBotName(),reply);
-    }
 }
