@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>mimikko.Zazalng</groupId>
-    <artifactId>Puddle</artifactId>
+    <artifactId>Pudel</artifactId>
     <version>0.01-prototype</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
-        <exec.mainClass>mimikko.zazalng.puddle.Puddle</exec.mainClass>
+        <exec.mainClass>mimikko.zazalng.pudel.Pudel</exec.mainClass>
     </properties>
     <build>
         <plugins>
@@ -21,7 +21,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>mimikko.zazalng.puddle.Puddle</mainClass>
+                            <mainClass>mimikko.zazalng.pudel.Pudel</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -29,10 +29,6 @@
         </plugins>
     </build>
     <repositories>
-        <repository>
-            <id>jitpack</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -41,19 +37,14 @@
             <version>1.6</version>
         </dependency>
         <dependency>
-            <groupId>dev.arbjerg</groupId>
-            <artifactId>lavaplayer</artifactId>
-            <version>2.2.1</version>
-        </dependency>
+        <groupId>dev.arbjerg</groupId>
+        <artifactId>lavaplayer</artifactId>
+        <version>2.2.1</version>
+    </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>5.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-            <version>4.0.7</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
