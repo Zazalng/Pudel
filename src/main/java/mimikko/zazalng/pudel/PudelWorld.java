@@ -2,15 +2,15 @@ package mimikko.zazalng.pudel;
 
 import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import mimikko.zazalng.pudel.handlers.EnvironmentHandler;
-import mimikko.zazalng.pudel.logging.WorldLogging;
 import net.dv8tion.jda.api.sharding.ShardManager;
+
+import static mimikko.zazalng.pudel.utility.JDAshardBuilder.buildJDAshardManager;
 
 public class PudelWorld {
     //Get From other Class
     protected final PudelWorld pudelWorld;
     protected final EnvironmentHandler env;
     protected final CommandLineHandler worldCommand;
-    protected final WorldLogging worldLogging;
 
     //Get API Class
     protected ShardManager JDAshardManager;
@@ -23,7 +23,6 @@ public class PudelWorld {
         //Get From other Class
         this.pudelWorld = this;
         this.env = new EnvironmentHandler(this);
-        this.worldLogging = new WorldLogging(this);
 
         this.worldCommand = new CommandLineHandler(this);
         //Get In Puddle's World Class
@@ -44,10 +43,6 @@ public class PudelWorld {
     public EnvironmentHandler getEnvironment(){
         return this.env;
     }
-
-    public WorldLogging getWorldLogging(){
-        return this.worldLogging;
-    }
     
     public boolean getWorldStatus(){
         return this.worldStatus;
@@ -63,5 +58,16 @@ public class PudelWorld {
 
     public void setJDAshardManager(ShardManager shardManager){
         this.JDAshardManager = shardManager;
+    }
+    ///////////////////////////////////////////////////
+    /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
+    ///////////////////////////////////////////////////
+    public void JDAShutdown(){
+        this.getJDAshardManager().shutdown();
+        this.setJDAshardManager(null);
+    }
+
+    public void buildShard(String api){
+        setJDAshardManager(buildJDAshardManager(api));
     }
 }

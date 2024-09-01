@@ -3,16 +3,16 @@ package mimikko.zazalng.pudel.handlers;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.handlers.CommandLineInputHandler.CommandProcessing;
 import net.dv8tion.jda.api.entities.Activity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
-import static mimikko.zazalng.pudel.utility.JDAshardBuilder.buildJDAshardManager;
-
-
 public class CommandLineHandler implements Runnable{
     protected final PudelWorld pudelWorld;
+    private static final Logger logger = LoggerFactory.getLogger(CommandLineHandler.class);
 
     public CommandLineHandler(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
@@ -24,21 +24,21 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void unknownCommand(String command){
-        //pudelWorld.puddleReply("What is '"+command+"' that should do, Master?");
+        logger.warn("Encounter Unexpected command: `{}`", command);
     }
 
     public void stopWorld() {
-        //pudelWorld.puddleReply("Disconnecting World called '"+ pudelWorld.getEnvironment().getWorldName()+"'");
-        pudelWorld.getJDAshardManager().shutdown();
+        logger.info("Disconnecting World called `{}`", pudelWorld.getEnvironment().getWorldName());
+        pudelWorld.JDAShutdown();
         pudelWorld.setWorldStatus(false);
-        //pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world has stopped.");
+        logger.info("`{}` world has stopped.", pudelWorld.getEnvironment().getWorldName());
     }
 
     public void startWorld(){
         if(pudelWorld.getEnvironment().isLoaded()){
             if(!pudelWorld.getWorldStatus()){
                 //pudelWorld.puddleReply("Starting World called \""+ pudelWorld.getEnvironment().getWorldName()+"\"");
-                pudelWorld.setJDAshardManager(buildJDAshardManager(pudelWorld.getEnvironment().getDiscordAPI()));
+                pudelWorld.buildShard(pudelWorld.getEnvironment().getDiscordAPI());
                 pudelWorld.getJDAshardManager().setActivity(Activity.watching("null servers, null channels"));
                 pudelWorld.setWorldStatus(true);
             } else{

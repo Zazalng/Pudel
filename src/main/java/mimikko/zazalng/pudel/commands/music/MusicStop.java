@@ -14,11 +14,13 @@ public class MusicStop implements Command {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Stopping Music and clear all remaining playlist then be gone.";
     }
 
     @Override
     public String getDetailedHelp() {
-        return "";
+        return "Usage: stop" +
+                "\nExample: `p!stop`" +
+                "\n\nStopping Music and clear all remaining playlist then be gone.";
     }
 }
