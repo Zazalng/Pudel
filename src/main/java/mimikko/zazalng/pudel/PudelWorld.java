@@ -23,7 +23,6 @@ public class PudelWorld {
         //Get From other Class
         this.pudelWorld = this;
         this.env = new EnvironmentHandler(this);
-
         this.worldCommand = new CommandLineHandler(this);
         //Get In Puddle's World Class
         this.worldStatus = false;
@@ -43,6 +42,10 @@ public class PudelWorld {
     public EnvironmentHandler getEnvironment(){
         return this.env;
     }
+
+    public ShardManager getJDAshardManager(){
+        return this.JDAshardManager;
+    }
     
     public boolean getWorldStatus(){
         return this.worldStatus;
@@ -50,10 +53,6 @@ public class PudelWorld {
 
     public void setWorldStatus(boolean status){
         this.worldStatus = status;
-    }
-
-    public ShardManager getJDAshardManager(){
-        return this.JDAshardManager;
     }
 
     public void setJDAshardManager(ShardManager shardManager){
