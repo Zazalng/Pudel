@@ -144,7 +144,7 @@ public class MusicManager {
     }
 
     public String getTrackInfo(){
-        return "["+this.player.getAudioPlayer().getPlayingTrack().getInfo().title+"]("+this.player.getAudioPlayer().getPlayingTrack().getInfo().uri+")";
+        return "["+this.player.getAudioPlayer().getPlayingTrack().getInfo().title+"](<"+this.player.getAudioPlayer().getPlayingTrack().getInfo().uri+">)";
     }
 
     public void shufflePlaylist(){

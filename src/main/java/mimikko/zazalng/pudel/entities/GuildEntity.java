@@ -15,8 +15,6 @@ public class GuildEntity {
     //Class variable
     private final List<String> ignoreChannel;
     private final List<String> disableCommand;
-
-    private String ownerID;
     private String prefix;
     private String staffLogChannel;
 
@@ -26,7 +24,6 @@ public class GuildEntity {
         this.GuildEntity = this;
         this.guild = guild;
         this.musicManager = new MusicManager(this);
-        this.ownerID = getOwnerID();
         this.prefix = "p!";
         this.staffLogChannel = "";
     }
@@ -69,9 +66,5 @@ public class GuildEntity {
 
     public String getOwnerID() {
         return getGuild().getOwnerId();
-    }
-
-    public void setOwnerID() {
-        this.ownerID = getGuild().getOwnerId();
     }
 }

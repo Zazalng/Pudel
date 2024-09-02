@@ -28,7 +28,7 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void stopWorld() {
-        logger.info("Disconnecting World called `{}`", pudelWorld.getEnvironment().getWorldName());
+        logger.info("Disconnecting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
         pudelWorld.JDAShutdown();
         pudelWorld.setWorldStatus(false);
         logger.info("`{}` world has stopped.", pudelWorld.getEnvironment().getWorldName());
@@ -37,15 +37,15 @@ public class CommandLineHandler implements Runnable{
     public void startWorld(){
         if(pudelWorld.getEnvironment().isLoaded()){
             if(!pudelWorld.getWorldStatus()){
-                //pudelWorld.puddleReply("Starting World called \""+ pudelWorld.getEnvironment().getWorldName()+"\"");
+                logger.info("Starting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
                 pudelWorld.buildShard(pudelWorld.getEnvironment().getDiscordAPI());
                 pudelWorld.getJDAshardManager().setActivity(Activity.watching("null servers, null channels"));
                 pudelWorld.setWorldStatus(true);
             } else{
-                //pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world is still running");
+                logger.warn("`{}` world is still running.",pudelWorld.getEnvironment().getWorldName());
             }
         } else{
-            //pudelWorld.puddleReply("World Environment is missing, Master");
+            logger.error("World Environment is missing.");
         }
     }
 
@@ -55,15 +55,15 @@ public class CommandLineHandler implements Runnable{
 
     public void unloadEnv() {
         if(pudelWorld.getWorldStatus()) {
-            //pudelWorld.puddleReply("I'm still seeing '" + pudelWorld.getEnvironment().getWorldName() + "' world is running.");
+            logger.warn("I'm still seeing `{}` world is running.",pudelWorld.getEnvironment().getWorldName());
         } else{
             pudelWorld.getEnvironment().unloadEnv();
-            //pudelWorld.puddleReply("Environment is empty now.");
+            logger.info("Environment is empty now.");
         }
     }
 
     public void loadEnv() {
-        //pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
+        logger.info("Getting an Environment setting, where should I be?");
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Environment files", "env");
         fileChooser.setFileFilter(filter);
@@ -77,15 +77,15 @@ public class CommandLineHandler implements Runnable{
             if (selectedFile.isFile() && selectedFile.getName().equals(".env")) {
                 pudelWorld.getEnvironment().loadEnv(selectedFile.getAbsolutePath());
             } else {
-                System.out.println("Please select a valid .env file. Exiting command.");
+                logger.error("Please select a valid .env file. Exiting command.");
             }
         } else {
-            System.out.println("No file selected. Exiting command.");
+            logger.error("No file selected. Exiting command.");
         }
     }
 
     public void loadEnv(String filePath) {
-        //pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
+        logger.info("Getting an Environment setting, where should I be?");
         pudelWorld.getEnvironment().loadEnv(filePath);
     }
 }
