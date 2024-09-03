@@ -2,6 +2,7 @@ package mimikko.zazalng.pudel;
 
 import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import mimikko.zazalng.pudel.handlers.EnvironmentHandler;
+import mimikko.zazalng.pudel.manager.GuildManager;
 import mimikko.zazalng.pudel.manager.LocalizationManager;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -12,6 +13,7 @@ public class PudelWorld {
     //Get From other Class
     protected final CommandLineHandler worldCommand;
     protected final EnvironmentHandler Environment;
+    protected final GuildManager guildManager;
     protected final LocalizationManager localizationManager;
     //Get API Class
     protected ShardManager JDAshardManager;
@@ -23,6 +25,7 @@ public class PudelWorld {
         //Get From other Class
         this.worldCommand = new CommandLineHandler(this);
         this.Environment = new EnvironmentHandler(this);
+        this.guildManager = new GuildManager(this);
         this.localizationManager = new LocalizationManager(this);
         //Get In Puddle's World Class
         this.worldStatus = false;
@@ -41,6 +44,10 @@ public class PudelWorld {
 
     public EnvironmentHandler getEnvironment(){
         return this.Environment;
+    }
+
+    public GuildManager getGuildManager(){
+        return this.guildManager;
     }
 
     public LocalizationManager getLocalizationManager(){
