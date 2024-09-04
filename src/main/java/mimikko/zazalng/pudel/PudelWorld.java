@@ -1,9 +1,12 @@
 package mimikko.zazalng.pudel;
 
+import dev.lavalink.youtube.clients.Music;
 import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import mimikko.zazalng.pudel.handlers.EnvironmentHandler;
 import mimikko.zazalng.pudel.manager.GuildManager;
 import mimikko.zazalng.pudel.manager.LocalizationManager;
+import mimikko.zazalng.pudel.manager.MusicManager;
+import mimikko.zazalng.pudel.manager.UserManager;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 import static mimikko.zazalng.pudel.utility.JDAshardBuilder.buildJDAshardManager;
@@ -15,6 +18,8 @@ public class PudelWorld {
     protected final EnvironmentHandler Environment;
     protected final GuildManager guildManager;
     protected final LocalizationManager localizationManager;
+    protected final MusicManager musicManager;
+    protected final UserManager userManager;
     //Get API Class
     protected ShardManager JDAshardManager;
     //Get In Puddle's World Class
@@ -27,6 +32,8 @@ public class PudelWorld {
         this.Environment = new EnvironmentHandler(this);
         this.guildManager = new GuildManager(this);
         this.localizationManager = new LocalizationManager(this);
+        this.musicManager = new MusicManager(this);
+        this.userManager = new UserManager(this);
         //Get In Puddle's World Class
         this.worldStatus = false;
     }
@@ -53,6 +60,14 @@ public class PudelWorld {
     public LocalizationManager getLocalizationManager(){
         return this.localizationManager;
     }
+
+    public MusicManager getMusicManager(){
+        return this.musicManager;
+    }
+
+    public UserManager getUserManager(){
+        return this.userManager;
+    }
     
     public boolean getWorldStatus(){
         return this.worldStatus;
@@ -78,6 +93,6 @@ public class PudelWorld {
     }
 
     public void buildShard(String api){
-        setJDAshardManager(buildJDAshardManager(api));
+        setJDAshardManager(buildJDAshardManager(this,api));
     }
 }

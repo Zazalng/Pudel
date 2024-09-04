@@ -1,6 +1,5 @@
 package mimikko.zazalng.pudel.entities;
 
-import mimikko.zazalng.pudel.manager.MusicManager;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
@@ -8,9 +7,8 @@ import java.util.List;
 
 public class GuildEntity {
     //Import variable
-    private final GuildEntity GuildEntity;
     private final Guild guild;
-    private final MusicManager musicManager;
+    private MusicPlayerEntity musicPlayer;
 
     //Class variable
     private final List<String> ignoreChannel;
@@ -21,23 +19,28 @@ public class GuildEntity {
     public GuildEntity(Guild guild){
         this.ignoreChannel = new ArrayList<>();
         this.disableCommand = new ArrayList<>();
-        this.GuildEntity = this;
         this.guild = guild;
-        this.musicManager = new MusicManager(this);
+        this.musicPlayer = null;
         this.prefix = "p!";
         this.staffLogChannel = "";
-    }
-
-    public GuildEntity getGuildEntity() {
-        return this.GuildEntity;
     }
 
     public Guild getGuild() {
         return this.guild;
     }
 
-    public MusicManager getMusicManager() {
-        return this.musicManager;
+    public MusicPlayerEntity getMusicPlayer() {
+        if(isMusicPlayerExist()){
+            return
+        }
+    }
+
+    public void createMusicPlayer(){
+
+    }
+
+    public boolean isMusicPlayerExist(){
+        return musicPlayer==null;
     }
 
     public List<String> getIgnoreChannel() {

@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.handlers.AudioPlayerSendHandler;
 import mimikko.zazalng.pudel.handlers.AudioTrackHandler;
@@ -15,32 +16,33 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static mimikko.zazalng.pudel.utility.IntegerUtility.randomInt;
 
 public class MusicManager {
+    protected final PudelWorld pudelWorld;
     private final GuildEntity guild;
-    private final AudioPlayerManager playerManager;
-    private final List<AudioTrack> playlist;
     private final AudioPlayerSendHandler player;
-    private AudioTrack audioTrack;
-    private boolean flagLoop;
-    private boolean flagShuffle;
 
-    public MusicManager(GuildEntity guild){
-        this.guild = guild;
-        this.flagLoop = false;
-        this.flagShuffle = false;
-        this.playerManager = new DefaultAudioPlayerManager();
+
+    public MusicManager(PudelWorld pudelWorld){
+        this.pudelWorld = pudelWorld;
+    }
+
+    public AudioPlayerManager musicManagerBuilder(){
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
                 true,   // Allow direct video IDs
                 true/*,   // Allow direct playlist IDs
                 new Client[]{new Music(), new Web()} */ // Clients
         );
-        playerManager.registerSourceManager(ytSourceManager);
-        AudioSourceManagers.registerRemoteSources(playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
+        DefaultAudioPlayerManager manager = new DefaultAudioPlayerManager();
+        manager.registerSourceManager(ytSourceManager);
+        AudioSourceManagers.registerRemoteSources(manager,com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
+        return manager;
+    }
+
+    public MusicManager(GuildEntity guild){
         this.player = new AudioPlayerSendHandler(playerManager.createPlayer());
         this.player.getAudioPlayer().addListener(new AudioTrackHandler(this));
         this.playlist = new ArrayList<>();

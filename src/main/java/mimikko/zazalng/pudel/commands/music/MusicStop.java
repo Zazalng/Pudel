@@ -8,7 +8,7 @@ public class MusicStop implements Command {
 
     @Override
     public void execute(GuildEntity guild, UserEntity user,String replyChannel, String args) {
-        guild.getMusicManager().stop();
+        guild.getMusicPlayer().stop();
         guild.getGuild().getTextChannelById(replyChannel).sendMessage("Stopping music...").queue();
     }
 

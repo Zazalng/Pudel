@@ -8,8 +8,8 @@ public class MusicPlaying implements Command {
 
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-        if(!guild.getMusicManager().getTrackInfo().isEmpty()) {
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("Now Playing: " + guild.getMusicManager().getTrackInfo()).queue();
+        if(!guild.getMusicPlayer().getTrackInfo().isEmpty()) {
+            guild.getGuild().getTextChannelById(replyChannel).sendMessage("Now Playing: " + guild.getMusicPlayer().getTrackInfo()).queue();
         } else{
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("There is no current track that playing");
         }

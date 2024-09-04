@@ -10,14 +10,14 @@ public class MusicLoop implements Command {
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
         if(triggerTrue(args)){
-            guild.getMusicManager().setLoop(true);
+            guild.getMusicPlayer().setLoop(true);
         } else if(triggerFalse(args)){
-            guild.getMusicManager().setLoop(false);
+            guild.getMusicPlayer().setLoop(false);
         } else{
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current setting for Looping is `"+guild.getMusicManager().isLoop()+"`").queue();
+            guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current setting for Looping is `"+guild.getMusicPlayer().isLoop()+"`").queue();
             return;
         }
-        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Looping to `"+guild.getMusicManager().isLoop()+"`").queue();
+        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Looping to `"+guild.getMusicPlayer().isLoop()+"`").queue();
     }
 
     @Override

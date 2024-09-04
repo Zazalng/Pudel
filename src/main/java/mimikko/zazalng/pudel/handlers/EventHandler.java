@@ -1,5 +1,6 @@
 package mimikko.zazalng.pudel.handlers;
 
+import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
 import net.dv8tion.jda.api.entities.Guild;
@@ -11,20 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EventHandler extends ListenerAdapter{
-    protected final Map<String, GuildEntity> guildEntity;
-    protected final Map<String, UserEntity> userEntity;
+    protected final PudelWorld pudelWorld;
 
-    public EventHandler() {
-        this.guildEntity = new HashMap<>();
-        this.userEntity = new HashMap<>();
-    }
-
-    public GuildEntity getGuildEntity(Guild JDAguild){
-        return this.guildEntity.computeIfAbsent(JDAguild.getId(), Entity -> new GuildEntity(JDAguild));
-    }
-
-    public UserEntity getUserEntity(User JDAuser){
-        return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(JDAuser));
+    public EventHandler(PudelWorld pudelWorld) {
+        this.pudelWorld = pudelWorld;
     }
 
     @Override
@@ -35,7 +26,7 @@ public class EventHandler extends ListenerAdapter{
             System.out.println(fullRespond);
 
             //e.getChannel().sendTyping().queue();
-            new CommandHandler(getGuildEntity(e.getGuild()), getUserEntity(e.getAuthor()), e);
+            new CommandHandler(pudelWorld.getGuildManager().getGuildEntity(e.getGuild()), pudelWorld.getUserManager().getUserEntity(e.getAuthor()), e);
         }
     }
 }

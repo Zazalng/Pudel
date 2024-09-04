@@ -19,9 +19,9 @@ public class MusicPlay implements Command {
 
             // Automatically prepend "ytsearch:" if the input isn't a URL
             if (!input.startsWith("http://") && !input.startsWith("https://")) {
-                guild.getMusicManager().loadAndPlay("ytsearch:" + input,guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().getChannel().asVoiceChannel());
+                guild.getMusicPlayer().loadAndPlay("ytsearch:" + input,guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().getChannel().asVoiceChannel());
             } else{
-                guild.getMusicManager().loadAndPlay(input,guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().getChannel().asVoiceChannel());
+                guild.getMusicPlayer().loadAndPlay(input,guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().getChannel().asVoiceChannel());
             }
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("Searching and playing: \n`" + input + "`").queue();
         } else {

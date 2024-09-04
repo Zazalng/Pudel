@@ -7,7 +7,7 @@ import mimikko.zazalng.pudel.entities.UserEntity;
 public class MusicSkip implements Command {
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-        guild.getMusicManager().nextTrack(true);
+        guild.getMusicPlayer().nextTrack(true);
         guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has Skip current song because...\n`*TBA Reason*`").queue();
     }
 
