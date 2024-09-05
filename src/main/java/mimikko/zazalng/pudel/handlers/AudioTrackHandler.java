@@ -5,17 +5,18 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.manager.MusicManager;
 
 public class AudioTrackHandler extends AudioEventAdapter {
-    private final MusicManager musicManager;
+    protected MusicPlayerEntity playerManager;
 
-    public AudioTrackHandler(MusicManager musicManager) {
-        this.musicManager = musicManager;
+    public AudioTrackHandler(MusicPlayerEntity playerManager) {
+        this.playerManager = playerManager;
     }
 
-    public MusicManager getMusicManager(){
-        return this.musicManager;
+    public MusicPlayerEntity getMusicManager(){
+        return this.playerManager;
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GuildManager {
+public class GuildManager implements Manager {
     private final static Logger logger = LoggerFactory.getLogger(GuildManager.class);
     protected final PudelWorld pudelWorld;
     protected final Map<String, GuildEntity> guildEntity;
@@ -31,5 +31,20 @@ public class GuildManager {
         StringBuilder helpMessage = new StringBuilder("Loaded Guild Entity: "+guildEntity.size()+"\n");
         guildEntity.forEach((id, guild) -> helpMessage.append(id).append(" - ").append(guild.getGuild().getName()).append("\n"));
         System.out.println(helpMessage);
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserManager {
+public class UserManager implements Manager {
     protected final PudelWorld pudelWorld;
     protected final Map<String, UserEntity> userEntity;
 
@@ -22,5 +22,20 @@ public class UserManager {
 
     public UserEntity getUserEntity(User JDAuser){
         return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(JDAuser));
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

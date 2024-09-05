@@ -1,15 +1,10 @@
 package mimikko.zazalng.pudel.handlers;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class EventHandler extends ListenerAdapter{
     protected final PudelWorld pudelWorld;
@@ -19,7 +14,14 @@ public class EventHandler extends ListenerAdapter{
     }
 
     @Override
+    public void onReady(@NotNull ReadyEvent e) {
+        this.pudelWorld.getPudelManager().setPudelID(e.getJDA().getSelfUser().getId());
+    }
+
+    @Override
     public void onMessageReceived(MessageReceivedEvent e){
+        e.getChannel().getType();
+
         if(!e.getAuthor().isBot()){
             //From {guildName} in {channelName} by {userName} said: {contentRaw}
             String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: \n"+e.getMessage().getContentRaw();

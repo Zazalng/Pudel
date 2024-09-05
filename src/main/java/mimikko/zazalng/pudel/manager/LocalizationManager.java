@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class LocalizationManager {
+public class LocalizationManager implements Manager{
     protected final PudelWorld pudelWorld;
     private static final Logger logger = LoggerFactory.getLogger(LocalizationManager.class);
     private final Map<String, Properties> languageFiles;
@@ -53,5 +53,20 @@ public class LocalizationManager {
             e.printStackTrace();
         }
         return properties;
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

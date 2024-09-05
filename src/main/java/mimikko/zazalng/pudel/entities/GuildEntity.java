@@ -1,5 +1,6 @@
 package mimikko.zazalng.pudel.entities;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class GuildEntity {
     //Class variable
     private final List<String> ignoreChannel;
     private final List<String> disableCommand;
+    private String guildLang;
     private String prefix;
     private String staffLogChannel;
 
@@ -21,6 +23,7 @@ public class GuildEntity {
         this.disableCommand = new ArrayList<>();
         this.guild = guild;
         this.musicPlayer = null;
+        this.guildLang = "en";
         this.prefix = "p!";
         this.staffLogChannel = "";
     }
@@ -30,13 +33,11 @@ public class GuildEntity {
     }
 
     public MusicPlayerEntity getMusicPlayer() {
-        if(isMusicPlayerExist()){
-            return
-        }
+        return this.musicPlayer;
     }
 
-    public void createMusicPlayer(){
-
+    public void createMusicPlayer(AudioPlayer playerManager){
+        this.musicPlayer = new MusicPlayerEntity(playerManager);
     }
 
     public boolean isMusicPlayerExist(){
@@ -69,5 +70,13 @@ public class GuildEntity {
 
     public String getOwnerID() {
         return getGuild().getOwnerId();
+    }
+
+    public String getGuildLang() {
+        return guildLang;
+    }
+
+    public void setGuildLang(String guildLang) {
+        this.guildLang = guildLang;
     }
 }
