@@ -9,7 +9,6 @@ import java.util.Map;
 public class SessionManager implements Manager {
     protected final PudelWorld pudelWorld;
     private final Map<String, Object> data;
-    private SessionState sessionState;
 
     public SessionManager(PudelWorld pudelWorld){
         this.pudelWorld = pudelWorld;
