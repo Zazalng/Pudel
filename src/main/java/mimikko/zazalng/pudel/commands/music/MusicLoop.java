@@ -21,6 +21,11 @@ public class MusicLoop implements Command {
     }
 
     @Override
+    public void reload() {
+
+    }
+
+    @Override
     public String getDescription() {
         return "Toggles the looping of the current track.";
     }

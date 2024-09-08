@@ -16,6 +16,11 @@ public class GuildPrefix implements Command {
     }
 
     @Override
+    public void reload() {
+
+    }
+
+    @Override
     public String getDescription() {
         return "Set a custom prefix for the server. I will respond to this new prefix.";
     }

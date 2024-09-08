@@ -28,7 +28,7 @@ public class EventHandler extends ListenerAdapter{
             System.out.println(fullRespond);
 
             //e.getChannel().sendTyping().queue();
-            new CommandHandler(pudelWorld.getGuildManager().getGuildEntity(e.getGuild()), pudelWorld.getUserManager().getUserEntity(e.getAuthor()), e);
+            this.pudelWorld.getCommandManager().handleCommand(e);
         }
     }
 }

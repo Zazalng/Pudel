@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import mimikko.zazalng.pudel.handlers.AudioPlayerSendHandler;
 import mimikko.zazalng.pudel.handlers.AudioTrackHandler;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,9 +74,8 @@ public class MusicPlayerEntity {
         }
     }
 
-    private void getGuildConnection(VoiceChannel channel){
-        getGuild().getGuild().getAudioManager().openAudioConnection(channel);
-        getGuild().getGuild().getAudioManager().setSendingHandler(this.player);
+    public AudioPlayerSendHandler getAudioPlayer(){
+        return this.player;
     }
 
     public void shufflePlaylist(){
@@ -96,8 +94,6 @@ public class MusicPlayerEntity {
         this.playlist.clear();
         this.player.getAudioPlayer().stopTrack();
         this.player.getAudioPlayer().destroy();
-        getGuild().getGuild().getAudioManager().setSendingHandler(null);
-        getGuild().getGuild().getAudioManager().closeAudioConnection();
     }
 
     public boolean isLoop(){

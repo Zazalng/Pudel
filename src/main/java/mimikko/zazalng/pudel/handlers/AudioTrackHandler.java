@@ -6,7 +6,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
-import mimikko.zazalng.pudel.manager.MusicManager;
 
 public class AudioTrackHandler extends AudioEventAdapter {
     protected MusicPlayerEntity playerManager;

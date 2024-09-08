@@ -12,6 +12,11 @@ public class MusicSkip implements Command {
     }
 
     @Override
+    public void reload() {
+
+    }
+
+    @Override
     public String getDescription() {
         return "Skip the current track and start up the next track";
     }

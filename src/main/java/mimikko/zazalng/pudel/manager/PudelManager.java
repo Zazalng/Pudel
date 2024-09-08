@@ -25,6 +25,7 @@ public class PudelManager implements Manager {
     }
 
     public void CloseVoiceConnection(Guild guild){
+        guild.getAudioManager().setSendingHandler(null);
         guild.getAudioManager().closeAudioConnection();
     }
 

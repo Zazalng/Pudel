@@ -13,6 +13,11 @@ public class MusicStop implements Command {
     }
 
     @Override
+    public void reload() {
+
+    }
+
+    @Override
     public String getDescription() {
         return "Stopping Music and clear all remaining playlist then be gone.";
     }

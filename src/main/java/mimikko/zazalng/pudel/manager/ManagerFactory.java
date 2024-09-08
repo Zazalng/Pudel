@@ -11,16 +11,12 @@ public class ManagerFactory {
 
     public ManagerFactory(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
+        managers.put("commandManager", new CommandManager(pudelWorld));
         managers.put("guildManager", new GuildManager(pudelWorld));
         managers.put("localizationManager", new LocalizationManager(pudelWorld));
         managers.put("musicManager", new MusicManager(pudelWorld));
         managers.put("pudelManager", new PudelManager(pudelWorld));
-        managers.put("sessionManager", new SessionManager(pudelWorld));
         managers.put("userManager", new UserManager(pudelWorld));
-    }
-
-    public Manager getManager(String managerName) {
-        return managers.get(managerName);
     }
 
     @SuppressWarnings("unchecked")

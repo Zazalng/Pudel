@@ -5,7 +5,6 @@ import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
 
 public class MusicPlay implements Command {
-
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
         if (args.isEmpty()) {
@@ -27,6 +26,11 @@ public class MusicPlay implements Command {
         } else {
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("You must be in a voice channel to play music!").queue();
         }
+    }
+
+    @Override
+    public void reload() {
+
     }
 
     @Override

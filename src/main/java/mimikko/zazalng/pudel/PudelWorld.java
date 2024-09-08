@@ -47,6 +47,10 @@ public class PudelWorld {
         return managerFactory;
     }
 
+    public CommandManager getCommandManager(){
+        return this.managerFactory.getManager("commandManager", CommandManager.class);
+    }
+
     public GuildManager getGuildManager(){
         return this.managerFactory.getManager("guildManager", GuildManager.class);
     }
@@ -61,10 +65,6 @@ public class PudelWorld {
 
     public PudelManager getPudelManager(){
         return this.managerFactory.getManager("pudelManager", PudelManager.class);
-    }
-
-    public SessionManager getSessionManager(){
-        return this.managerFactory.getManager("sessionManager", SessionManager.class);
     }
 
     public UserManager getUserManager(){

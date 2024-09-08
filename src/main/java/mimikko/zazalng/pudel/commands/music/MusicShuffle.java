@@ -25,6 +25,11 @@ public class MusicShuffle implements Command {
     }
 
     @Override
+    public void reload() {
+
+    }
+
+    @Override
     public String getDescription() {
         return "Toggles the shuffle of the playlist or scrambled playlist 1 time.";
     }

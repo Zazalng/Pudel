@@ -16,7 +16,6 @@ public class MusicManager implements Manager {
     protected final PudelWorld pudelWorld;
     private final AudioPlayerManager playerManager;
 
-
     public MusicManager(PudelWorld pudelWorld){
         this.pudelWorld = pudelWorld;
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(

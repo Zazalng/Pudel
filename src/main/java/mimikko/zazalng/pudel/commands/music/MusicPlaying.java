@@ -5,7 +5,6 @@ import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
 
 public class MusicPlaying implements Command {
-
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
         if(!guild.getMusicPlayer().getTrackInfo().isEmpty()) {
@@ -13,6 +12,11 @@ public class MusicPlaying implements Command {
         } else{
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("There is no current track that playing");
         }
+    }
+
+    @Override
+    public void reload() {
+
     }
 
     @Override

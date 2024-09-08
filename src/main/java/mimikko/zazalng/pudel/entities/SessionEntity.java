@@ -1,28 +1,31 @@
 package mimikko.zazalng.pudel.entities;
 
-import mimikko.zazalng.pudel.contracts.SessionState;
+import mimikko.zazalng.pudel.commands.Command;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SessionEntity {
-    private final String userId;
-    private final String guildId;
+    private final UserEntity user;
+    private final GuildEntity guild;
+    private final Channel channelId;
     private final Map<String, Object> data = new HashMap<>();
-    private SessionState state;
+    private String sessionState;
 
-    public SessionEntity(String userId, String guildId) {
-        this.userId = userId;
-        this.guildId = guildId;
-        this.state = SessionState.INIT;
+    public SessionEntity(UserEntity user, GuildEntity guild, Channel channelIssue, Command command) {
+        this.user = user;
+        this.guild = guild;
+        this.channelId = channelIssue;
+        this.sessionState = "INIT";
     }
 
-    public void setState(SessionState state) {
-        this.state = state;
+    public void setState(String sessionState) {
+        this.sessionState = sessionState;
     }
 
-    public SessionState getState() {
-        return state;
+    public String getState() {
+        return this.sessionState;
     }
 
     public void addData(String key, Object value) {
