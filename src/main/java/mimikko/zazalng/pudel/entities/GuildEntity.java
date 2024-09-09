@@ -28,7 +28,7 @@ public class GuildEntity {
         this.staffLogChannel = "";
     }
 
-    public Guild getGuild() {
+    public Guild getJDA() {
         return this.guild;
     }
 
@@ -69,7 +69,7 @@ public class GuildEntity {
     }
 
     public String getOwnerID() {
-        return getGuild().getOwnerId();
+        return getJDA().getOwnerId();
     }
 
     public String getGuildLang() {

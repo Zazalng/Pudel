@@ -1,15 +1,22 @@
 package mimikko.zazalng.pudel.commands.music;
 
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 
-public class MusicStop implements Command {
-
+public class MusicStop extends AbstractCommand {
     @Override
-    public void execute(GuildEntity guild, UserEntity user,String replyChannel, String args) {
-        guild.getMusicPlayer().stop();
-        guild.getGuild().getTextChannelById(replyChannel).sendMessage("Stopping music...").queue();
+    public void execute(SessionEntity session, String args) {
+        if(session.getState()=="INIT"){
+            initialState(session);
+        }
+    }
+
+    private void initialState(SessionEntity session){
+        String reply = session.getGuild().getJDA().getMemberById(session.getUser().getJDA().getId())+" has forced stop music";
+
+        session.getGuild().getMusicPlayer().stop();
+        session.getChannel().asTextChannel().sendMessage(reply).queue();
+        session.setState("END");
     }
 
     @Override

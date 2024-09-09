@@ -7,7 +7,7 @@ import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
-import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
@@ -68,6 +68,7 @@ public class CommandManager implements Manager {
                 Command command = commands.get(commandName.toLowerCase());
                 if (command != null) {
                     SessionEntity session = getSession(e, command);
+                    session.getCommand().execute(session, args);
                 } else {
                     //e.getChannel().sendMessage("Unknown command!").queue();
                 }
@@ -81,13 +82,22 @@ public class CommandManager implements Manager {
     public SessionEntity getSession(MessageReceivedEvent e, Command command) {
         UserEntity user = this.pudelWorld.getUserManager().getUserEntity(e.getAuthor());
         GuildEntity guild = this.pudelWorld.getGuildManager().getGuildEntity(e.getGuild());
-        Channel channelIssue = e.getChannel();
-        return this.sessions.computeIfAbsent(e.getAuthor().getId(), k -> new SessionEntity(user, guild, channelIssue, command));
+        MessageChannelUnion channelIssue = e.getChannel();
+
+        // Create a unique session key using userId, guildId, and channelId
+        String sessionKey = createSessionKey(e.getAuthor().getId(), e.getGuild().getId(), e.getChannel().getId());
+
+        return this.sessions.computeIfAbsent(e.getAuthor().getId(), k -> new SessionEntity(pudelWorld, user, guild, channelIssue, command));
     }
 
     // Remove session after it ends
-    public void endSession(String userId) {
-        this.sessions.remove(userId);
+    public void endSession(String userId, String guildId, String channelId) {
+        String sessionKey = createSessionKey(userId, guildId, channelId);
+        this.sessions.remove(sessionKey);
+    }
+
+    private String createSessionKey(String userId, String guildId, String channelId) {
+        return userId + ":" + guildId + ":" + channelId;
     }
 
     @Override

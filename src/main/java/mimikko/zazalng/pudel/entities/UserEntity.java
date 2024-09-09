@@ -15,7 +15,7 @@ public class UserEntity {
         this.JDAuser = JDAuser;
     }
 
-    public User getJDAuser() {
+    public User getJDA() {
         return JDAuser;
     }
 

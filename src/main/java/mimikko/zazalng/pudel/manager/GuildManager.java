@@ -29,7 +29,7 @@ public class GuildManager implements Manager {
 
     public void fetchGuildEntity(){
         StringBuilder helpMessage = new StringBuilder("Loaded Guild Entity: "+guildEntity.size()+"\n");
-        guildEntity.forEach((id, guild) -> helpMessage.append(id).append(" - ").append(guild.getGuild().getName()).append("\n"));
+        guildEntity.forEach((id, guild) -> helpMessage.append(id).append(" - ").append(guild.getJDA().getName()).append("\n"));
         System.out.println(helpMessage);
     }
 

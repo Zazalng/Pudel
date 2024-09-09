@@ -2,11 +2,18 @@ package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.GuildEntity;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
 
 public class MusicSkip implements Command {
     @Override
     public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
+        if(session.getState()=="INIT"){
+            initialState(session, args);
+        }
+    }
+
+    private void initialState(SessionEntity session, String args){
         guild.getMusicPlayer().nextTrack(true);
         guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has Skip current song because...\n`*TBA Reason*`").queue();
     }

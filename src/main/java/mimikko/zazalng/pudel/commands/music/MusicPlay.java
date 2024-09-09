@@ -12,15 +12,15 @@ public class MusicPlay implements Command {
             return;
         }
 
-        boolean isVoiceChannel = guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().inAudioChannel();
+        boolean isVoiceChannel = guild.getGuild().getMemberById(user.getJDA().getId()).getVoiceState().inAudioChannel();
         if (isVoiceChannel) {
             String input = String.join(" ", args);
 
             // Automatically prepend "ytsearch:" if the input isn't a URL
             if (!input.startsWith("http://") && !input.startsWith("https://")) {
-                guild.getMusicPlayer().loadAndPlay("ytsearch:" + input,guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().getChannel().asVoiceChannel());
+                guild.getMusicPlayer().loadAndPlay("ytsearch:" + input,guild.getGuild().getMemberById(user.getJDA().getId()).getVoiceState().getChannel().asVoiceChannel());
             } else{
-                guild.getMusicPlayer().loadAndPlay(input,guild.getGuild().getMemberById(user.getJDAuser().getId()).getVoiceState().getChannel().asVoiceChannel());
+                guild.getMusicPlayer().loadAndPlay(input,guild.getGuild().getMemberById(user.getJDA().getId()).getVoiceState().getChannel().asVoiceChannel());
             }
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("Searching and playing: \n`" + input + "`").queue();
         } else {

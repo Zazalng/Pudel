@@ -27,6 +27,12 @@ public class EventHandler extends ListenerAdapter{
             String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: \n"+e.getMessage().getContentRaw();
             System.out.println(fullRespond);
 
+            /*
+                Still Possible to implement command for direct message interacting
+                - A possible thing that can happen (from what I have discovery)
+                1. Message from Guild asTextChannel
+             */
+
             //e.getChannel().sendTyping().queue();
             this.pudelWorld.getCommandManager().handleCommand(e);
         }

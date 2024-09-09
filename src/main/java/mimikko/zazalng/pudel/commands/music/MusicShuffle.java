@@ -21,7 +21,7 @@ public class MusicShuffle implements Command {
             guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current playlist has been shuffle by seed `"+args+"`").queue();
             return;
         }
-        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Shuffle player to `"+guild.getMusicPlayer().isShuffle()+"`").queue();
+        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDA().getId()).getNickname()+" has setting for Shuffle player to `"+guild.getMusicPlayer().isShuffle()+"`").queue();
     }
 
     @Override
