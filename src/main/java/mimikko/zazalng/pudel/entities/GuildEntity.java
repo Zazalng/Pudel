@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.entities;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import mimikko.zazalng.pudel.manager.GuildManager;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 public class GuildEntity {
     //Import variable
+    protected final GuildManager guildManager;
     private final Guild guild;
     private MusicPlayerEntity musicPlayer;
 
@@ -18,11 +20,13 @@ public class GuildEntity {
     private String prefix;
     private String staffLogChannel;
 
-    public GuildEntity(Guild guild){
-        this.ignoreChannel = new ArrayList<>();
-        this.disableCommand = new ArrayList<>();
+    public GuildEntity(GuildManager guildManager, Guild guild){
+        this.guildManager = guildManager;
         this.guild = guild;
         this.musicPlayer = null;
+
+        this.ignoreChannel = new ArrayList<>();
+        this.disableCommand = new ArrayList<>();
         this.guildLang = "en";
         this.prefix = "p!";
         this.staffLogChannel = "";

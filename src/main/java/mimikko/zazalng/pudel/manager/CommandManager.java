@@ -87,7 +87,7 @@ public class CommandManager implements Manager {
         // Create a unique session key using userId, guildId, and channelId
         String sessionKey = createSessionKey(e.getAuthor().getId(), e.getGuild().getId(), e.getChannel().getId());
 
-        return this.sessions.computeIfAbsent(e.getAuthor().getId(), k -> new SessionEntity(pudelWorld, user, guild, channelIssue, command));
+        return this.sessions.computeIfAbsent(sessionKey, k -> new SessionEntity(this, user, guild, channelIssue, command));
     }
 
     // Remove session after it ends

@@ -1,31 +1,29 @@
 package mimikko.zazalng.pudel.commands.music;
 
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
+import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
-public class MusicLoop implements Command {
+public class MusicLoop extends AbstractCommand{
     @Override
-    public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-        if(triggerTrue(args)){
-            guild.getMusicPlayer().setLoop(true);
-        } else if(triggerFalse(args)){
-            guild.getMusicPlayer().setLoop(false);
-        } else{
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current setting for Looping is `"+guild.getMusicPlayer().isLoop()+"`").queue();
-            return;
-        }
-        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDA().getId()).getNickname()+" has setting for Looping to `"+guild.getMusicPlayer().isLoop()+"`").queue();
+    public void execute(SessionEntity session, String args) {
+        super.execute(session, args);
     }
 
     @Override
-    public void execute(SessionEntity session, String args) {
-        if(triggerTrue(args)){
-
+    protected void initialState(SessionEntity session, String args) {
+        if (triggerTrue(args)) {
+            session.getGuild().getMusicPlayer().setLoop(true);
+            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to`" + session.getGuild().getMusicPlayer().isLoop() + "`";
+        } else if (triggerFalse(args)) {
+            session.getGuild().getMusicPlayer().setLoop(false);
+            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to`" + session.getGuild().getMusicPlayer().isLoop() + "`";
+        } else {
+            args = "The current setting for Looping is `" + session.getGuild().getMusicPlayer().isLoop() + "`";
         }
+        session.getChannel().sendMessage(args).queue();
+        session.setState("END");
     }
 
     @Override

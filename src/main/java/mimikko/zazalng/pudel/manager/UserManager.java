@@ -21,7 +21,7 @@ public class UserManager implements Manager {
     }
 
     public UserEntity getUserEntity(User JDAuser){
-        return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(JDAuser));
+        return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(this, JDAuser));
     }
 
     @Override

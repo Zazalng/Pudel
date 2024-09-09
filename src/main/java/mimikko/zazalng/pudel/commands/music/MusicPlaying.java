@@ -1,17 +1,23 @@
 package mimikko.zazalng.pudel.commands.music;
 
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 
-public class MusicPlaying implements Command {
+public class MusicPlaying extends AbstractCommand {
     @Override
-    public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-        if(!guild.getMusicPlayer().getTrackInfo().isEmpty()) {
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("Now Playing: " + guild.getMusicPlayer().getTrackInfo()).queue();
+    public void execute(SessionEntity session, String args) {
+        super.execute(session, args);
+    }
+
+    @Override
+    protected void initialState(SessionEntity session, String args){
+        if(session.getGuild().getMusicPlayer().getTrackInfo().isEmpty()) {
+            args = "Now Playing: " + session.getGuild().getMusicPlayer().getTrackInfo();
         } else{
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("There is no current track that playing");
+            args = "There is no current track that playing";
         }
+        session.getChannel().sendMessage(args).queue();
+        session.setState("END");
     }
 
     @Override

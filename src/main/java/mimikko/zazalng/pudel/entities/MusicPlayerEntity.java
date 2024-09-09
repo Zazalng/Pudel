@@ -51,7 +51,11 @@ public class MusicPlayerEntity {
     }
 
     public String getTrackInfo(){
-        return "["+this.player.getAudioPlayer().getPlayingTrack().getInfo().title+"](<"+this.player.getAudioPlayer().getPlayingTrack().getInfo().uri+">)";
+        if(this.player.getAudioPlayer().getPlayingTrack() == null){
+            return "";
+        } else{
+            return "["+this.player.getAudioPlayer().getPlayingTrack().getInfo().title+"](<"+this.player.getAudioPlayer().getPlayingTrack().getInfo().uri+">)";
+        }
     }
 
     private AudioTrack trackSelection() {

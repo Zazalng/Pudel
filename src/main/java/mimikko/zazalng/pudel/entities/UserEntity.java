@@ -1,17 +1,18 @@
 package mimikko.zazalng.pudel.entities;
 
+import mimikko.zazalng.pudel.manager.UserManager;
 import net.dv8tion.jda.api.entities.User;
 
 public class UserEntity {
-    private final UserEntity userEntity;
+    protected final UserManager userManager;
     private final User JDAuser;
 
     private long royalty;
     private long diamond;
     private int level;
 
-    public UserEntity(User JDAuser){
-        this.userEntity = this;
+    public UserEntity(UserManager userManager, User JDAuser){
+        this.userManager = userManager;
         this.JDAuser = JDAuser;
     }
 
@@ -19,8 +20,12 @@ public class UserEntity {
         return JDAuser;
     }
 
-    public UserEntity getUserEntity() {
-        return userEntity;
+    public String getNickname(GuildEntity guild) {
+        if(guild.getJDA().getMember(JDAuser).getNickname()!=null){
+            return guild.getJDA().getMember(JDAuser).getNickname();
+        } else{
+            return JDAuser.getName();
+        }
     }
 
     public long getRoyalty() {

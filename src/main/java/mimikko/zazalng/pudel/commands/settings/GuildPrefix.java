@@ -6,18 +6,18 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 public class GuildPrefix extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
-        if(session.getState()=="INIT"){
-            initialState(session,args);
-        }
+        super.execute(session, args);
     }
 
-    private void initialState(SessionEntity session, String args){
+    @Override
+    protected void initialState(SessionEntity session, String args) {
         if(args.isEmpty()){
-            session.getChannel().asTextChannel().sendMessage("Prefix for this server is `"+session.getGuild().getPrefix()+"`").queue();
+            args = "Prefix for this server is `"+session.getGuild().getPrefix()+"`";
         } else{
-            session.getGuild().setPrefix(args); // still bug
-            session.getChannel().asTextChannel().sendMessage(session.getGuild().getJDA().getMemberById(session.getUser().getJDA().getId()).getNickname()+" has setting for Prefix to `"+session.getGuild().getPrefix()+"`").queue();
+            session.getGuild().setPrefix(args);
+            args = session.getUser().getNickname(session.getGuild())+" has setting for Prefix to `"+session.getGuild().getPrefix()+"`";
         }
+        session.getChannel().sendMessage(args).queue();
         session.setState("END");
     }
 

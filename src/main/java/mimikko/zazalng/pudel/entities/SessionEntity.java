@@ -1,25 +1,23 @@
 package mimikko.zazalng.pudel.entities;
 
-import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
-import net.dv8tion.jda.api.entities.channel.Channel;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import mimikko.zazalng.pudel.manager.CommandManager;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SessionEntity {
-    protected final PudelWorld pudelWorld;
+    protected final CommandManager commandManager;
     private final UserEntity user;
     private final GuildEntity guild;
-    private final Channel channel;
+    private final MessageChannelUnion channel;
     private final Command command;
     private final Map<String, String> promptCollection = new HashMap<>();
     private String sessionState;
 
-    public SessionEntity(PudelWorld pudelWorld, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue, Command command) {
-        this.pudelWorld = pudelWorld;
+    public SessionEntity(CommandManager commandManager, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue, Command command) {
+        this.commandManager = commandManager;
         this.user = user;
         this.guild = guild;
         this.channel = channelIssue;
@@ -59,7 +57,7 @@ public class SessionEntity {
         return command;
     }
 
-    public void executing(String args){
+    public void execute(String args){
         command.execute(this,args);
     }
 }

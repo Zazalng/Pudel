@@ -6,16 +6,15 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 public class MusicStop extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
-        if(session.getState()=="INIT"){
-            initialState(session);
-        }
+        super.execute(session, args);
     }
 
-    private void initialState(SessionEntity session){
-        String reply = session.getGuild().getJDA().getMemberById(session.getUser().getJDA().getId())+" has forced stop music";
+    @Override
+    protected void initialState(SessionEntity session, String args){
+        args = session.getGuild().getJDA().getMemberById(session.getUser().getJDA().getId())+" has force stopped music";
 
         session.getGuild().getMusicPlayer().stop();
-        session.getChannel().asTextChannel().sendMessage(reply).queue();
+        session.getChannel().asTextChannel().sendMessage(args).queue();
         session.setState("END");
     }
 
