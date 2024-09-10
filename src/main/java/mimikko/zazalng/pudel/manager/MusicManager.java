@@ -10,7 +10,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import mimikko.zazalng.pudel.PudelWorld;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 
 public class MusicManager implements Manager {
     protected final PudelWorld pudelWorld;
@@ -33,18 +33,16 @@ public class MusicManager implements Manager {
         return this.playerManager.createPlayer();
     }
 
-    public void loadAndPlay(String trackUrl, VoiceChannel channel) {
+    public void loadAndPlay(MusicPlayerEntity player, String trackUrl) {
         playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                getGuildConnection(channel);
-                queueUp(track);
+                player.queueUp(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                getGuildConnection(channel);
-                queueUp(playlist);
+                player.queueUp(playlist);
             }
 
             @Override
@@ -57,6 +55,11 @@ public class MusicManager implements Manager {
                 exception.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public PudelWorld getPudelWorld() {
+        return this.pudelWorld;
     }
 
     @Override

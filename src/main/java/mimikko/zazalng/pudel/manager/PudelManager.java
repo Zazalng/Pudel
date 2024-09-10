@@ -12,7 +12,7 @@ public class PudelManager implements Manager {
         this.pudelWorld = pudelWorld;
     }
 
-    public void setPudelID(String pudelId){
+    public void setPudelId(String pudelId){
         this.pudelId = pudelId;
     }
 
@@ -27,6 +27,11 @@ public class PudelManager implements Manager {
     public void CloseVoiceConnection(Guild guild){
         guild.getAudioManager().setSendingHandler(null);
         guild.getAudioManager().closeAudioConnection();
+    }
+
+    @Override
+    public PudelWorld getPudelWorld() {
+        return this.pudelWorld;
     }
 
     @Override

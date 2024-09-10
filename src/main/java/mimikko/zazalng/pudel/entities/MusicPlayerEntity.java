@@ -25,7 +25,7 @@ public class MusicPlayerEntity {
         this.player.getAudioPlayer().addListener(new AudioTrackHandler(this));
     }
 
-    private void queueUp(AudioTrack track) {
+    public void queueUp(AudioTrack track) {
         if (this.player.getAudioPlayer().getPlayingTrack() == null) {
             this.playlist.add(track);
             this.audioTrack = track;
@@ -35,7 +35,7 @@ public class MusicPlayerEntity {
         }
     }
 
-    private void queueUp(AudioPlaylist playlist) {
+    public void queueUp(AudioPlaylist playlist) {
         if (playlist.isSearchResult()) {
             // If it's a search result, add the first track to the queue
             this.playlist.add(playlist.getTracks().get(0));

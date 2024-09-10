@@ -16,6 +16,10 @@ public class UserEntity {
         this.JDAuser = JDAuser;
     }
 
+    public UserManager getUserManager(){
+        return this.userManager;
+    }
+
     public User getJDA() {
         return JDAuser;
     }

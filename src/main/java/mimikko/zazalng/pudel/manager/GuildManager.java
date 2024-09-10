@@ -16,10 +16,6 @@ public class GuildManager implements Manager {
         this.guildEntity = new HashMap<>();
     }
 
-    public PudelWorld getPudelWorld(){
-        return this.pudelWorld;
-    }
-
     public GuildEntity getGuildEntity(Guild JDAguild){
         return this.guildEntity.computeIfAbsent(JDAguild.getId(), Entity -> new GuildEntity(this,JDAguild));
     }
@@ -28,6 +24,10 @@ public class GuildManager implements Manager {
         StringBuilder helpMessage = new StringBuilder("Loaded Guild Entity: "+guildEntity.size()+"\n");
         guildEntity.forEach((id, guild) -> helpMessage.append(id).append(" - ").append(guild.getJDA().getName()).append("\n"));
         System.out.println(helpMessage);
+    }
+    @Override
+    public PudelWorld getPudelWorld(){
+        return this.pudelWorld;
     }
 
     @Override

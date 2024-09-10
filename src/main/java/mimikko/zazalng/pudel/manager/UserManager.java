@@ -1,7 +1,10 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.HashMap;
@@ -16,12 +19,21 @@ public class UserManager implements Manager {
         this.userEntity = new HashMap<>();
     }
 
-    public PudelWorld getPudelWorld(){
-        return this.pudelWorld;
+    public Member userConvert(Guild guild, User user){
+        return guild.getMember(user);
+    }
+
+    public boolean isVoiceActive(Guild guild, User user){
+        return guild.getMember(user).getVoiceState().inAudioChannel();
     }
 
     public UserEntity getUserEntity(User JDAuser){
         return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(this, JDAuser));
+    }
+
+    @Override
+    public PudelWorld getPudelWorld(){
+        return this.pudelWorld;
     }
 
     @Override

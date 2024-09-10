@@ -56,6 +56,11 @@ public class LocalizationManager implements Manager{
     }
 
     @Override
+    public PudelWorld getPudelWorld() {
+        return this.pudelWorld;
+    }
+
+    @Override
     public void initialize() {
 
     }

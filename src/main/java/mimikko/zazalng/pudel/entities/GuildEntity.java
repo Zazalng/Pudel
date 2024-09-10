@@ -1,6 +1,5 @@
 package mimikko.zazalng.pudel.entities;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import mimikko.zazalng.pudel.manager.GuildManager;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -37,15 +36,12 @@ public class GuildEntity {
     }
 
     public MusicPlayerEntity getMusicPlayer() {
-        return this.musicPlayer;
-    }
-
-    public void createMusicPlayer(AudioPlayer playerManager){
-        this.musicPlayer = new MusicPlayerEntity(playerManager);
-    }
-
-    public boolean isMusicPlayerExist(){
-        return musicPlayer==null;
+        if (this.musicPlayer != null) {
+            return this.musicPlayer;
+        } else {
+            this.musicPlayer = new MusicPlayerEntity(guildManager.getPudelWorld().getMusicManager().musicManagerBuilder());
+            return this.musicPlayer;
+        }
     }
 
     public List<String> getIgnoreChannel() {
