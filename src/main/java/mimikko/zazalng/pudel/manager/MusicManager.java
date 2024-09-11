@@ -1,18 +1,18 @@
 package mimikko.zazalng.pudel.manager;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
+import mimikko.zazalng.pudel.handlers.audiohandler.AudioResultHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MusicManager implements Manager {
+    private static final Logger logger = LoggerFactory.getLogger(CommandManager.class);
     protected final PudelWorld pudelWorld;
     private final AudioPlayerManager playerManager;
 
@@ -33,28 +33,22 @@ public class MusicManager implements Manager {
         return this.playerManager.createPlayer();
     }
 
-    public void loadAndPlay(MusicPlayerEntity player, String trackUrl) {
-        playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                player.queueUp(track);
-            }
+    public String loadAndPlay(MusicPlayerEntity player, String trackURL) {
+        AudioResultHandler handler = new AudioResultHandler(player);
+        playerManager.loadItem(trackURL, handler);
 
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                player.queueUp(playlist);
-            }
+        if(handler.getResult().startsWith("URL")){
+            trackURL = "Playlist had loaded successfully.\n`"+trackURL+"`";
+        } else if(handler.getResult().startsWith("NULL")){
+            trackURL = "No Matching result of input.\n`"+trackURL+"`";
+        } else if(handler.getResult().startsWith("SEARCH")){
+            trackURL = "Searching and Playing.\n"+ handler.getResult().replace("SEARCH","");
+        } else{
+            trackURL = handler.getResult();
+        }
 
-            @Override
-            public void noMatches() {
-                System.out.println("No track found for URL: " + trackUrl);
-            }
-
-            @Override
-            public void loadFailed(FriendlyException exception) {
-                exception.printStackTrace();
-            }
-        });
+        logger.debug(trackURL);
+        return trackURL;
     }
 
     @Override

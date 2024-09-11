@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.handlers;
 
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -34,7 +35,9 @@ public class EventHandler extends ListenerAdapter{
              */
 
             //e.getChannel().sendTyping().queue();
-            this.pudelWorld.getCommandManager().handleCommand(e);
+
+            SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
+            this.pudelWorld.getCommandManager().handleCommand(session, e);
         }
     }
 }

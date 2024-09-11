@@ -67,6 +67,10 @@ public class PudelWorld {
         return this.managerFactory.getManager("pudelManager", PudelManager.class);
     }
 
+    public SessionManager getSessionManager(){
+        return this.managerFactory.getManager("sessionManager", SessionManager.class);
+    }
+
     public UserManager getUserManager(){
         return this.managerFactory.getManager("userManager", UserManager.class);
     }

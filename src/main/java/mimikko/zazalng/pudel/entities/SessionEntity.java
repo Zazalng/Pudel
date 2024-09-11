@@ -2,27 +2,26 @@ package mimikko.zazalng.pudel.entities;
 
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.manager.CommandManager;
+import mimikko.zazalng.pudel.manager.SessionManager;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SessionEntity {
-    protected final CommandManager commandManager;
+    protected final SessionManager sessionManager;
     private final UserEntity user;
     private final GuildEntity guild;
     private final MessageChannelUnion channel;
-    private final Command command;
+    private Command command;
     private final Map<String, String> promptCollection = new HashMap<>();
     private String sessionState;
 
-    public SessionEntity(CommandManager commandManager, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue, Command command) {
-        this.commandManager = commandManager;
+    public SessionEntity(SessionManager sessionManager, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue) {
+        this.sessionManager = sessionManager;
         this.user = user;
         this.guild = guild;
         this.channel = channelIssue;
-        this.command = command;
         this.sessionState = "INIT";
     }
 
@@ -41,9 +40,17 @@ public class SessionEntity {
     public Object getData(String sessionState) {
         return promptCollection.get(sessionState);
     }
+
+    public void setCommand(Command command){
+        this.command = command;
+    }
+
+    public Command getCommand(){
+        return this.command;
+    }
     // Getters for entities
     public PudelWorld getPudelWorld(){
-        return commandManager.getPudelWorld();
+        return sessionManager.getPudelWorld();
     }
 
     public UserEntity getUser() {
@@ -56,10 +63,6 @@ public class SessionEntity {
 
     public MessageChannelUnion getChannel() {
         return channel;
-    }
-
-    public Command getCommand() {
-        return command;
     }
 
     public void execute(String args){

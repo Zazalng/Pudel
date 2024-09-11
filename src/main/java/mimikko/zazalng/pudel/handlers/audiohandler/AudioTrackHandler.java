@@ -1,4 +1,4 @@
-package mimikko.zazalng.pudel.handlers;
+package mimikko.zazalng.pudel.handlers.audiohandler;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;

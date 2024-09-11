@@ -5,10 +5,14 @@ import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MusicPlay extends AbstractCommand {
+    private static final Logger logger = LoggerFactory.getLogger(MusicPlay.class);
     @Override
     public void execute(SessionEntity session, String args) {
+        logger.debug("State: " + session.getState() + " | args: "+args);
         super.execute(session, args);
     }
 
@@ -18,17 +22,24 @@ public class MusicPlay extends AbstractCommand {
             args = "Please provide a song title or a YouTube URL.";
         } else {
             if (session.getUser().getUserManager().isVoiceActive(session.getGuild().getJDA(),session.getUser().getJDA())) {
+                logger.debug("State: " + session.getState() + " | args: "+args);
                 // Automatically prepend "ytsearch:" if the input isn't a URL
                 if (!args.startsWith("http://") && !args.startsWith("https://")) {
-                    session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(),"ytsearch:" + args);
+                    logger.debug("Beforeload | State: " + session.getState() + " | args: "+args);
+                    args = session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(),"ytsearch:" + args);
+                    logger.debug("Afterload | State: " + session.getState() + " | args: "+args);
                 } else {
-                    //guild.getMusicPlayer().loadAndPlay(input, guild.getGuild().getMemberById(user.getJDA().getId()).getVoiceState().getChannel().asVoiceChannel());
+                    args = session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(),args);
                 }
-                //guild.getGuild().getTextChannelById(replyChannel).sendMessage("Searching and playing: \n`" + input + "`").queue();
+                session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
+                session.getPudelWorld().getPudelManager().OpenVoiceConnection(session.getGuild().getJDA(),session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel());
             } else {
-                //guild.getGuild().getTextChannelById(replyChannel).sendMessage("You must be in a voice channel to play music!").queue();
+                args = "You must be in a voice channel to play music!";
             }
         }
+        session.getChannel().sendMessage(args).queue();
+
+        session.setState("END");
     }
 
     @Override

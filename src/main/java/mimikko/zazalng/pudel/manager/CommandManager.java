@@ -7,21 +7,23 @@ import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CommandManager implements Manager {
+    private static final Logger logger = LoggerFactory.getLogger(CommandManager.class);
     protected final PudelWorld pudelWorld;
     private final Map<String, Command> commands;
-    private final Map<String, SessionEntity> sessions;
 
     public CommandManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         this.commands = new HashMap<>();
-        this.sessions = new HashMap<>();
 
         //music category
         loadCommand("loop", new MusicLoop());
@@ -42,62 +44,44 @@ public class CommandManager implements Manager {
         commands.remove(name);
     }
 
-    public void handleCommand(MessageReceivedEvent e) {
-        String prefix = this.pudelWorld.getGuildManager().getGuildEntity(e.getGuild()).getPrefix();
-        if (e.getMessage().getContentRaw().startsWith(prefix)) {
-            String[] parts = e.getMessage().getContentRaw().substring(prefix.length()).split(" ", 2);
-            String commandName = parts[0];
-            String args = parts.length > 1 ? parts[1] : "";
+    public void handleCommand(SessionEntity session, MessageReceivedEvent e) {
+        String input = e.getMessage().getContentRaw();
+        String prefix = session.getGuild().getPrefix();
+        if(session.getState().equals("INIT") && input.startsWith(prefix)){
+            String[] parts = input.substring(prefix.length()).split(" ",2);
+            String commandName = parts[0].toLowerCase();
+            input = parts.length > 1 ? parts[1] : "";
 
             if (commandName.equalsIgnoreCase("help")) {
-                if (args.isEmpty()) {
+                if (input.isEmpty()) {
                     // Show the list of commands
                     StringBuilder helpMessage = new StringBuilder("Available commands:\n");
                     commands.forEach((name, command) -> helpMessage.append("`").append(prefix).append(name).append("` - ").append(command.getDescription()).append("\n"));
                     e.getChannel().sendMessage(helpMessage.toString()).queue();
                 } else {
                     // Show detailed help for a specific command
-                    Command command = commands.get(args.toLowerCase());
+                    Command command = commands.get(input.toLowerCase());
                     if (command != null) {
                         e.getChannel().sendMessage(command.getDetailedHelp()).queue();
                     } else {
                         e.getChannel().sendMessage("Unknown command!").queue();
                     }
                 }
-            } else {
+            }else {
                 Command command = commands.get(commandName.toLowerCase());
+                logger.debug("Command called: " + commandName + " | Result: "+(command != null));
                 if (command != null) {
-                    SessionEntity session = getSession(e, command);
-                    session.getCommand().execute(session, args);
+                    session.setCommand(command);
+                    session.execute(input);
                 } else {
-                    //e.getChannel().sendMessage("Unknown command!").queue();
+                    e.getChannel().sendMessage("Unknown command!").queue();
                 }
             }
-        } else {
-            //not being called
-            return;
+        } else if(!session.getState().equals("")){
+            session.execute(input);
+        } else{
+            session.setState("END");
         }
-    }
-
-    public SessionEntity getSession(MessageReceivedEvent e, Command command) {
-        UserEntity user = this.pudelWorld.getUserManager().getUserEntity(e.getAuthor());
-        GuildEntity guild = this.pudelWorld.getGuildManager().getGuildEntity(e.getGuild());
-        MessageChannelUnion channelIssue = e.getChannel();
-
-        // Create a unique session key using userId, guildId, and channelId
-        String sessionKey = createSessionKey(e.getAuthor().getId(), e.getGuild().getId(), e.getChannel().getId());
-
-        return this.sessions.computeIfAbsent(sessionKey, k -> new SessionEntity(this, user, guild, channelIssue, command));
-    }
-
-    // Remove session after it ends
-    public void endSession(String userId, String guildId, String channelId) {
-        String sessionKey = createSessionKey(userId, guildId, channelId);
-        this.sessions.remove(sessionKey);
-    }
-
-    private String createSessionKey(String userId, String guildId, String channelId) {
-        return userId + ":" + guildId + ":" + channelId;
     }
 
     @Override
@@ -117,6 +101,6 @@ public class CommandManager implements Manager {
 
     @Override
     public void shutdown() {
-        this.sessions.clear();
+
     }
 }

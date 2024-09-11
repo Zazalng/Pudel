@@ -16,6 +16,7 @@ public class ManagerFactory {
         managers.put("localizationManager", new LocalizationManager(pudelWorld));
         managers.put("musicManager", new MusicManager(pudelWorld));
         managers.put("pudelManager", new PudelManager(pudelWorld));
+        managers.put("sessionManager", new SessionManager(pudelWorld));
         managers.put("userManager", new UserManager(pudelWorld));
     }
 
