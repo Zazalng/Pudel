@@ -11,9 +11,10 @@ public class MusicStop extends AbstractCommand {
 
     @Override
     protected void initialState(SessionEntity session, String args){
-        args = session.getGuild().getJDA().getMemberById(session.getUser().getJDA().getId())+" has force stopped music";
+        args = session.getUser().getNickname(session.getGuild())+" has force stopped music";
 
         session.getGuild().getMusicPlayer().stop();
+        session.getPudelWorld().getPudelManager().CloseVoiceConnection(session.getGuild().getJDA());
         session.getChannel().asTextChannel().sendMessage(args).queue();
         session.setState("END");
     }

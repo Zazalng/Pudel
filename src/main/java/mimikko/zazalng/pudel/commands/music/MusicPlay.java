@@ -1,18 +1,11 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MusicPlay extends AbstractCommand {
-    private static final Logger logger = LoggerFactory.getLogger(MusicPlay.class);
     @Override
     public void execute(SessionEntity session, String args) {
-        logger.debug("State: " + session.getState() + " | args: "+args);
         super.execute(session, args);
     }
 
@@ -20,26 +13,34 @@ public class MusicPlay extends AbstractCommand {
     protected void initialState(SessionEntity session, String args) {
         if (args.isEmpty()) {
             args = "Please provide a song title or a YouTube URL.";
-        } else {
-            if (session.getUser().getUserManager().isVoiceActive(session.getGuild().getJDA(),session.getUser().getJDA())) {
-                logger.debug("State: " + session.getState() + " | args: "+args);
-                // Automatically prepend "ytsearch:" if the input isn't a URL
-                if (!args.startsWith("http://") && !args.startsWith("https://")) {
-                    logger.debug("Beforeload | State: " + session.getState() + " | args: "+args);
-                    args = session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(),"ytsearch:" + args);
-                    logger.debug("Afterload | State: " + session.getState() + " | args: "+args);
-                } else {
-                    args = session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(),args);
-                }
-                session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
-                session.getPudelWorld().getPudelManager().OpenVoiceConnection(session.getGuild().getJDA(),session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel());
-            } else {
-                args = "You must be in a voice channel to play music!";
-            }
+            session.getChannel().sendMessage(args).queue();
+            session.setState("END");
+            return;
         }
-        session.getChannel().sendMessage(args).queue();
 
-        session.setState("END");
+        if (!session.getUser().getUserManager().isVoiceActive(session.getGuild().getJDA(), session.getUser().getJDA())) {
+            session.getChannel().sendMessage("You must be in a voice channel to play music!").queue();
+            session.setState("END");
+            return;
+        }
+
+        String finalArgs = args; // Make args effectively final for use in the lambda
+        String trackUrl = args.startsWith("http://") || args.startsWith("https://") ? finalArgs : "ytsearch:" + finalArgs;
+
+        session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(), trackUrl, result -> {
+            // This block will execute once loadAndPlay finishes
+            session.getChannel().sendMessage(result).queue();
+
+            if (!result.contains("No Match") && !result.contains("Load failed")) {
+                session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
+                session.getPudelWorld().getPudelManager().OpenVoiceConnection(
+                        session.getGuild().getJDA(),
+                        session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel()
+                );
+            }
+
+            session.setState("END");
+        });
     }
 
     @Override

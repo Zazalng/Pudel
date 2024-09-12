@@ -1,18 +1,23 @@
 package mimikko.zazalng.pudel.manager;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
-import mimikko.zazalng.pudel.handlers.audiohandler.AudioResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Consumer;
+
 public class MusicManager implements Manager {
-    private static final Logger logger = LoggerFactory.getLogger(CommandManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(MusicManager.class);
     protected final PudelWorld pudelWorld;
     private final AudioPlayerManager playerManager;
 
@@ -33,23 +38,49 @@ public class MusicManager implements Manager {
         return this.playerManager.createPlayer();
     }
 
-    public String loadAndPlay(MusicPlayerEntity player, String trackURL) {
-        AudioResultHandler handler = new AudioResultHandler(player);
-        playerManager.loadItem(trackURL, handler);
+    public void loadAndPlay(MusicPlayerEntity player, String trackURL, Consumer<String> callback) {
+        playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                player.queueUp(track);
+                String result = "Search & Play result.\n" + getTrackInfo(track);
+                callback.accept(result);  // Return the result via callback
+            }
 
-        if(handler.getResult().startsWith("URL")){
-            trackURL = "Playlist had loaded successfully.\n`"+trackURL+"`";
-        } else if(handler.getResult().startsWith("NULL")){
-            trackURL = "No Matching result of input.\n`"+trackURL+"`";
-        } else if(handler.getResult().startsWith("SEARCH")){
-            trackURL = "Searching and Playing.\n"+ handler.getResult().replace("SEARCH","");
-        } else{
-            trackURL = handler.getResult();
-        }
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                String result;
+                if (playlist.isSearchResult()) {
+                    // If it's a search result, add the first track to the queue
+                    player.queueUp(playlist.getTracks().get(0));
+                    result = "Search & Play result.\n" + getTrackInfo(playlist.getTracks().get(0));
+                } else {
+                    // Add all tracks in the playlist to the queue
+                    player.queueUp(playlist);
+                    result = "Playlist had loaded successfully.\n[Link Playlist](<" + trackURL + ">)";
+                }
+                callback.accept(result);  // Return the result via callback
+            }
 
-        logger.debug(trackURL);
-        return trackURL;
+            @Override
+            public void noMatches() {
+                String result = "No Match searching / Invalid Input.\n`" + trackURL + "`";
+                callback.accept(result);  // Return the result via callback
+            }
+
+            @Override
+            public void loadFailed(FriendlyException exception) {
+                String result = "Load failed due to an error.\n`" + trackURL + "`";
+                logger.error("LoadFailed", exception);
+                callback.accept(result);  // Return the result via callback
+            }
+        });
     }
+
+    public String getTrackInfo(AudioTrack track) {
+        return "[" + track.getInfo().title + "](<" + track.getInfo().uri + ">)";
+    }
+
 
     @Override
     public PudelWorld getPudelWorld() {

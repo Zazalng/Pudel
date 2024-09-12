@@ -4,20 +4,13 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
-import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
-import mimikko.zazalng.pudel.handlers.CommandLineHandler;
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CommandManager implements Manager {
-    private static final Logger logger = LoggerFactory.getLogger(CommandManager.class);
     protected final PudelWorld pudelWorld;
     private final Map<String, Command> commands;
 
@@ -69,7 +62,6 @@ public class CommandManager implements Manager {
                 }
             }else {
                 Command command = commands.get(commandName.toLowerCase());
-                logger.debug("Command called: " + commandName + " | Result: "+(command != null));
                 if (command != null) {
                     session.setCommand(command);
                     session.execute(input);
@@ -77,7 +69,7 @@ public class CommandManager implements Manager {
                     e.getChannel().sendMessage("Unknown command!").queue();
                 }
             }
-        } else if(!session.getState().equals("")){
+        } else if(!session.getState().isEmpty() && session.getCommand() != null){
             session.execute(input);
         } else{
             session.setState("END");

@@ -39,23 +39,12 @@ public class MusicPlayerEntity {
         }
     }
 
-    public String queueUp(AudioPlaylist playlist) {
-        String result = "";
-        if (playlist.isSearchResult()) {
-            // If it's a search result, add the first track to the queue
-            this.playlist.add(playlist.getTracks().get(0));
-            result = "SEARCH"+getTrackInfo(playlist.getTracks().get(0));
-        } else {
-            // Add all tracks in the playlist to the queue
-            this.playlist.addAll(playlist.getTracks());
-            return "URL";
-        }
+    public void queueUp(AudioPlaylist playlist) {
+        this.playlist.addAll(playlist.getTracks());
 
-        // Play the first track if none is currently playing
         if (this.player.getAudioPlayer().getPlayingTrack() == null) {
             this.player.getAudioPlayer().playTrack(trackSelection());
         }
-        return result;
     }
 
     public String getTrackInfo(){
@@ -64,10 +53,6 @@ public class MusicPlayerEntity {
         } else{
             return "["+this.player.getAudioPlayer().getPlayingTrack().getInfo().title+"](<"+this.player.getAudioPlayer().getPlayingTrack().getInfo().uri+">)";
         }
-    }
-
-    public String getTrackInfo(AudioTrack track){
-        return "["+track.getInfo().title+"](<"+track.getInfo().uri+">)";
     }
 
     private AudioTrack trackSelection() {

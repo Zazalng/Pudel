@@ -1,10 +1,8 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.HashMap;
@@ -17,10 +15,6 @@ public class UserManager implements Manager {
     public UserManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         this.userEntity = new HashMap<>();
-    }
-
-    public Member userConvert(Guild guild, User user){
-        return guild.getMember(user);
     }
 
     public boolean isVoiceActive(Guild guild, User user){
