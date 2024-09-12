@@ -4,6 +4,7 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
+import mimikko.zazalng.pudel.commands.utility.UtilityInvite;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -27,6 +28,8 @@ public class CommandManager implements Manager {
         loadCommand("stop", new MusicStop());
         //settings category
         loadCommand("prefix", new GuildPrefix());
+        //utility category
+        loadCommand("invite", new UtilityInvite());
     }
 
     public void loadCommand(String name, Command command) {
