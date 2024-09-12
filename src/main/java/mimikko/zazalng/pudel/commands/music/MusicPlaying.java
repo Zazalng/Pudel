@@ -1,23 +1,39 @@
 package mimikko.zazalng.pudel.commands.music;
 
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 
-public class MusicPlaying implements Command {
+public class MusicPlaying extends AbstractCommand {
+    @Override
+    public void execute(SessionEntity session, String args) {
+        super.execute(session, args);
+    }
 
     @Override
-    public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-        guild.getGuild().getTextChannelById(replyChannel).sendMessage("Now Playing: " + guild.getMusicManager().getTrackInfo()).queue();
+    protected void initialState(SessionEntity session, String args){
+        if(!session.getGuild().getMusicPlayer().getTrackInfo().isEmpty()) {
+            args = "Now Playing: " + session.getGuild().getMusicPlayer().getTrackInfo();
+        } else{
+            args = "There is no current track that playing";
+        }
+        session.getChannel().sendMessage(args).queue();
+        session.setState("END");
+    }
+
+    @Override
+    public void reload() {
+
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "Show current track information.";
     }
 
     @Override
     public String getDetailedHelp() {
-        return "";
+        return "Usage: np" +
+                "\nExample: `p!np`" +
+                "\n\nShow information of playing track title / url";
     }
 }

@@ -3,16 +3,16 @@ package mimikko.zazalng.pudel.handlers;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.handlers.CommandLineInputHandler.CommandProcessing;
 import net.dv8tion.jda.api.entities.Activity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
-import static mimikko.zazalng.pudel.utility.JDAshardBuilder.buildJDAshardManager;
-
-
 public class CommandLineHandler implements Runnable{
     protected final PudelWorld pudelWorld;
+    private static final Logger logger = LoggerFactory.getLogger(CommandLineHandler.class);
 
     public CommandLineHandler(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
@@ -24,28 +24,28 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void unknownCommand(String command){
-        pudelWorld.puddleReply("What is '"+command+"' that should do, Master?");
+        logger.warn("Encounter Unexpected command: `{}`", command);
     }
 
     public void stopWorld() {
-        pudelWorld.puddleReply("Disconnecting World called '"+ pudelWorld.getEnvironment().getWorldName()+"'");
-        pudelWorld.getJDAshardManager().shutdown();
+        logger.info("Disconnecting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
+        pudelWorld.JDAShutdown();
         pudelWorld.setWorldStatus(false);
-        pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world has stopped.");
+        logger.info("`{}` world has stopped.", pudelWorld.getEnvironment().getWorldName());
     }
 
     public void startWorld(){
         if(pudelWorld.getEnvironment().isLoaded()){
             if(!pudelWorld.getWorldStatus()){
-                pudelWorld.puddleReply("Starting World called \""+ pudelWorld.getEnvironment().getWorldName()+"\"");
-                pudelWorld.setJDAshardManager(buildJDAshardManager(pudelWorld.getEnvironment().getDiscordAPI()));
-                pudelWorld.getJDAshardManager().setActivity(Activity.listening("My Master"));
+                logger.info("Starting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
+                pudelWorld.buildShard(pudelWorld.getEnvironment().getDiscordAPI());
+                pudelWorld.getJDAshardManager().setActivity(Activity.streaming("Pudel V2 (Stable Build)","https://github.com/Zazalng/Pudel"));
                 pudelWorld.setWorldStatus(true);
             } else{
-                pudelWorld.puddleReply("'"+ pudelWorld.getEnvironment().getWorldName()+"' world is still running");
+                logger.warn("`{}` world is still running.",pudelWorld.getEnvironment().getWorldName());
             }
         } else{
-            pudelWorld.puddleReply("World Environment is missing, Master");
+            logger.error("World Environment is missing.");
         }
     }
 
@@ -55,15 +55,15 @@ public class CommandLineHandler implements Runnable{
 
     public void unloadEnv() {
         if(pudelWorld.getWorldStatus()) {
-            pudelWorld.puddleReply("I'm still seeing '" + pudelWorld.getEnvironment().getWorldName() + "' world is running.");
+            logger.warn("I'm still seeing `{}` world is running.",pudelWorld.getEnvironment().getWorldName());
         } else{
             pudelWorld.getEnvironment().unloadEnv();
-            pudelWorld.puddleReply("Environment is empty now.");
+            logger.info("Environment is empty now.");
         }
     }
 
     public void loadEnv() {
-        pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
+        logger.info("Getting an Environment setting, where should I be?");
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Environment files", "env");
         fileChooser.setFileFilter(filter);
@@ -77,15 +77,15 @@ public class CommandLineHandler implements Runnable{
             if (selectedFile.isFile() && selectedFile.getName().equals(".env")) {
                 pudelWorld.getEnvironment().loadEnv(selectedFile.getAbsolutePath());
             } else {
-                System.out.println("Please select a valid .env file. Exiting command.");
+                logger.error("Please select a valid .env file. Exiting command.");
             }
         } else {
-            System.out.println("No file selected. Exiting command.");
+            logger.error("No file selected. Exiting command.");
         }
     }
 
     public void loadEnv(String filePath) {
-        pudelWorld.puddleReply("Getting an Environment setting, where should I be?");
+        logger.info("Getting an Environment setting, where should I be?");
         pudelWorld.getEnvironment().loadEnv(filePath);
     }
 }

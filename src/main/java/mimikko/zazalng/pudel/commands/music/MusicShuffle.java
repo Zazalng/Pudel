@@ -1,27 +1,38 @@
 package mimikko.zazalng.pudel.commands.music;
 
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
-public class MusicShuffle implements Command {
+public class MusicShuffle extends AbstractCommand {
     @Override
-    public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
+    public void execute(SessionEntity session, String args) {
+        super.execute(session, args);
+    }
+
+    @Override
+    protected void initialState(SessionEntity session, String args) {
         if(triggerTrue(args)){
-            guild.getMusicManager().setShuffle(true);
+            session.getGuild().getMusicPlayer().setShuffle(true);
+            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to`"+session.getGuild().getMusicPlayer().isShuffle()+"`";
         } else if(triggerFalse(args)){
-            guild.getMusicManager().setShuffle(false);
+            session.getGuild().getMusicPlayer().setShuffle(false);
+            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to`"+session.getGuild().getMusicPlayer().isShuffle()+"`";
         } else if(args.isEmpty()){
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current setting for Shuffle player is `"+guild.getMusicManager().isShuffle()+"`").queue();
-            return;
+            args = "The current setting for Shuffle player is `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
         } else{
-            guild.getMusicManager().shufflePlaylist();
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("The current playlist has been shuffle by seed `"+args+"`").queue();
-            return;
+            session.getGuild().getMusicPlayer().shufflePlaylist();
+            args = session.getUser().getNickname(session.getGuild())+" has shuffle playlist by seed `"+args+"`";
         }
-        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Shuffle player to `"+guild.getMusicManager().isShuffle()+"`").queue();
+        session.getChannel().sendMessage(args).queue();
+
+        session.setState("END");
+    }
+
+    @Override
+    public void reload() {
+
     }
 
     @Override

@@ -2,30 +2,28 @@ package mimikko.zazalng.pudel;
 
 import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import mimikko.zazalng.pudel.handlers.EnvironmentHandler;
-import mimikko.zazalng.pudel.logging.WorldLogging;
+import mimikko.zazalng.pudel.manager.*;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
-public class PudelWorld {
-    //Get From other Class
-    protected final PudelWorld pudelWorld;
-    protected final EnvironmentHandler env;
-    protected final CommandLineHandler worldCommand;
-    protected final WorldLogging worldLogging;
+import static mimikko.zazalng.pudel.utility.JDAshardBuilder.buildJDAshardManager;
 
+public class PudelWorld {
+    private final PudelWorld pudelWorld;
+    //Get From other Class
+    protected final CommandLineHandler worldCommand;
+    protected final EnvironmentHandler Environment;
+    protected final ManagerFactory managerFactory;
     //Get API Class
     protected ShardManager JDAshardManager;
-    
     //Get In Puddle's World Class
-    private final String className = "PudelWorld";
     private boolean worldStatus;
     
     public PudelWorld(){
-        //Get From other Class
         this.pudelWorld = this;
-        this.env = new EnvironmentHandler(this);
-        this.worldLogging = new WorldLogging(this);
-
+        //Get From other Class
         this.worldCommand = new CommandLineHandler(this);
+        this.Environment = new EnvironmentHandler(this);
+        this.managerFactory = new ManagerFactory(this);
         //Get In Puddle's World Class
         this.worldStatus = false;
     }
@@ -42,11 +40,39 @@ public class PudelWorld {
     }
 
     public EnvironmentHandler getEnvironment(){
-        return this.env;
+        return this.Environment;
     }
 
-    public WorldLogging getWorldLogging(){
-        return this.worldLogging;
+    public ManagerFactory getManagerFactory() {
+        return managerFactory;
+    }
+
+    public CommandManager getCommandManager(){
+        return this.managerFactory.getManager("commandManager", CommandManager.class);
+    }
+
+    public GuildManager getGuildManager(){
+        return this.managerFactory.getManager("guildManager", GuildManager.class);
+    }
+
+    public LocalizationManager getLocalizationManager(){
+        return this.managerFactory.getManager("localizationManager", LocalizationManager.class);
+    }
+
+    public MusicManager getMusicManager(){
+        return this.managerFactory.getManager("musicManager", MusicManager.class);
+    }
+
+    public PudelManager getPudelManager(){
+        return this.managerFactory.getManager("pudelManager", PudelManager.class);
+    }
+
+    public SessionManager getSessionManager(){
+        return this.managerFactory.getManager("sessionManager", SessionManager.class);
+    }
+
+    public UserManager getUserManager(){
+        return this.managerFactory.getManager("userManager", UserManager.class);
     }
     
     public boolean getWorldStatus(){
@@ -67,7 +93,21 @@ public class PudelWorld {
     ///////////////////////////////////////////////////
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
-    public void puddleReply(String reply){
-        System.out.printf("%s: %s\n",getEnvironment().getBotName(),reply);
+    public void JDAShutdown(){
+        this.getJDAshardManager().shutdown();
+        this.setJDAshardManager(null);
+    }
+
+    public void buildShard(String api){
+        setJDAshardManager(buildJDAshardManager(this,api));
+    }
+
+    public void reloadManager(String managerName) {
+        managerFactory.reloadManager(managerName);
+    }
+
+    public void shutdownWorld() {
+        managerFactory.shutdownAllManagers();
+        // Additional shutdown logic for the world
     }
 }

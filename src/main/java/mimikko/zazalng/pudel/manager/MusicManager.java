@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.manager;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -8,162 +9,96 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.handlers.AudioPlayerSendHandler;
-import mimikko.zazalng.pudel.handlers.AudioTrackHandler;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.function.Consumer;
 
-import static mimikko.zazalng.pudel.utility.IntegerUtility.randomInt;
-
-public class MusicManager {
-    private final GuildEntity guild;
+public class MusicManager implements Manager {
+    private static final Logger logger = LoggerFactory.getLogger(MusicManager.class);
+    protected final PudelWorld pudelWorld;
     private final AudioPlayerManager playerManager;
-    private final List<AudioTrack> playlist;
-    private final AudioPlayerSendHandler player;
-    private AudioTrack audioTrack;
-    private boolean flagLoop;
-    private boolean flagShuffle;
 
-    public MusicManager(GuildEntity guild){
-        this.guild = guild;
-        this.flagLoop = false;
-        this.flagShuffle = false;
-        this.playerManager = new DefaultAudioPlayerManager();
+    public MusicManager(PudelWorld pudelWorld){
+        this.pudelWorld = pudelWorld;
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
                 true,   // Allow direct video IDs
                 true/*,   // Allow direct playlist IDs
                 new Client[]{new Music(), new Web()} */ // Clients
         );
-        playerManager.registerSourceManager(ytSourceManager);
-        AudioSourceManagers.registerRemoteSources(playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
-        this.player = new AudioPlayerSendHandler(playerManager.createPlayer());
-        this.player.getAudioPlayer().addListener(new AudioTrackHandler(this));
-        this.playlist = new ArrayList<>();
-        this.audioTrack = null;
+        this.playerManager = new DefaultAudioPlayerManager();
+        this.playerManager.registerSourceManager(ytSourceManager);
+        AudioSourceManagers.registerRemoteSources(this.playerManager,com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
     }
 
-    public GuildEntity getGuild(){
-        return this.guild;
+    public AudioPlayer musicManagerBuilder(){
+        return this.playerManager.createPlayer();
     }
 
-    public boolean isLoop(){
-        return this.flagLoop;
-    }
-
-    public void setLoop(boolean flag){
-        this.flagLoop = flag;
-    }
-
-    public boolean isShuffle() {
-        return this.flagShuffle;
-    }
-
-    public void setShuffle(boolean flag) {
-        this.flagShuffle = flag;
-    }
-
-    public void loadAndPlay(String trackUrl, VoiceChannel channel) {
-        playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
+    public void loadAndPlay(MusicPlayerEntity player, String trackURL, Consumer<String> callback) {
+        playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                getGuildConnection(channel);
-                queueUp(track);
+                player.queueUp(track);
+                String result = "Search & Play result.\n" + getTrackInfo(track);
+                callback.accept(result);  // Return the result via callback
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                getGuildConnection(channel);
-                queueUp(playlist);
+                String result;
+                if (playlist.isSearchResult()) {
+                    // If it's a search result, add the first track to the queue
+                    player.queueUp(playlist.getTracks().get(0));
+                    result = "Search & Play result.\n" + getTrackInfo(playlist.getTracks().get(0));
+                } else {
+                    // Add all tracks in the playlist to the queue
+                    player.queueUp(playlist);
+                    result = "Playlist had loaded successfully.\n[Link Playlist](<" + trackURL + ">)";
+                }
+                callback.accept(result);  // Return the result via callback
             }
 
             @Override
             public void noMatches() {
-                System.out.println("No track found for URL: " + trackUrl);
+                String result = "No Match searching / Invalid Input.\n`" + trackURL + "`";
+                callback.accept(result);  // Return the result via callback
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                exception.printStackTrace();
+                String result = "Load failed due to an error.\n`" + trackURL + "`";
+                logger.error("LoadFailed", exception);
+                callback.accept(result);  // Return the result via callback
             }
         });
     }
 
-    private void queueUp(AudioTrack track) {
-        if (this.player.getAudioPlayer().getPlayingTrack() == null) {
-            this.playlist.add(track);
-            this.audioTrack = track;
-            this.player.getAudioPlayer().playTrack(trackSelection());
-        } else {
-            this.playlist.add(track);
-        }
+    public String getTrackInfo(AudioTrack track) {
+        return "[" + track.getInfo().title + "](<" + track.getInfo().uri + ">)";
     }
 
-    private void queueUp(AudioPlaylist playlist) {
-        if (playlist.isSearchResult()) {
-            // If it's a search result, add the first track to the queue
-            this.playlist.add(playlist.getTracks().get(0));
-        } else {
-            // Add all tracks in the playlist to the queue
-            this.playlist.addAll(playlist.getTracks());
-        }
 
-        // Play the first track if none is currently playing
-        if (this.player.getAudioPlayer().getPlayingTrack() == null) {
-            this.player.getAudioPlayer().playTrack(trackSelection());
-        }
+    @Override
+    public PudelWorld getPudelWorld() {
+        return this.pudelWorld;
     }
 
-    private AudioTrack trackSelection() {
-        if (flagLoop && audioTrack != null) {
-            // If looping is enabled, replay the current track
-            return audioTrack.makeClone();
-        } else if (flagShuffle && !playlist.isEmpty()) {
-            // If shuffle is enabled, pick a random track from the playlist
-            int index = randomInt(playlist.size());
-            AudioTrack selectedTrack = playlist.remove(index);
-            this.audioTrack = selectedTrack.makeClone();
-            return this.audioTrack;
-        } else if (!playlist.isEmpty()) {
-            // Play the next track in the playlist
-            AudioTrack nextTrack = playlist.remove(0);
-            this.audioTrack = nextTrack.makeClone();
-            return this.audioTrack;
-        } else {
-            return null; // No track to play
-        }
+    @Override
+    public void initialize() {
+
     }
 
-    private void getGuildConnection(VoiceChannel channel){
-        getGuild().getGuild().getAudioManager().openAudioConnection(channel);
-        getGuild().getGuild().getAudioManager().setSendingHandler(this.player);
+    @Override
+    public void reload() {
+
     }
 
-    public String getTrackInfo(){
-        return "["+this.player.getAudioPlayer().getPlayingTrack().getInfo().title+"]("+this.player.getAudioPlayer().getPlayingTrack().getInfo().uri+")";
-    }
+    @Override
+    public void shutdown() {
 
-    public void shufflePlaylist(){
-        Collections.shuffle(this.playlist);
-    }
-
-    public void nextTrack(boolean isSkip) {
-        if (isSkip || flagLoop) {
-            this.player.getAudioPlayer().playTrack(trackSelection());
-        } else {
-            this.player.getAudioPlayer().startTrack(trackSelection(), true);
-        }
-    }
-
-    public void stop() {
-        this.playlist.clear();
-        this.player.getAudioPlayer().stopTrack();
-        this.player.getAudioPlayer().destroy();
-        getGuild().getGuild().getAudioManager().setSendingHandler(null);
-        getGuild().getGuild().getAudioManager().closeAudioConnection();
     }
 }

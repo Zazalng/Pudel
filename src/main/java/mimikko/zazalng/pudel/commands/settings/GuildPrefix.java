@@ -1,18 +1,29 @@
 package mimikko.zazalng.pudel.commands.settings;
 
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 
-public class GuildPrefix implements Command {
+public class GuildPrefix extends AbstractCommand {
     @Override
-    public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
+    public void execute(SessionEntity session, String args) {
+        super.execute(session, args);
+    }
+
+    @Override
+    protected void initialState(SessionEntity session, String args) {
         if(args.isEmpty()){
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage("Prefix for this server is `"+guild.getPrefix()+"`").queue();
+            args = "Prefix for this server is `"+session.getGuild().getPrefix()+"`";
         } else{
-            guild.setPrefix(args); // still bug
-            guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has setting for Prefix to `"+guild.getPrefix()+"`").queue();
+            session.getGuild().setPrefix(args);
+            args = session.getUser().getNickname(session.getGuild())+" has setting for Prefix to `"+session.getGuild().getPrefix()+"`";
         }
+        session.getChannel().sendMessage(args).queue();
+        session.setState("END");
+    }
+
+    @Override
+    public void reload() {
+
     }
 
     @Override
@@ -22,6 +33,10 @@ public class GuildPrefix implements Command {
 
     @Override
     public String getDetailedHelp() {
-        return "";
+        return "Usage: prefix [args]" +
+                "\nExamples: `p!prefix`, `p!prefix I love Janu`" +
+                "\n\nany [args] will result set guild prefix as [args] input." +
+                "\nNo argument will result as showing current guild prefix." +
+                "\n\n Caution: blankspace ` ` at the end of input also include";
     }
 }

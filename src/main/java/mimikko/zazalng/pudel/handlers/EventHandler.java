@@ -1,56 +1,43 @@
 package mimikko.zazalng.pudel.handlers;
 
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class EventHandler extends ListenerAdapter{
-    protected final Map<String, GuildEntity> guildEntity;
-    protected final Map<String, UserEntity> userEntity;
+    protected final PudelWorld pudelWorld;
 
-    public EventHandler() {
-        this.guildEntity = new HashMap<>();
-        this.userEntity = new HashMap<>();
-    }
-
-    public GuildEntity getGuildEntity(Guild JDAguild){
-        return this.guildEntity.computeIfAbsent(JDAguild.getId(), Entity -> new GuildEntity(JDAguild));
-    }
-
-    public UserEntity getUserEntity(User JDAuser){
-        return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(JDAuser));
-    }
-
-    @Override
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e){
-        if(e.getUser().isBot()){
-
-        }
+    public EventHandler(PudelWorld pudelWorld) {
+        this.pudelWorld = pudelWorld;
     }
 
     @Override
     public void onReady(@NotNull ReadyEvent e) {
-
+        this.pudelWorld.getPudelManager().setPudelId(e.getJDA().getSelfUser().getId());
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e){
+        e.getChannel().getType();
+
         if(!e.getAuthor().isBot()){
             //From {guildName} in {channelName} by {userName} said: {contentRaw}
             String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: \n"+e.getMessage().getContentRaw();
             System.out.println(fullRespond);
 
+            /*
+                Still Possible to implement command for direct message interacting
+                - A possible thing that can happen (from what I have discovery)
+                1. Message from Guild asTextChannel
+             */
+
             //e.getChannel().sendTyping().queue();
-            new CommandHandler(getGuildEntity(e.getGuild()), getUserEntity(e.getAuthor()), e);
+
+            SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
+            this.pudelWorld.getCommandManager().handleCommand(session, e);
         }
     }
 }

@@ -1,46 +1,53 @@
 package mimikko.zazalng.pudel.entities;
 
-import mimikko.zazalng.pudel.manager.MusicManager;
+import mimikko.zazalng.pudel.manager.GuildManager;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuildEntity {
     //Import variable
-    private final GuildEntity GuildEntity;
+    protected final GuildManager guildManager;
     private final Guild guild;
-    private final MusicManager musicManager;
+    private MusicPlayerEntity musicPlayer;
 
     //Class variable
     private final List<String> ignoreChannel;
     private final List<String> disableCommand;
-
-    private String ownerID;
+    private String guildLang;
     private String prefix;
     private String staffLogChannel;
 
-    public GuildEntity(Guild guild){
+    public GuildEntity(GuildManager guildManager, Guild guild){
+        this.guildManager = guildManager;
+        this.guild = guild;
+        this.musicPlayer = null;
+
         this.ignoreChannel = new ArrayList<>();
         this.disableCommand = new ArrayList<>();
-        this.GuildEntity = this;
-        this.guild = guild;
-        this.musicManager = new MusicManager(this);
-        this.ownerID = getOwnerID();
+        this.guildLang = "en";
         this.prefix = "p!";
         this.staffLogChannel = "";
     }
 
-    public GuildEntity getGuildEntity() {
-        return this.GuildEntity;
-    }
-
-    public Guild getGuild() {
+    public Guild getJDA() {
         return this.guild;
     }
 
-    public MusicManager getMusicManager() {
-        return this.musicManager;
+    public Member getAsMember(User user){
+        return this.guild.getMemberById(user.getId());
+    }
+
+    public MusicPlayerEntity getMusicPlayer() {
+        if (this.musicPlayer != null) {
+            return this.musicPlayer;
+        } else {
+            this.musicPlayer = new MusicPlayerEntity(guildManager.getPudelWorld().getMusicManager().musicManagerBuilder());
+            return this.musicPlayer;
+        }
     }
 
     public List<String> getIgnoreChannel() {
@@ -68,10 +75,14 @@ public class GuildEntity {
     }
 
     public String getOwnerID() {
-        return getGuild().getOwnerId();
+        return getJDA().getOwnerId();
     }
 
-    public void setOwnerID() {
-        this.ownerID = getGuild().getOwnerId();
+    public String getGuildLang() {
+        return guildLang;
+    }
+
+    public void setGuildLang(String guildLang) {
+        this.guildLang = guildLang;
     }
 }

@@ -1,14 +1,30 @@
 package mimikko.zazalng.pudel.commands.music;
 
-import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 
-public class MusicSkip implements Command {
+public class MusicSkip extends AbstractCommand {
     @Override
-    public void execute(GuildEntity guild, UserEntity user, String replyChannel, String args) {
-        guild.getMusicManager().nextTrack(true);
-        guild.getGuild().getTextChannelById(replyChannel).sendMessage(guild.getGuild().getMemberById(user.getJDAuser().getId()).getNickname()+" has Skip current song because...\n`*TBA Reason*`").queue();
+    public void execute(SessionEntity session, String args) {
+        super.execute(session, args);
+    }
+
+    @Override
+    protected void initialState(SessionEntity session, String args){
+        session.getGuild().getMusicPlayer().nextTrack(true);
+        if(args.isEmpty()){
+            args = "without reason.";
+        } else{
+            args = "because `"+args+"`";
+        }
+        session.getChannel().sendMessage(session.getUser().getNickname(session.getGuild())+" has Skip current song "+args).queue();
+
+        session.setState("END");
+    }
+
+    @Override
+    public void reload() {
+
     }
 
     @Override
@@ -20,7 +36,7 @@ public class MusicSkip implements Command {
     public String getDetailedHelp() {
         return "Usage: skip [reason]" +
                 "\nExamples: `p!skip`, `p!skip noob song`, `p!skip wtf?`" +
-                "\n\nAny argument will result as skip with input reason." +
+                "\n\nAny argument will result as skip with input reason for skip." +
                 "\nNo argument will result as skip for no reason.";
     }
 }
