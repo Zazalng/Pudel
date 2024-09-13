@@ -11,7 +11,8 @@ public class UtilityInvite extends AbstractCommand {
 
     @Override
     protected void initialState(SessionEntity session, String args){
-        session.getChannel().sendMessage("Thank you for giving me an interested to invite me\n[Invite Link](<https://discord.com/oauth2/authorize?client_id=908724400738672710>)");
+        session.getChannel().sendMessage("Thank you for giving me an interested to invite me\n[Invite Link](<https://discord.com/oauth2/authorize?client_id=908724400738672710>)").queue();
+        session.setState("END");
     }
     @Override
     public void reload() {
