@@ -70,6 +70,7 @@ public class CommandManager implements Manager {
                     session.execute(input);
                 } else {
                     e.getChannel().sendMessage("Unknown command!").queue();
+                    session.setState("END");
                 }
             }
         } else if(!session.getState().isEmpty() && session.getCommand() != null){
