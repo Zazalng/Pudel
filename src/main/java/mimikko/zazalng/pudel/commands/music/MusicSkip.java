@@ -13,11 +13,11 @@ public class MusicSkip extends AbstractCommand {
     protected void initialState(SessionEntity session, String args){
         session.getGuild().getMusicPlayer().nextTrack(true);
         if(args.isEmpty()){
-            args = "without reason.";
+            args = session.getUser().getNickname(session.getGuild()) + " has Skip current song without reason.";
         } else{
-            args = "because `"+args+"`";
+            args = session.getUser().getNickname(session.getGuild()) + " has Skip current song because\n`"+args+"`";
         }
-        session.getChannel().sendMessage(session.getUser().getNickname(session.getGuild())+" has Skip current song "+args).queue();
+        session.getChannel().sendMessage(args).queue();
 
         session.setState("END");
     }
