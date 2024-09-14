@@ -12,7 +12,7 @@ public class MusicPlaying extends AbstractCommand {
     @Override
     protected void initialState(SessionEntity session, String args){
         if(!session.getGuild().getMusicPlayer().getTrackInfo().isEmpty()) {
-            args = "Now Playing: " + session.getGuild().getMusicPlayer().getTrackInfo();
+            args = "Now Playing:\n" + session.getGuild().getMusicPlayer().getTrackInfo();
         } else{
             args = "There is no current track that playing";
         }

@@ -15,10 +15,10 @@ public class MusicShuffle extends AbstractCommand {
     protected void initialState(SessionEntity session, String args) {
         if(triggerTrue(args)){
             session.getGuild().getMusicPlayer().setShuffle(true);
-            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to`"+session.getGuild().getMusicPlayer().isShuffle()+"`";
+            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
         } else if(triggerFalse(args)){
             session.getGuild().getMusicPlayer().setShuffle(false);
-            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to`"+session.getGuild().getMusicPlayer().isShuffle()+"`";
+            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
         } else if(args.isEmpty()){
             args = "The current setting for Shuffle player is `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
         } else{

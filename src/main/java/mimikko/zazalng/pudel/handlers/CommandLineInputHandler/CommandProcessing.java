@@ -31,6 +31,7 @@ public class CommandProcessing implements Runnable {
 
         switch (command) {
             case "exit":
+                worldCommand.stopWorld();
                 isOperate = false;
                 break;
             case "stop":

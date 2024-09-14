@@ -15,10 +15,10 @@ public class MusicLoop extends AbstractCommand{
     protected void initialState(SessionEntity session, String args) {
         if (triggerTrue(args)) {
             session.getGuild().getMusicPlayer().setLoop(true);
-            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to`" + session.getGuild().getMusicPlayer().isLoop() + "`";
+            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to `" + session.getGuild().getMusicPlayer().isLoop() + "`";
         } else if (triggerFalse(args)) {
             session.getGuild().getMusicPlayer().setLoop(false);
-            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to`" + session.getGuild().getMusicPlayer().isLoop() + "`";
+            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to `" + session.getGuild().getMusicPlayer().isLoop() + "`";
         } else {
             args = "The current setting for Looping is `" + session.getGuild().getMusicPlayer().isLoop() + "`";
         }
