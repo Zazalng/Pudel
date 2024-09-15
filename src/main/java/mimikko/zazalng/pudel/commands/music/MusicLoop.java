@@ -32,12 +32,12 @@ public class MusicLoop extends AbstractCommand{
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(SessionEntity session) {
         return "Toggles the looping of the current track.";
     }
 
     @Override
-    public String getDetailedHelp() {
+    public String getDetailedHelp(SessionEntity session) {
         return "Usage: loop [args]" +
                 "\nExamples: `p!loop`, `p!loop 0`, `p!loop true`" +
                 "\n\n`false` `0` `off` `disable` will result set loop as `off`." +

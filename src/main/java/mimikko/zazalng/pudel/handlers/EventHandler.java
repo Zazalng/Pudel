@@ -16,7 +16,7 @@ public class EventHandler extends ListenerAdapter{
 
     @Override
     public void onReady(@NotNull ReadyEvent e) {
-        this.pudelWorld.getPudelManager().setPudelId(e.getJDA().getSelfUser().getId());
+        this.pudelWorld.getPudelManager().setPudelEntity(pudelWorld.getUserManager().getUserEntity(e.getJDA().getSelfUser()));
     }
 
     @Override

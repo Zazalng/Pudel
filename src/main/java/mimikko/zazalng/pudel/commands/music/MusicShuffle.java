@@ -3,6 +3,9 @@ package mimikko.zazalng.pudel.commands.music;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
 public class MusicShuffle extends AbstractCommand {
@@ -13,9 +16,13 @@ public class MusicShuffle extends AbstractCommand {
 
     @Override
     protected void initialState(SessionEntity session, String args) {
+        Map<String, String> localizationArgs = new HashMap<>();
+        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
+        localizationArgs.put("args", args);
+
         if(triggerTrue(args)){
             session.getGuild().getMusicPlayer().setShuffle(true);
-            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
+            args = localize(session,"music.shuffle.init.set");
         } else if(triggerFalse(args)){
             session.getGuild().getMusicPlayer().setShuffle(false);
             args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
@@ -36,17 +43,12 @@ public class MusicShuffle extends AbstractCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Toggles the shuffle of the playlist or scrambled playlist 1 time.";
+    public String getDescription(SessionEntity session) {
+        return localize(session, "music.shuffle.help");
     }
 
     @Override
-    public String getDetailedHelp() {
-        return "Usage: shuffle [args]" +
-                "\nExamples: `p!shuffle`, `p!shuffle 0`, `p!shuffle true` `p!shuffle 85d6w4d65asdcdw`" +
-                "\n\n`false` `0` `off` `disable` will result set loop as `off`." +
-                "\n`true` `1` `on` `enable` will result set loop as `on`." +
-                "\nother string will scrambled playlist by String seed." +
-                "\nNo argument will result as showing current setting loop.";
+    public String getDetailedHelp(SessionEntity session) {
+        return localize(session, "music.shuffle.details");
     }
 }

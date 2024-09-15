@@ -1,13 +1,15 @@
 package mimikko.zazalng.pudel.manager;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import mimikko.zazalng.pudel.PudelWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -23,36 +25,75 @@ public class LocalizationManager implements Manager{
     }
 
     public void loadAllLanguages() {
-        // Implement loading logic for each language file into the languageFiles map
-        // Example: languageFiles.put("en", loadLanguageFile("en.txt"));
+        loadCSVLanguageFile("localization.csv"); // Assuming you download the CSV manually to this location
     }
 
     public void reloadLanguage(String languageCode) {
-        // Reload a specific language file
-        // Example: languageFiles.put(languageCode, loadLanguageFile(languageCode + ".txt"));
+        loadAllLanguages();
     }
 
     public String getLocalizedText(String key, String languageCode, Map<String, String> args) {
+        // Check if the language code exists
         Properties properties = languageFiles.get(languageCode);
-        String text = properties.getProperty(key);
+        if (properties == null) {
+            logger.error("No properties found for language: " + languageCode);
+            return key; // Fallback to the key if the language is missing
+        }
 
-        if (text != null && args != null) {
+        // Log the properties to ensure they were loaded correctly
+        logger.info("Properties for language {}: {}", languageCode, properties);
+
+        // Check if the key exists in the language file
+        String text = properties.getProperty(key);
+        if (text == null) {
+            logger.error("Key '{}' not found for language: {}", key, languageCode);
+            return key; // Fallback to the key if the translation is missing
+        }
+
+        // Replace placeholders if arguments are provided
+        if (args != null) {
             for (Map.Entry<String, String> entry : args.entrySet()) {
-                text = text.replace("`" + entry.getKey() + "`", entry.getValue());
+                text = text.replace("{" + entry.getKey() + "}", entry.getValue()); // Replace {key} with value
             }
         }
-        return text != null ? text : key;
+
+        return text;
     }
 
-    // Helper method to load a language file
-    private Properties loadLanguageFile(String fileName) {
-        Properties properties = new Properties();
-        try (InputStream input = new FileInputStream(fileName)) {
-            properties.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void loadCSVLanguageFile(String fileName) {
+        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("D:\\selfpurposed\\Java\\Puddle2\\out\\artifacts\\Pudel_jar\\localization.csv").toFile()))) {
+            List<String[]> rows = reader.readAll();
+            String[] headers = rows.get(0); // First line with language codes
+            Map<String, Map<String, String>> tempLanguageMap = new HashMap<>();
+
+            // Initialize a map for each language column
+            for (int i = 1; i < headers.length; i++) {
+                tempLanguageMap.put(headers[i].trim(), new HashMap<>());
+            }
+
+            // Process the rest of the CSV rows (key-value pairs for each language)
+            for (int rowIndex = 1; rowIndex < rows.size(); rowIndex++) {
+                String[] row = rows.get(rowIndex);
+                String key = row[0].trim();
+
+                for (int i = 1; i < row.length; i++) {
+                    String lang = headers[i].trim();
+                    String value = row[i].trim();
+                    logger.info("Loaded key '{}' for language '{}': {}", key, lang, value);
+                    tempLanguageMap.get(lang).put(key, value);
+                }
+            }
+
+            // Load each map into Properties for consistency with the original structure
+            for (String lang : tempLanguageMap.keySet()) {
+                Properties properties = new Properties();
+                properties.putAll(tempLanguageMap.get(lang));
+                languageFiles.put(lang, properties);
+                logger.info("Loaded {} properties for language: {}", properties.size(), lang);
+            }
+        } catch (IOException | CsvException e) {
+            logger.error("Failed to load CSV file", e);
         }
-        return properties;
     }
 
     @Override
@@ -62,16 +103,16 @@ public class LocalizationManager implements Manager{
 
     @Override
     public void initialize() {
-
+        // Optional: initialization logic
     }
 
     @Override
     public void reload() {
-
+        loadAllLanguages(); // Reload all language files
     }
 
     @Override
     public void shutdown() {
-
+        // Optional: shutdown logic
     }
 }

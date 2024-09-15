@@ -26,12 +26,12 @@ public class MusicPlaying extends AbstractCommand {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(SessionEntity session) {
         return "Show current track information.";
     }
 
     @Override
-    public String getDetailedHelp() {
+    public String getDetailedHelp(SessionEntity session) {
         return "Usage: np" +
                 "\nExample: `p!np`" +
                 "\n\nShow information of playing track title / url";

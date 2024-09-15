@@ -5,6 +5,6 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 public interface Command {
     void execute(SessionEntity session, String args);
     void reload();
-    String getDescription();
-    String getDetailedHelp();
+    String getDescription(SessionEntity session);
+    String getDetailedHelp(SessionEntity session);
 }

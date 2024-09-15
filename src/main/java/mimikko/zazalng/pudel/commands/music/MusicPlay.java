@@ -34,7 +34,7 @@ public class MusicPlay extends AbstractCommand {
             if (!result.contains("No Match") && !result.contains("Load failed")) {
                 session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
                 session.getPudelWorld().getPudelManager().OpenVoiceConnection(
-                        session.getGuild().getJDA(),
+                        session.getGuild(),
                         session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel()
                 );
             }
@@ -49,12 +49,12 @@ public class MusicPlay extends AbstractCommand {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(SessionEntity session) {
         return "Perform queuing into playlist or loaded entire playlist from given url.";
     }
 
     @Override
-    public String getDetailedHelp() {
+    public String getDetailedHelp(SessionEntity session) {
         return "Usage: play {args}" +
                 "\nExample: `p!play bubble - veela` / `p!play https://www.youtube.com/watch?v=rDVE6bXdNQ4`" +
                 "\n\nIf {args} was not URL, it will perform searching {args} into youtube and add top search to queuing." +

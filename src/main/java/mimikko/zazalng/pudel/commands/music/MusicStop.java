@@ -3,6 +3,9 @@ package mimikko.zazalng.pudel.commands.music;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MusicStop extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
@@ -11,11 +14,14 @@ public class MusicStop extends AbstractCommand {
 
     @Override
     protected void initialState(SessionEntity session, String args){
-        args = session.getUser().getNickname(session.getGuild())+" has force stopped music";
+        Map<String, String> localizationArgs = new HashMap<>();
+        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
+
+        args = localize(session,"music.stop.init",localizationArgs);
 
         session.getGuild().getMusicPlayer().stop();
-        session.getPudelWorld().getPudelManager().CloseVoiceConnection(session.getGuild().getJDA());
-        session.getChannel().asTextChannel().sendMessage(args).queue();
+        session.getPudelWorld().getPudelManager().CloseVoiceConnection(session.getGuild());
+        session.getChannel().sendMessage(args).queue();
         session.setState("END");
     }
 
@@ -25,14 +31,12 @@ public class MusicStop extends AbstractCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Stopping Music and clear all remaining playlist then be gone.";
+    public String getDescription(SessionEntity session) {
+        return localize(session,"music.stop.help");
     }
 
     @Override
-    public String getDetailedHelp() {
-        return "Usage: stop" +
-                "\nExample: `p!stop`" +
-                "\n\nStopping Music and clear all remaining playlist then be gone.";
+    public String getDetailedHelp(SessionEntity session) {
+        return localize(session,"music.stop.details");
     }
 }

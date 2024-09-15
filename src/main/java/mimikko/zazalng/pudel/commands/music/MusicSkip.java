@@ -3,6 +3,9 @@ package mimikko.zazalng.pudel.commands.music;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MusicSkip extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
@@ -12,10 +15,15 @@ public class MusicSkip extends AbstractCommand {
     @Override
     protected void initialState(SessionEntity session, String args){
         session.getGuild().getMusicPlayer().nextTrack(true);
+
+        Map<String, String> localizationArgs = new HashMap<>();
+        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
+        localizationArgs.put("args", args);
+
         if(args.isEmpty()){
-            args = session.getUser().getNickname(session.getGuild()) + " has Skip current song without reason.";
+            args = localize(session, "music.skip.init", localizationArgs);
         } else{
-            args = session.getUser().getNickname(session.getGuild()) + " has Skip current song because\n`"+args+"`";
+            args = localize(session, "music.skip.init.reason", localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();
 
@@ -28,15 +36,12 @@ public class MusicSkip extends AbstractCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Skip the current track and start up the next track";
+    public String getDescription(SessionEntity session) {
+        return localize(session, "music.skip.help");
     }
 
     @Override
-    public String getDetailedHelp() {
-        return "Usage: skip [reason]" +
-                "\nExamples: `p!skip`, `p!skip noob song`, `p!skip wtf?`" +
-                "\n\nAny argument will result as skip with input reason for skip." +
-                "\nNo argument will result as skip for no reason.";
+    public String getDetailedHelp(SessionEntity session) {
+        return localize(session, "music.skip.details");
     }
 }
