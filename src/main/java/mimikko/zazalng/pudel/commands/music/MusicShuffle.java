@@ -22,15 +22,18 @@ public class MusicShuffle extends AbstractCommand {
 
         if(triggerTrue(args)){
             session.getGuild().getMusicPlayer().setShuffle(true);
-            args = localize(session,"music.shuffle.init.set");
+            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
+            args = localize(session,"music.shuffle.init.set",localizationArgs);
         } else if(triggerFalse(args)){
             session.getGuild().getMusicPlayer().setShuffle(false);
-            args = session.getUser().getNickname(session.getGuild())+" has setting for Shuffle player to `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
+            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
+            args = localize(session,"music.shuffle.init.set",localizationArgs);
         } else if(args.isEmpty()){
-            args = "The current setting for Shuffle player is `"+session.getGuild().getMusicPlayer().isShuffle()+"`";
+            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
+            args = localize(session,"music.shuffle.init.display",localizationArgs);
         } else{
             session.getGuild().getMusicPlayer().shufflePlaylist();
-            args = session.getUser().getNickname(session.getGuild())+" has shuffle playlist by seed `"+args+"`";
+            args = localize(session,"music.shuffle.init.seed",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();
 

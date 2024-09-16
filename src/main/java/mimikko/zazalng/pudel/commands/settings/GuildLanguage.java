@@ -15,13 +15,14 @@ public class GuildLanguage extends AbstractCommand {
     @Override
     protected void initialState(SessionEntity session, String args) {
         Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("lang.name", session.getPudelWorld().getLocalizationManager().getLocalizedText("lang.name",session.getGuild().getLanguageCode(),null));
         localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
 
         if(args.isEmpty()){
+            localizationArgs.put("lang.name", session.getPudelWorld().getLocalizationManager().getLanguageName(session.getGuild()));
             args = localize(session,"guild.language.init.display",localizationArgs);
         } else{
             session.getGuild().setLanguageCode(args);
+            localizationArgs.put("lang.name", session.getPudelWorld().getLocalizationManager().getLanguageName(session.getGuild()));
             args = localize(session,"guild.language.init.accept",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();

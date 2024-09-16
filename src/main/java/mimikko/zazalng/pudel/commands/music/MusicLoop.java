@@ -3,6 +3,9 @@ package mimikko.zazalng.pudel.commands.music;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
 public class MusicLoop extends AbstractCommand{
@@ -13,14 +16,19 @@ public class MusicLoop extends AbstractCommand{
 
     @Override
     protected void initialState(SessionEntity session, String args) {
+        Map<String, String> localizationArgs = new HashMap<>();
+        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
+
         if (triggerTrue(args)) {
             session.getGuild().getMusicPlayer().setLoop(true);
-            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to `" + session.getGuild().getMusicPlayer().isLoop() + "`";
+            localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isLoop()));
+            args = localize(session,"music.loop.init.set",localizationArgs);
         } else if (triggerFalse(args)) {
             session.getGuild().getMusicPlayer().setLoop(false);
-            args = session.getUser().getNickname(session.getGuild()) + " has setting for Looping to `" + session.getGuild().getMusicPlayer().isLoop() + "`";
+            localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isLoop()));
+            args = localize(session,"music.loop.init.set",localizationArgs);
         } else {
-            args = "The current setting for Looping is `" + session.getGuild().getMusicPlayer().isLoop() + "`";
+            args = localize(session,"music.loop.init.display",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();
         session.setState("END");
@@ -33,15 +41,11 @@ public class MusicLoop extends AbstractCommand{
 
     @Override
     public String getDescription(SessionEntity session) {
-        return "Toggles the looping of the current track.";
+        return localize(session,"music.loop.help");
     }
 
     @Override
     public String getDetailedHelp(SessionEntity session) {
-        return "Usage: loop [args]" +
-                "\nExamples: `p!loop`, `p!loop 0`, `p!loop true`" +
-                "\n\n`false` `0` `off` `disable` will result set loop as `off`." +
-                "\n`true` `1` `on` `enable` will result set loop as `on`." +
-                "\nNo argument will result as showing current setting loop.";
+        return localize(session,"music.loop.details");
     }
 }

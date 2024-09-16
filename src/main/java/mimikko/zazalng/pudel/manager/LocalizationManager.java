@@ -3,6 +3,7 @@ package mimikko.zazalng.pudel.manager;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.GuildEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,18 +37,18 @@ public class LocalizationManager implements Manager{
         // Check if the language code exists
         Properties properties = languageFiles.get(languageCode);
         if (properties == null) {
-            logger.error("No properties found for language: " + languageCode);
+            logger.error("No properties found for language: {}", languageCode);
             return key; // Fallback to the key if the language is missing
         }
-
-        // Log the properties to ensure they were loaded correctly
-        logger.info("Properties for language {}: {}", languageCode, properties);
 
         // Check if the key exists in the language file
         String text = properties.getProperty(key);
         if (text == null) {
             logger.error("Key '{}' not found for language: {}", key, languageCode);
             return key; // Fallback to the key if the translation is missing
+        } else if(text.isEmpty()){
+            properties = languageFiles.get("ENG");
+            text = "@Override Language\n"+properties.getProperty(key);
         }
 
         // Replace placeholders if arguments are provided
@@ -61,7 +62,7 @@ public class LocalizationManager implements Manager{
     }
 
     public void loadCSVLanguageFile(String fileName) {
-        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("D:\\selfpurposed\\Java\\Puddle2\\out\\artifacts\\Pudel_jar\\localization.csv").toFile()))) {
+        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
             List<String[]> rows = reader.readAll();
             String[] headers = rows.get(0); // First line with language codes
             Map<String, Map<String, String>> tempLanguageMap = new HashMap<>();
@@ -79,7 +80,6 @@ public class LocalizationManager implements Manager{
                 for (int i = 1; i < row.length; i++) {
                     String lang = headers[i].trim();
                     String value = row[i].trim();
-                    logger.info("Loaded key '{}' for language '{}': {}", key, lang, value);
                     tempLanguageMap.get(lang).put(key, value);
                 }
             }
@@ -93,6 +93,18 @@ public class LocalizationManager implements Manager{
             }
         } catch (IOException | CsvException e) {
             logger.error("Failed to load CSV file", e);
+        }
+    }
+
+    public String getLanguageName(GuildEntity guild){
+        return getLocalizedText("lang.name",guild.getLanguageCode(),null);
+    }
+
+    public String getBooleanText(GuildEntity guild, boolean flag){
+        if(flag){
+            return getLocalizedText("boolean.enable",guild.getLanguageCode(),null);
+        } else{
+            return getLocalizedText("boolean.disable",guild.getLanguageCode(),null);
         }
     }
 

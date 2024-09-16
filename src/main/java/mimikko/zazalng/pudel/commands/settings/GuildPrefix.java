@@ -11,13 +11,14 @@ public class GuildPrefix extends AbstractCommand {
     @Override
     protected void initialState(SessionEntity session, String args) {
         Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("guild.prefix", session.getGuild().getPrefix());
         localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
 
         if (args.isEmpty()) {
+            localizationArgs.put("guild.prefix", session.getGuild().getPrefix());
             args = localize(session, "guild.prefix.init.display", localizationArgs);
         } else {
             session.getGuild().setPrefix(args);
+            localizationArgs.put("guild.prefix", session.getGuild().getPrefix());
             args = localize(session, "guild.prefix.init.accept", localizationArgs);
         }
 

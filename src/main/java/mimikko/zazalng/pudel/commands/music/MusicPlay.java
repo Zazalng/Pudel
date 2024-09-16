@@ -3,6 +3,9 @@ package mimikko.zazalng.pudel.commands.music;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MusicPlay extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
@@ -12,33 +15,32 @@ public class MusicPlay extends AbstractCommand {
     @Override
     protected void initialState(SessionEntity session, String args) {
         if (args.isEmpty()) {
-            args = "Please provide a song title or a YouTube URL.";
+            args = localize(session,"music.play.error.input");
             session.getChannel().sendMessage(args).queue();
             session.setState("END");
             return;
         }
 
         if (!session.getUser().getUserManager().isVoiceActive(session.getGuild().getJDA(), session.getUser().getJDA())) {
-            session.getChannel().sendMessage("You must be in a voice channel to play music!").queue();
+            args = localize(session,"music.play.error.voicechat");
+            session.getChannel().sendMessage(args).queue();
             session.setState("END");
             return;
         }
-
-        String finalArgs = args; // Make args effectively final for use in the lambda
-        String trackUrl = args.startsWith("http://") || args.startsWith("https://") ? finalArgs : "ytsearch:" + finalArgs;
+        Map<String, String> localizationArgs = new HashMap<>();
+        localizationArgs.put("args",args);
+        String trackUrl = args.startsWith("http://") || args.startsWith("https://") ? args : "ytsearch:" + args;
 
         session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(), trackUrl, result -> {
-            // This block will execute once loadAndPlay finishes
-            session.getChannel().sendMessage(result).queue();
-
-            if (!result.contains("No Match") && !result.contains("Load failed")) {
-                session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
-                session.getPudelWorld().getPudelManager().OpenVoiceConnection(
-                        session.getGuild(),
-                        session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel()
-                );
+            if(result.equals("error")){
+                session.getChannel().sendMessage(localize(session,"music.play.init.error",localizationArgs));
+            } else if(result.startsWith("playlist.")){
+                localizationArgs.put("track.url",result.replace("playlist.",""));
+                session.getChannel().sendMessage(localize(session, "music.play.init.playlist",localizationArgs));
+            } else{
+                localizationArgs.put("track.info",result);
+                session.getChannel().sendMessage(localize(session,"music.play.init",localizationArgs));
             }
-
             session.setState("END");
         });
     }
@@ -50,15 +52,11 @@ public class MusicPlay extends AbstractCommand {
 
     @Override
     public String getDescription(SessionEntity session) {
-        return "Perform queuing into playlist or loaded entire playlist from given url.";
+        return localize(session,"music.play.help");
     }
 
     @Override
     public String getDetailedHelp(SessionEntity session) {
-        return "Usage: play {args}" +
-                "\nExample: `p!play bubble - veela` / `p!play https://www.youtube.com/watch?v=rDVE6bXdNQ4`" +
-                "\n\nIf {args} was not URL, it will perform searching {args} into youtube and add top search to queuing." +
-                "\nIf {args} was URL playlist, it will perform queuing all video from that URL playlist." +
-                "\nIf {args} was URL video, it will perform queuing that video.";
+        return localize(session,"music.play.details");
     }
 }
