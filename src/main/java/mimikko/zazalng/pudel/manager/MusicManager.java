@@ -57,7 +57,7 @@ public class MusicManager implements Manager {
                 } else {
                     // Add all tracks in the playlist to the queue
                     player.queueUp(playlist);
-                    result = "playlist.("+trackURL+")";
+                    result = "playlist.(<"+trackURL+">)";
                 }
                 callback.accept(result);  // Return the result via callback
             }

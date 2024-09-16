@@ -33,13 +33,21 @@ public class MusicPlay extends AbstractCommand {
 
         session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(), trackUrl, result -> {
             if(result.equals("error")){
-                session.getChannel().sendMessage(localize(session,"music.play.init.error",localizationArgs));
+                session.getChannel().sendMessage(localize(session,"music.play.init.error",localizationArgs)).queue();
             } else if(result.startsWith("playlist.")){
                 localizationArgs.put("track.url",result.replace("playlist.",""));
-                session.getChannel().sendMessage(localize(session, "music.play.init.playlist",localizationArgs));
+                session.getChannel().sendMessage(localize(session, "music.play.init.playlist",localizationArgs)).queue();
+                session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
+                session.getPudelWorld().getPudelManager().OpenVoiceConnection(
+                        session.getGuild(),
+                        session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel());
             } else{
                 localizationArgs.put("track.info",result);
-                session.getChannel().sendMessage(localize(session,"music.play.init",localizationArgs));
+                session.getChannel().sendMessage(localize(session,"music.play.init",localizationArgs)).queue();
+                session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
+                session.getPudelWorld().getPudelManager().OpenVoiceConnection(
+                        session.getGuild(),
+                        session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel());
             }
             session.setState("END");
         });
