@@ -27,6 +27,7 @@ public class CommandManager implements Manager {
         loadCommand("skip", new MusicSkip());
         loadCommand("stop", new MusicStop());
         //settings category
+        loadCommand("language", new GuildLanguage());
         loadCommand("prefix", new GuildPrefix());
         //utility category
         loadCommand("invite", new UtilityInvite());
@@ -52,13 +53,13 @@ public class CommandManager implements Manager {
                 if (input.isEmpty()) {
                     // Show the list of commands
                     StringBuilder helpMessage = new StringBuilder("Available commands:\n");
-                    commands.forEach((name, command) -> helpMessage.append("`").append(prefix).append(name).append("` - ").append(command.getDescription()).append("\n"));
+                    commands.forEach((name, command) -> helpMessage.append("`").append(prefix).append(name).append("` - ").append(command.getDescription(session)).append("\n"));
                     e.getChannel().sendMessage(helpMessage.toString()).queue();
                 } else {
                     // Show detailed help for a specific command
                     Command command = commands.get(input.toLowerCase());
                     if (command != null) {
-                        e.getChannel().sendMessage(command.getDetailedHelp()).queue();
+                        e.getChannel().sendMessage(command.getDetailedHelp(session)).queue();
                     } else {
                         e.getChannel().sendMessage("Unknown command!").queue();
                     }
@@ -70,6 +71,7 @@ public class CommandManager implements Manager {
                     session.execute(input);
                 } else {
                     e.getChannel().sendMessage("Unknown command!").queue();
+                    session.setState("END");
                 }
             }
         } else if(!session.getState().isEmpty() && session.getCommand() != null){

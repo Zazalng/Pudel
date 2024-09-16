@@ -17,7 +17,7 @@ public class GuildEntity {
     //Class variable
     private final List<String> ignoreChannel;
     private final List<String> disableCommand;
-    private String guildLang;
+    private String languageCode;
     private String prefix;
     private String staffLogChannel;
 
@@ -28,7 +28,7 @@ public class GuildEntity {
 
         this.ignoreChannel = new ArrayList<>();
         this.disableCommand = new ArrayList<>();
-        this.guildLang = "en";
+        this.languageCode = "ENG";
         this.prefix = "p!";
         this.staffLogChannel = "";
     }
@@ -78,11 +78,11 @@ public class GuildEntity {
         return getJDA().getOwnerId();
     }
 
-    public String getGuildLang() {
-        return guildLang;
+    public String getLanguageCode() {
+        return languageCode;
     }
 
-    public void setGuildLang(String guildLang) {
-        this.guildLang = guildLang;
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 }

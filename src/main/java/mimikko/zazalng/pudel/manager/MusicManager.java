@@ -43,7 +43,7 @@ public class MusicManager implements Manager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 player.queueUp(track);
-                String result = "Search & Play result.\n" + getTrackInfo(track);
+                String result = getTrackInfo(track);
                 callback.accept(result);  // Return the result via callback
             }
 
@@ -53,24 +53,24 @@ public class MusicManager implements Manager {
                 if (playlist.isSearchResult()) {
                     // If it's a search result, add the first track to the queue
                     player.queueUp(playlist.getTracks().get(0));
-                    result = "Search & Play result.\n" + getTrackInfo(playlist.getTracks().get(0));
+                    result = getTrackInfo(playlist.getTracks().get(0));
                 } else {
                     // Add all tracks in the playlist to the queue
                     player.queueUp(playlist);
-                    result = "Playlist had loaded successfully.\n[Link Playlist](<" + trackURL + ">)";
+                    result = "playlist.(<"+trackURL+">)";
                 }
                 callback.accept(result);  // Return the result via callback
             }
 
             @Override
             public void noMatches() {
-                String result = "No Match searching / Invalid Input.\n`" + trackURL + "`";
+                String result = "error";
                 callback.accept(result);  // Return the result via callback
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                String result = "Load failed due to an error.\n`" + trackURL + "`";
+                String result = "error";
                 logger.error("LoadFailed", exception);
                 callback.accept(result);  // Return the result via callback
             }
