@@ -51,6 +51,10 @@ public class PudelWorld {
         return this.managerFactory.getManager("commandManager", CommandManager.class);
     }
 
+    public EmbedManager getEmbedManager(){
+        return this.managerFactory.getManager("embedManager", EmbedManager.class);
+    }
+
     public GuildManager getGuildManager(){
         return this.managerFactory.getManager("guildManager", GuildManager.class);
     }

@@ -12,6 +12,7 @@ public class ManagerFactory {
     public ManagerFactory(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         managers.put("commandManager", new CommandManager(pudelWorld));
+        managers.put("embedManager", new EmbedManager(pudelWorld));
         managers.put("guildManager", new GuildManager(pudelWorld));
         managers.put("localizationManager", new LocalizationManager(pudelWorld));
         managers.put("musicManager", new MusicManager(pudelWorld));
