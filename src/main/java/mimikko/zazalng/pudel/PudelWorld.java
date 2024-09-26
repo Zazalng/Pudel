@@ -97,11 +97,6 @@ public class PudelWorld {
     ///////////////////////////////////////////////////
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
-    public void JDAShutdown(){
-        this.getJDAshardManager().shutdown();
-        this.setJDAshardManager(null);
-    }
-
     public void buildShard(String api){
         setJDAshardManager(buildJDAshardManager(this,api));
     }
