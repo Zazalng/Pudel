@@ -22,7 +22,7 @@ public class LocalizationManager implements Manager{
     public LocalizationManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         this.languageFiles = new HashMap<>();
-        loadAllLanguages();
+        initialize();
     }
 
     public void loadAllLanguages() {
@@ -115,7 +115,7 @@ public class LocalizationManager implements Manager{
 
     @Override
     public void initialize() {
-        // Optional: initialization logic
+        loadAllLanguages();
     }
 
     @Override

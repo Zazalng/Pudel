@@ -50,6 +50,10 @@ public class GuildEntity {
         }
     }
 
+    public void setMusicPlayer(MusicPlayerEntity player){
+        this.musicPlayer = player;
+    }
+
     public List<String> getIgnoreChannel() {
         return ignoreChannel;
     }

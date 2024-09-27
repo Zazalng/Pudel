@@ -70,7 +70,7 @@ public class CommandLineHandler implements Runnable{
     }
 
     public void loadEnv() {
-        if(pudelWorld.getEnvironment().isLoaded()) {
+        if(!pudelWorld.getEnvironment().isLoaded()) {
             logger.info("Getting an Environment setting, where should I be?");
             JFileChooser fileChooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Environment files", "env");

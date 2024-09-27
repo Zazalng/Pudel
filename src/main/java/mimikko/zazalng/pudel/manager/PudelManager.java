@@ -33,6 +33,10 @@ public class PudelManager implements Manager {
         PudelEntity = pudelEntity;
     }
 
+    public void sendingMessage(){
+
+    }
+
     public void OpenVoiceConnection(GuildEntity guild, VoiceChannel channel){
         guild.getJDA().getAudioManager().openAudioConnection(channel);
     }
