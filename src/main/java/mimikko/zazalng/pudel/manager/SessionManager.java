@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
@@ -29,12 +28,13 @@ public class SessionManager implements Manager{
         MessageChannelUnion channelIssue = e.getChannel();
         String sessionKey = createSessionKey(e);
 
-        SessionEntity session = this.sessions.computeIfAbsent(sessionKey, k -> new SessionEntity(this, user, guild, channelIssue));
-        if(session.getState().equals("END")){
-            this.sessions.remove(sessionKey);
-            session = this.sessions.computeIfAbsent(sessionKey, k -> new SessionEntity(this, user, guild, channelIssue));
-        }
-        return session;
+        return this.sessions.compute(sessionKey, (k, v) -> {
+            if (v == null || v.getState().equals("END")) {
+                return new SessionEntity(this, user, guild, channelIssue);
+            }
+            return v;
+        });
+
     }
 
     private String createSessionKey(MessageReceivedEvent e) {

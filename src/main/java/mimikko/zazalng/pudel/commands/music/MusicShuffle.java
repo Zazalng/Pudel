@@ -20,11 +20,11 @@ public class MusicShuffle extends AbstractCommand {
         localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
         localizationArgs.put("args", args);
 
-        if(triggerTrue(args)){
+        if(toggleLogic(args,true)){
             session.getGuild().getMusicPlayer().setShuffle(true);
             localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
             args = localize(session,"music.shuffle.init.set",localizationArgs);
-        } else if(triggerFalse(args)){
+        } else if(toggleLogic(args,false)){
             session.getGuild().getMusicPlayer().setShuffle(false);
             localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
             args = localize(session,"music.shuffle.init.set",localizationArgs);

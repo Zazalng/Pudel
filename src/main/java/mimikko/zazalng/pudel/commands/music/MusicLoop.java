@@ -19,15 +19,16 @@ public class MusicLoop extends AbstractCommand{
         Map<String, String> localizationArgs = new HashMap<>();
         localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
 
-        if (triggerTrue(args)) {
+        if (toggleLogic(args,true)) {
             session.getGuild().getMusicPlayer().setLoop(true);
             localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isLoop()));
             args = localize(session,"music.loop.init.set",localizationArgs);
-        } else if (triggerFalse(args)) {
+        } else if (toggleLogic(args,false)) {
             session.getGuild().getMusicPlayer().setLoop(false);
             localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isLoop()));
             args = localize(session,"music.loop.init.set",localizationArgs);
         } else {
+            localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isLoop()));
             args = localize(session,"music.loop.init.display",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();

@@ -25,10 +25,10 @@ public class UserEntity {
     }
 
     public String getNickname(GuildEntity guild) {
-        if(guild.getJDA().getMember(JDAuser).getNickname()!=null){
-            return guild.getJDA().getMember(JDAuser).getNickname();
+        if(guild.getJDA().getMember(getJDA()).getNickname()!=null){
+            return guild.getJDA().getMember(getJDA()).getNickname();
         } else{
-            return JDAuser.getName();
+            return getJDA().getName();
         }
     }
 
