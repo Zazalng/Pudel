@@ -62,7 +62,7 @@ public class LocalizationManager implements Manager{
     }
 
     public void loadCSVLanguageFile(String fileName) {
-        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("D:\\selfpurposed\\Java\\Puddle2\\out\\artifacts\\Pudel_jar\\localization.csv").toFile()))) {
+        try (CSVReader reader = new CSVReader(new FileReader(Paths.get(this.pudelWorld.getEnvironment().getWorldLocalization()).toFile()))) {
             List<String[]> rows = reader.readAll();
             String[] headers = rows.get(0); // First line with language codes
             Map<String, Map<String, String>> tempLanguageMap = new HashMap<>();

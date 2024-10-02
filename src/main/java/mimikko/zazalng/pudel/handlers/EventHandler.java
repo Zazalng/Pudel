@@ -22,7 +22,9 @@ public class EventHandler extends ListenerAdapter{
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e){
-        e.getChannel().getType();
+        if (e.getChannelType().isGuild() && !e.getChannel().canTalk()) {
+            return;
+        }
 
         if(!e.getAuthor().isBot()){
             //From {guildName} in {channelName} by {userName} said: {contentRaw}

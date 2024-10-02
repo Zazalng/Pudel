@@ -24,14 +24,6 @@ public class UserEntity {
         return JDAuser;
     }
 
-    public String getNickname(GuildEntity guild) {
-        if(guild.getJDA().getMember(getJDA()).getNickname()!=null){
-            return guild.getJDA().getMember(getJDA()).getNickname();
-        } else{
-            return getJDA().getName();
-        }
-    }
-
     public long getRoyalty() {
         return royalty;
     }
