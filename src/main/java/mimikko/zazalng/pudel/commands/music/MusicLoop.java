@@ -17,7 +17,7 @@ public class MusicLoop extends AbstractCommand{
     @Override
     protected void initialState(SessionEntity session, String args) {
         Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
+        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
 
         if (toggleLogic(args,true)) {
             session.getGuild().getMusicPlayer().setLoop(true);

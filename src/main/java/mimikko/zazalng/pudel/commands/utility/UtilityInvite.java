@@ -16,7 +16,7 @@ public class UtilityInvite extends AbstractCommand {
     @Override
     protected void initialState(SessionEntity session, String args) {
         Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("inviteurl", "(<https://discord.com/oauth2/authorize?client_id=908724400738672710>)");
+        localizationArgs.put("inviteurl", "(<"+session.getPudelWorld().getEnvironment().getInviteURL()+">)");
 
         args = localize(session,"utility.invite.init",localizationArgs);
 

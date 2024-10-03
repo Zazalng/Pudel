@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +26,8 @@ public class LocalizationManager implements Manager{
         initialize();
     }
 
-    public void loadAllLanguages() {
-        loadCSVLanguageFile("localization.csv"); // Assuming you download the CSV manually to this location
-    }
-
-    public void reloadLanguage(String languageCode) {
-        loadAllLanguages();
+    public void loadLanguages() {
+        loadCSVLanguageFile(this.pudelWorld.getEnvironment().getWorldLocalization()); // Assuming you download the CSV manually to this location
     }
 
     public String getLocalizedText(String key, String languageCode, Map<String, String> args) {
@@ -61,8 +58,8 @@ public class LocalizationManager implements Manager{
         return text;
     }
 
-    public void loadCSVLanguageFile(String fileName) {
-        try (CSVReader reader = new CSVReader(new FileReader(Paths.get(this.pudelWorld.getEnvironment().getWorldLocalization()).toFile()))) {
+    public void loadCSVLanguageFile(String filePath) {
+        try (CSVReader reader = new CSVReader(new FileReader(Paths.get(filePath).toFile()))) {
             List<String[]> rows = reader.readAll();
             String[] headers = rows.get(0); // First line with language codes
             Map<String, Map<String, String>> tempLanguageMap = new HashMap<>();
@@ -96,8 +93,8 @@ public class LocalizationManager implements Manager{
         }
     }
 
-    public String getLanguageName(GuildEntity guild){
-        return getLocalizedText("lang.name",guild.getLanguageCode(),null);
+    public String getLanguageName(SessionEntity session){
+        return getLocalizedText("lang.name",session.getGuild().getLanguageCode(),null);
     }
 
     public String getBooleanText(GuildEntity guild, boolean flag){
@@ -115,12 +112,12 @@ public class LocalizationManager implements Manager{
 
     @Override
     public void initialize() {
-        loadAllLanguages();
+
     }
 
     @Override
     public void reload() {
-        loadAllLanguages(); // Reload all language files
+        // Reload all language files
     }
 
     @Override

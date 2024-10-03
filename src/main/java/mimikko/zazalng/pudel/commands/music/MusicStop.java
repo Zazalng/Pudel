@@ -15,7 +15,7 @@ public class MusicStop extends AbstractCommand {
     @Override
     protected void initialState(SessionEntity session, String args){
         Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
+        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
 
         args = localize(session,"music.stop.init",localizationArgs);
 

@@ -17,7 +17,7 @@ public class MusicSkip extends AbstractCommand {
         session.getGuild().getMusicPlayer().nextTrack(true);
 
         Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
+        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
         localizationArgs.put("args", args);
 
         if(args.isEmpty()){

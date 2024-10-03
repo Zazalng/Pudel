@@ -18,8 +18,6 @@ public class EnvironmentHandler {
     }
 
     public void loadEnv(String filepath){
-        String methodName = "loadEnv";
-
         if(isLoaded()){
             return;
         }
@@ -27,6 +25,7 @@ public class EnvironmentHandler {
         System.out.println("Getting filepath: \""+filepath+"\"");
         try(FileInputStream fileInputStream = new FileInputStream(filepath)){
             this.env.load(fileInputStream);
+            this.pudelWorld.getLocalizationManager().loadLanguages();
             setLoaded(true);
         }catch(IOException e){
 
@@ -61,6 +60,7 @@ public class EnvironmentHandler {
     public String getWorldLocalization(){
         return this.env.getProperty("pudel.language");
     }
+
     public String getWorldSecret(){
         return this.env.getProperty("pudel.secret.reply");
     }
