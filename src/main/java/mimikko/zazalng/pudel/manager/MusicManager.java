@@ -10,7 +10,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +38,11 @@ public class MusicManager implements Manager {
         return this.playerManager.createPlayer();
     }
 
-    public void loadAndPlay(MusicPlayerEntity player, String trackURL, Consumer<String> callback) {
+    public void loadAndPlay(SessionEntity session, String trackURL, Consumer<String> callback) {
         playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                player.queueUp(track);
+                session.getGuild().getMusicPlayer().queueUp(track);
                 String result = getTrackInfo(track);
                 callback.accept(result);  // Return the result via callback
             }
@@ -52,11 +52,11 @@ public class MusicManager implements Manager {
                 String result;
                 if (playlist.isSearchResult()) {
                     // If it's a search result, add the first track to the queue
-                    player.queueUp(playlist.getTracks().get(0));
+                    session.getGuild().getMusicPlayer().queueUp(playlist.getTracks().get(0));
                     result = getTrackInfo(playlist.getTracks().get(0));
                 } else {
                     // Add all tracks in the playlist to the queue
-                    player.queueUp(playlist);
+                    session.getGuild().getMusicPlayer().queueUp(playlist);
                     result = "playlist.(<"+trackURL+">)";
                 }
                 callback.accept(result);  // Return the result via callback

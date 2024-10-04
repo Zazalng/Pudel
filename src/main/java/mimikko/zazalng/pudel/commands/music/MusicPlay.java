@@ -31,7 +31,7 @@ public class MusicPlay extends AbstractCommand {
         localizationArgs.put("args",args);
         String trackUrl = args.startsWith("http://") || args.startsWith("https://") ? args : "ytsearch:" + args;
 
-        session.getPudelWorld().getMusicManager().loadAndPlay(session.getGuild().getMusicPlayer(), trackUrl, result -> {
+        session.getPudelWorld().getMusicManager().loadAndPlay(session, trackUrl, result -> {
             if(result.equals("error")){
                 session.getChannel().sendMessage(localize(session,"music.play.init.error",localizationArgs)).queue();
             } else if(result.startsWith("playlist.")){

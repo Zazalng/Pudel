@@ -14,7 +14,7 @@ public class SessionEntity {
     private final GuildEntity guild;
     private final MessageChannelUnion channel;
     private Command command;
-    private final Map<String, String> promptCollection = new HashMap<>();
+    private final Map<String, Object> promptCollection = new HashMap<>();
     private String sessionState;
 
     public SessionEntity(SessionManager sessionManager, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue) {
@@ -33,12 +33,20 @@ public class SessionEntity {
         return this.sessionState;
     }
 
-    public void addData(String sessionState, String value) {
-        promptCollection.put(sessionState, value);
+    public void addData(String key, Object value) {
+        promptCollection.put(key, value);
     }
 
-    public Object getData(String sessionState) {
-        return promptCollection.get(sessionState);
+    public Object getData(String key) {
+        return promptCollection.get(key);
+    }
+
+    public <T> T getDataAs(String key, Class<T> type) {
+        Object data = promptCollection.get(key);
+        if (type.isInstance(data)) {
+            return type.cast(data);
+        }
+        return null;  // Or handle the case where type doesn't match
     }
 
     public void setCommand(Command command){
