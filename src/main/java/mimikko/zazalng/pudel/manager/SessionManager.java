@@ -23,8 +23,8 @@ public class SessionManager implements Manager{
     }
 
     public SessionEntity getSession(MessageReceivedEvent e) {
-        UserEntity user = this.pudelWorld.getUserManager().getUserEntity(e.getAuthor());
-        GuildEntity guild = this.pudelWorld.getGuildManager().getGuildEntity(e.getGuild());
+        UserEntity user = getPudelWorld().getUserManager().getUserEntity(e.getAuthor());
+        GuildEntity guild = getPudelWorld().getGuildManager().getGuildEntity(e.getGuild());
         MessageChannelUnion channelIssue = e.getChannel();
         String sessionKey = createSessionKey(e);
 

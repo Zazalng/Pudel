@@ -22,14 +22,14 @@ public class MusicShuffle extends AbstractCommand {
 
         if(toggleLogic(args,true)){
             session.getGuild().getMusicPlayer().setShuffle(true);
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
+            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()));
             args = localize(session,"music.shuffle.init.set",localizationArgs);
         } else if(toggleLogic(args,false)){
             session.getGuild().getMusicPlayer().setShuffle(false);
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
+            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()));
             args = localize(session,"music.shuffle.init.set",localizationArgs);
         } else if(args.isEmpty()){
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
+            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()));
             args = localize(session,"music.shuffle.init.display",localizationArgs);
         } else{
             session.getGuild().getMusicPlayer().shufflePlaylist();

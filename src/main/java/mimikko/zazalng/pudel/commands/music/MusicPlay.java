@@ -21,7 +21,7 @@ public class MusicPlay extends AbstractCommand {
             return;
         }
 
-        if (!session.getUser().getUserManager().isVoiceActive(session.getGuild().getJDA(), session.getUser().getJDA())) {
+        if (!session.getUser().getUserManager().isVoiceActive(session)) {
             args = localize(session,"music.play.error.voicechat");
             session.getChannel().sendMessage(args).queue();
             session.setState("END");
@@ -38,16 +38,14 @@ public class MusicPlay extends AbstractCommand {
                 localizationArgs.put("track.url",result.replace("playlist.",""));
                 session.getChannel().sendMessage(localize(session, "music.play.init.playlist",localizationArgs)).queue();
                 session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
-                session.getPudelWorld().getPudelManager().OpenVoiceConnection(
-                        session.getGuild(),
-                        session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel());
+                session.getPudelWorld().getPudelManager().OpenVoiceConnection(session);
+            } else if(result.equals("searching")){
+
             } else{
                 localizationArgs.put("track.info",result);
                 session.getChannel().sendMessage(localize(session,"music.play.init",localizationArgs)).queue();
                 session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
-                session.getPudelWorld().getPudelManager().OpenVoiceConnection(
-                        session.getGuild(),
-                        session.getGuild().getAsMember(session.getUser().getJDA()).getVoiceState().getChannel().asVoiceChannel());
+                session.getPudelWorld().getPudelManager().OpenVoiceConnection(session);
             }
             session.setState("END");
         });

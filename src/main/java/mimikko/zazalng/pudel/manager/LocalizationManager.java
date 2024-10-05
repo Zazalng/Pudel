@@ -3,7 +3,6 @@ package mimikko.zazalng.pudel.manager;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,11 +96,11 @@ public class LocalizationManager implements Manager{
         return getLocalizedText("lang.name",session.getGuild().getLanguageCode(),null);
     }
 
-    public String getBooleanText(GuildEntity guild, boolean flag){
+    public String getBooleanText(SessionEntity session, boolean flag){
         if(flag){
-            return getLocalizedText("boolean.enable",guild.getLanguageCode(),null);
+            return getLocalizedText("boolean.enable",session.getGuild().getLanguageCode(),null);
         } else{
-            return getLocalizedText("boolean.disable",guild.getLanguageCode(),null);
+            return getLocalizedText("boolean.disable",session.getGuild().getLanguageCode(),null);
         }
     }
 

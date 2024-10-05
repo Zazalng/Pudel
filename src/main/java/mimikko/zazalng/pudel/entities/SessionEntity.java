@@ -25,8 +25,9 @@ public class SessionEntity {
         this.sessionState = "INIT";
     }
 
-    public void setState(String sessionState) {
+    public SessionEntity setState(String sessionState) {
         this.sessionState = sessionState;
+        return this;
     }
 
     public String getState() {
@@ -39,14 +40,6 @@ public class SessionEntity {
 
     public Object getData(String key) {
         return promptCollection.get(key);
-    }
-
-    public <T> T getDataAs(String key, Class<T> type) {
-        Object data = promptCollection.get(key);
-        if (type.isInstance(data)) {
-            return type.cast(data);
-        }
-        return null;  // Or handle the case where type doesn't match
     }
 
     public void setCommand(Command command){
@@ -73,7 +66,8 @@ public class SessionEntity {
         return channel;
     }
 
-    public void execute(String args){
+    public SessionEntity execute(String args){
         command.execute(this,args);
+        return this;
     }
 }

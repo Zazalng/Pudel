@@ -26,8 +26,7 @@ public class MusicManager implements Manager {
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
                 true,   // Allow direct video IDs
-                true/*,   // Allow direct playlist IDs
-                new Client[]{new Music(), new Web()} */ // Clients
+                true   // Allow direct playlist IDs
         );
         this.playerManager = new DefaultAudioPlayerManager();
         this.playerManager.registerSourceManager(ytSourceManager);
@@ -52,8 +51,8 @@ public class MusicManager implements Manager {
                 String result;
                 if (playlist.isSearchResult()) {
                     // If it's a search result, add the first track to the queue
-                    session.getGuild().getMusicPlayer().queueUp(playlist.getTracks().get(0));
-                    result = getTrackInfo(playlist.getTracks().get(0));
+                    session.addData("music.play.searching",playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
+                    result = "searching";
                 } else {
                     // Add all tracks in the playlist to the queue
                     session.getGuild().getMusicPlayer().queueUp(playlist);

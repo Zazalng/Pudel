@@ -32,7 +32,7 @@ public class UtilityInvite extends AbstractCommand {
     @Override
     public String getDescription(SessionEntity session) {
         Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("bot.name", session.getPudelWorld().getPudelManager().getName(session.getGuild()));
+        localizationArgs.put("bot.name", session.getPudelWorld().getPudelManager().getName(session));
         return localize(session, "utility.invite.help",localizationArgs);
     }
 
