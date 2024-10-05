@@ -52,7 +52,7 @@ public class MusicManager implements Manager {
                 if (playlist.isSearchResult()) {
                     // If it's a search result, add the first track to the queue
                     session.addData("music.play.searching",playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
-                    result = "searching";
+                    result = "searching."+trackURL;
                 } else {
                     // Add all tracks in the playlist to the queue
                     session.getGuild().getMusicPlayer().queueUp(playlist);

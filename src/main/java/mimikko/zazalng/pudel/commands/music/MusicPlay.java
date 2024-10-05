@@ -29,9 +29,9 @@ public class MusicPlay extends AbstractCommand {
         }
         Map<String, String> localizationArgs = new HashMap<>();
         localizationArgs.put("args",args);
-        String trackUrl = args.startsWith("http://") || args.startsWith("https://") ? args : "ytsearch:" + args;
+        args = args.startsWith("http://") || args.startsWith("https://") ? args : "ytsearch:" + args;
 
-        session.getPudelWorld().getMusicManager().loadAndPlay(session, trackUrl, result -> {
+        session.getPudelWorld().getMusicManager().loadAndPlay(session, args, result -> {
             if(result.equals("error")){
                 session.getChannel().sendMessage(localize(session,"music.play.init.error",localizationArgs)).queue();
             } else if(result.startsWith("playlist.")){
@@ -39,8 +39,12 @@ public class MusicPlay extends AbstractCommand {
                 session.getChannel().sendMessage(localize(session, "music.play.init.playlist",localizationArgs)).queue();
                 session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
                 session.getPudelWorld().getPudelManager().OpenVoiceConnection(session);
-            } else if(result.equals("searching")){
-
+            } else if(result.startsWith("searching.")){
+                session.getPudelWorld().getEmbedManager().createEmbed()
+                        .setAuthor(session.getUser().getUserManager().getUserName(session),null,session.getUser().getJDA().getAvatarUrl())
+                        .setThumbnail("https://puu.sh/KgdPy.gif")
+                        .setFooter(this.getClass().getName())
+                        .setTitle(String.format("%s: %s",localize(session, "music.play.init.searching"),result));
             } else{
                 localizationArgs.put("track.info",result);
                 session.getChannel().sendMessage(localize(session,"music.play.init",localizationArgs)).queue();
