@@ -1,9 +1,13 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public class EmbedManager implements Manager {
 
@@ -15,8 +19,12 @@ public class EmbedManager implements Manager {
     }
 
     // Create a reusable template for an embed
-    public EmbedBuilder createEmbed() {
-        return new EmbedBuilder();
+    public EmbedBuilder createEmbed(SessionEntity session) {
+        return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault())).setAuthor(session.getUser().getUserManager().getUserName(session),null,session.getUser().getJDA().getAvatarUrl());
+    }
+
+    public EmbedBuilder castEmbedBuilder(SessionEntity session, String key){
+        return (EmbedBuilder) session.getData(key,false);
     }
 
     @Override

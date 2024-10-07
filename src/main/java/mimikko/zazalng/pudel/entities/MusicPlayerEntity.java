@@ -14,7 +14,7 @@ import static mimikko.zazalng.pudel.utility.IntegerUtility.randomInt;
 
 public class MusicPlayerEntity {
     private final List<AudioTrack> playlist;
-    private final AudioPlayerSendHandler player;
+    private AudioPlayerSendHandler player;
     private AudioTrack audioTrack;
     private boolean flagLoop;
     private boolean flagShuffle;
@@ -91,6 +91,7 @@ public class MusicPlayerEntity {
         this.playlist.clear();
         this.player.getAudioPlayer().stopTrack();
         this.player.getAudioPlayer().destroy();
+        this.player = null;
     }
 
     public boolean isLoop(){

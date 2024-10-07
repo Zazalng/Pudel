@@ -8,4 +8,23 @@ public class BooleanUtility {
             default -> false;
         };
     }
+
+    public static boolean betweenNumeric(int test, int min, int max, boolean inclusive) {
+        if (inclusive) {
+            return test >= min && test <= max;
+        } else {
+            return test > min && test < max;
+        }
+    }
+
+
+    public static boolean isNumberic(String test){
+        try{
+            Integer.parseInt(test);
+            return true;
+        }catch(NumberFormatException e){
+            return false;
+        }
+
+    }
 }

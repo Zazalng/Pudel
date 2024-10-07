@@ -30,7 +30,12 @@ public class PudelManager implements Manager {
     }
 
     public PudelManager sendingMessage(SessionEntity session){
-        session.getChannel().sendMessage("null").queue();
+        session.getChannel().sendMessage((String) session.getData("message",false)).queue();
+        return this;
+    }
+
+    public PudelManager sendingEmbed(SessionEntity session){
+        session.getChannel().sendMessageEmbeds(getPudelWorld().getEmbedManager().castEmbedBuilder(session,"embed").build()).queue();
         return this;
     }
 
@@ -42,6 +47,7 @@ public class PudelManager implements Manager {
 
     public PudelManager CloseVoiceConnection(SessionEntity session){
         session.getGuild().getJDA().getAudioManager().closeAudioConnection();
+        setSendingHandler(session);
         return this;
     }
 

@@ -38,9 +38,10 @@ public class SessionEntity {
         promptCollection.put(key, value);
     }
 
-    public Object getData(String key) {
-        return promptCollection.get(key);
+    public Object getData(String key, boolean delObject) {
+        return delObject ? promptCollection.remove(key) : promptCollection.get(key);
     }
+
 
     public void setCommand(Command command){
         this.command = command;

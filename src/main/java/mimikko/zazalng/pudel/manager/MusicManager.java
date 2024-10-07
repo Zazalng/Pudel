@@ -42,7 +42,7 @@ public class MusicManager implements Manager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 session.getGuild().getMusicPlayer().queueUp(track);
-                String result = getTrackInfo(track);
+                String result = getTrackFormat(track);
                 callback.accept(result);  // Return the result via callback
             }
 
@@ -51,7 +51,7 @@ public class MusicManager implements Manager {
                 String result;
                 if (playlist.isSearchResult()) {
                     // If it's a search result, add the first track to the queue
-                    session.addData("music.play.searching",playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
+                    session.addData("music.play.searching.top5",playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
                     result = "searching."+trackURL;
                 } else {
                     // Add all tracks in the playlist to the queue
@@ -76,10 +76,25 @@ public class MusicManager implements Manager {
         });
     }
 
-    public String getTrackInfo(AudioTrack track) {
-        return "[" + track.getInfo().title + "](<" + track.getInfo().uri + ">)";
+    public AudioTrack castAudioTrack(Object track){
+        return (AudioTrack) track;
     }
 
+    public String getTrackFormat(Object track) {
+        return getTrackTitle(track) + " - " + getTrackUploader(track);
+    }
+
+    public String getTrackTitle(Object track){
+        return castAudioTrack(track).getInfo().title;
+    }
+
+    public String getTrackUrl(Object track){
+        return castAudioTrack(track).getInfo().uri;
+    }
+
+    public String getTrackUploader(Object track){
+        return castAudioTrack(track).getInfo().author;
+    }
 
     @Override
     public PudelWorld getPudelWorld() {
