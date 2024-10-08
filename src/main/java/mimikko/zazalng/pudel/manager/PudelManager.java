@@ -34,8 +34,8 @@ public class PudelManager implements Manager {
         return this;
     }
 
-    public PudelManager sendingEmbed(SessionEntity session){
-        session.getChannel().sendMessageEmbeds(getPudelWorld().getEmbedManager().castEmbedBuilder(session,"embed").build()).queue();
+    public PudelManager sendingEmbed(SessionEntity session, String key){
+        session.getChannel().sendMessageEmbeds(getPudelWorld().getEmbedManager().castEmbedBuilder(session,key).build()).queue();
         return this;
     }
 

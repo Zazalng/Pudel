@@ -25,6 +25,5 @@ public class BooleanUtility {
         }catch(NumberFormatException e){
             return false;
         }
-
     }
 }

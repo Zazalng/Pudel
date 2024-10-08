@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MusicManager implements Manager {
     private static final Logger logger = LoggerFactory.getLogger(MusicManager.class);
@@ -42,7 +44,7 @@ public class MusicManager implements Manager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 session.getGuild().getMusicPlayer().queueUp(track);
-                String result = getTrackFormat(track);
+                String result = "accept:"+getTrackThumbnail(track);
                 callback.accept(result);  // Return the result via callback
             }
 
@@ -52,24 +54,24 @@ public class MusicManager implements Manager {
                 if (playlist.isSearchResult()) {
                     // If it's a search result, add the first track to the queue
                     session.addData("music.play.searching.top5",playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
-                    result = "searching."+trackURL;
+                    result = trackURL;
                 } else {
                     // Add all tracks in the playlist to the queue
                     session.getGuild().getMusicPlayer().queueUp(playlist);
-                    result = "playlist.(<"+trackURL+">)";
+                    result = "playlist:(<"+trackURL+">)";
                 }
                 callback.accept(result);  // Return the result via callback
             }
 
             @Override
             public void noMatches() {
-                String result = "error";
+                String result = "error:" + trackURL;
                 callback.accept(result);  // Return the result via callback
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                String result = "error";
+                String result = "error:" + trackURL;
                 logger.error("LoadFailed", exception);
                 callback.accept(result);  // Return the result via callback
             }
@@ -82,6 +84,11 @@ public class MusicManager implements Manager {
 
     public String getTrackFormat(Object track) {
         return getTrackTitle(track) + " - " + getTrackUploader(track);
+    }
+
+    public String getTrackThumbnail(Object track){
+        Matcher matcher = Pattern.compile("v=([^&]+)").matcher(castAudioTrack(track).getInfo().uri);
+        return matcher.find() ? "https://img.youtube.com/vi/" + matcher.group(1) + "/maxresdefault.jpg" : "https://puu.sh/KgqvW.gif";
     }
 
     public String getTrackTitle(Object track){
