@@ -74,6 +74,8 @@ public class MusicPlay extends AbstractCommand {
             }catch(IndexOutOfBoundsException e){
                 session.setState("END");
             }
+        } else{
+            session.setState("END");
         }
         return session;
     }
