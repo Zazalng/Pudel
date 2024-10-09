@@ -17,13 +17,7 @@ public class BooleanUtility {
         }
     }
 
-
     public static boolean isNumberic(String test){
-        try{
-            Integer.parseInt(test);
-            return true;
-        }catch(NumberFormatException e){
-            return false;
-        }
+        return test != null && test.matches("\\d+");
     }
 }

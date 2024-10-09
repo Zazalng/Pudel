@@ -44,8 +44,10 @@ public class MusicManager implements Manager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 session.getGuild().getMusicPlayer().queueUp(track);
-                String result = "accept:"+getTrackThumbnail(track);
-                callback.accept(result);  // Return the result via callback
+                session.addData("music.play.accepted",getPudelWorld().getEmbedManager().createEmbed(session)
+                        .setTitle(getTrackFormat(track),track.getInfo().uri)
+                        .setThumbnail(getTrackThumbnail(track)));
+                callback.accept("");  // Return the result via callback
             }
 
             @Override

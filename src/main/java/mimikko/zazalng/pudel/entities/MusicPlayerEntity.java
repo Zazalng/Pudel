@@ -25,22 +25,26 @@ public class MusicPlayerEntity {
         this.player.getAudioPlayer().addListener(new AudioTrackHandler(this));
     }
 
+    public List<AudioTrack> getPlaylist(){
+        return this.playlist;
+    }
+
     public AudioPlayerSendHandler getPlayer() {
         return player;
     }
 
     public void queueUp(AudioTrack track) {
         if (this.player.getAudioPlayer().getPlayingTrack() == null) {
-            this.playlist.add(track);
+            getPlaylist().add(track);
             this.audioTrack = track;
             this.player.getAudioPlayer().playTrack(trackSelection());
         } else {
-            this.playlist.add(track);
+            getPlaylist().add(track);
         }
     }
 
     public void queueUp(AudioPlaylist playlist) {
-        this.playlist.addAll(playlist.getTracks());
+        getPlaylist().addAll(playlist.getTracks());
 
         if (this.player.getAudioPlayer().getPlayingTrack() == null) {
             this.player.getAudioPlayer().playTrack(trackSelection());
@@ -59,15 +63,15 @@ public class MusicPlayerEntity {
         if (flagLoop && audioTrack != null) {
             // If looping is enabled, replay the current track
             return audioTrack.makeClone();
-        } else if (flagShuffle && !playlist.isEmpty()) {
+        } else if (flagShuffle && !getPlaylist().isEmpty()) {
             // If shuffle is enabled, pick a random track from the playlist
-            int index = randomInt(playlist.size());
-            AudioTrack selectedTrack = playlist.remove(index);
+            int index = randomInt(getPlaylist().size());
+            AudioTrack selectedTrack = getPlaylist().remove(index);
             this.audioTrack = selectedTrack.makeClone();
             return this.audioTrack;
-        } else if (!playlist.isEmpty()) {
+        } else if (!getPlaylist().isEmpty()) {
             // Play the next track in the playlist
-            AudioTrack nextTrack = playlist.remove(0);
+            AudioTrack nextTrack = getPlaylist().remove(0);
             this.audioTrack = nextTrack.makeClone();
             return this.audioTrack;
         } else {

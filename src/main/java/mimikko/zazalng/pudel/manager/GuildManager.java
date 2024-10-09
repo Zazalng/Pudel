@@ -14,7 +14,6 @@ public class GuildManager implements Manager {
     public GuildManager(PudelWorld pudelWorld){
         this.pudelWorld = pudelWorld;
         this.guildEntity = new HashMap<>();
-        initialize();
     }
 
     public GuildEntity getGuildEntity(Guild JDAguild){

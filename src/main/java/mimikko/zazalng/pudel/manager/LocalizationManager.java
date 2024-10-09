@@ -22,7 +22,6 @@ public class LocalizationManager implements Manager{
     public LocalizationManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         this.languageFiles = new HashMap<>();
-        initialize();
     }
 
     public void loadLanguages() {
