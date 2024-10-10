@@ -28,18 +28,18 @@ public class LocalizationManager implements Manager{
         loadCSVLanguageFile(this.pudelWorld.getEnvironment().getWorldLocalization()); // Assuming you download the CSV manually to this location
     }
 
-    public String getLocalizedText(String key, String languageCode, Map<String, String> args) {
+    public String getLocalizedText(SessionEntity session, String key, Map<String, String> args) {
         // Check if the language code exists
-        Properties properties = languageFiles.get(languageCode);
+        Properties properties = languageFiles.get(session.getGuild().getLanguageCode());
         if (properties == null) {
-            logger.error("No properties found for language: {}", languageCode);
+            logger.error("No properties found for language: {}", session.getGuild().getLanguageCode());
             return key; // Fallback to the key if the language is missing
         }
 
         // Check if the key exists in the language file
         String text = properties.getProperty(key);
         if (text == null) {
-            logger.error("Key '{}' not found for language: {}", key, languageCode);
+            logger.error("Key '{}' not found for language: {}", key, session.getGuild().getLanguageCode());
             return key; // Fallback to the key if the translation is missing
         } else if(text.isEmpty()){
             properties = languageFiles.get("ENG");
@@ -92,14 +92,14 @@ public class LocalizationManager implements Manager{
     }
 
     public String getLanguageName(SessionEntity session){
-        return getLocalizedText("lang.name",session.getGuild().getLanguageCode(),null);
+        return getLocalizedText(session,"lang.name",null);
     }
 
     public String getBooleanText(SessionEntity session, boolean flag){
         if(flag){
-            return getLocalizedText("boolean.enable",session.getGuild().getLanguageCode(),null);
+            return getLocalizedText(session, "boolean.enable", null);
         } else{
-            return getLocalizedText("boolean.disable",session.getGuild().getLanguageCode(),null);
+            return getLocalizedText(session, "boolean.disable", null);
         }
     }
 

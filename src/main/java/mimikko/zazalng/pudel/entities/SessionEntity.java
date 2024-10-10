@@ -42,7 +42,6 @@ public class SessionEntity {
         return delObject ? promptCollection.remove(key) : promptCollection.get(key);
     }
 
-
     public void setCommand(Command command){
         this.command = command;
     }

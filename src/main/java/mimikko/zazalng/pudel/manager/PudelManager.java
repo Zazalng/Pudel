@@ -14,7 +14,7 @@ public class PudelManager implements Manager {
     }
     public String getName(SessionEntity session) {
         if(session.getGuild().getJDA().getMemberById(getJDA().getId()).getNickname()==null){
-            return this.pudelWorld.getLocalizationManager().getLocalizedText("bot.name",session.getGuild().getLanguageCode(),null);
+            return this.pudelWorld.getLocalizationManager().getLocalizedText(session,"bot.name",null);
         } else{
             return session.getGuild().getJDA().getMemberById(getJDA().getId()).getNickname();
         }
@@ -26,16 +26,6 @@ public class PudelManager implements Manager {
 
     public PudelManager setPudelEntity(UserEntity pudelEntity) {
         PudelEntity = pudelEntity;
-        return this;
-    }
-
-    public PudelManager sendingMessage(SessionEntity session){
-        session.getChannel().sendMessage((String) session.getData("message",false)).queue();
-        return this;
-    }
-
-    public PudelManager sendingEmbed(SessionEntity session, String key){
-        session.getChannel().sendMessageEmbeds(getPudelWorld().getEmbedManager().castEmbedBuilder(session,key).build()).queue();
         return this;
     }
 

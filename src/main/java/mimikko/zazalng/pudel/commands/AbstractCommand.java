@@ -18,7 +18,7 @@ public abstract class AbstractCommand implements Command {
     protected void initialState(SessionEntity session, String args){}
 
     protected String localize(SessionEntity session, String key, Map<String, String> args) {
-        return session.getPudelWorld().getLocalizationManager().getLocalizedText(key, session.getGuild().getLanguageCode(), args);
+        return session.getPudelWorld().getLocalizationManager().getLocalizedText(session, key, args);
     }
 
     protected String localize(SessionEntity session, String key) {
