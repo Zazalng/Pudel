@@ -4,7 +4,7 @@ import mimikko.zazalng.pudel.PudelWorld;
 
 public interface Manager {
     PudelWorld getPudelWorld();
-    void initialize();  // Setup logic
-    void reload();      // Reload logic (for hotfix updates)
-    void shutdown();    // Gracefully shutdown
+    <T extends Manager> T initialize();  // Setup logic
+    <T extends Manager> T reload();      // Reload logic (for hotfix updates)
+    <T extends Manager> T shutdown();    // Gracefully shutdown
 }

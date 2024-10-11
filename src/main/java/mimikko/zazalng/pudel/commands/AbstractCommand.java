@@ -9,13 +9,12 @@ public abstract class AbstractCommand implements Command {
     protected Map<String, String> localizationArgs = new HashMap<>();
 
     @Override
-    public void execute(SessionEntity session, String args) {
+    public <T extends Command> T execute(SessionEntity session, String args) {
         if(session.getState().equals("INIT")){
             initialState(session,args);
         }
+        return (T) this;
     }
-
-    protected void initialState(SessionEntity session, String args){}
 
     protected String localize(SessionEntity session, String key, Map<String, String> args) {
         return session.getPudelWorld().getLocalizationManager().getLocalizedText(session, key, args);

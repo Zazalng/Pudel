@@ -47,17 +47,18 @@ public class SessionManager implements Manager{
     }
 
     @Override
-    public void initialize() {
-
+    public SessionManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public SessionManager reload() {
+        return this;
     }
 
     @Override
-    public void shutdown() {
+    public SessionManager shutdown() {
         this.sessions.clear();
+        return this;
     }
 }

@@ -20,10 +20,11 @@ public class GuildManager implements Manager {
         return this.guildEntity.computeIfAbsent(JDAguild.getId(), Entity -> new GuildEntity(this,JDAguild));
     }
 
-    public void fetchGuildEntity(){
+    public GuildManager fetchGuildEntity(){
         StringBuilder helpMessage = new StringBuilder("Loaded Guild Entity: "+guildEntity.size()+"\n");
         guildEntity.forEach((id, guild) -> helpMessage.append(id).append(" - ").append(guild.getJDA().getName()).append("\n"));
         System.out.println(helpMessage);
+        return this;
     }
     @Override
     public PudelWorld getPudelWorld(){
@@ -31,17 +32,17 @@ public class GuildManager implements Manager {
     }
 
     @Override
-    public void initialize() {
-
+    public GuildManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public GuildManager reload() {
+        return this;
     }
 
     @Override
-    public void shutdown() {
-
+    public GuildManager shutdown() {
+        return this;
     }
 }

@@ -3,20 +3,17 @@ package mimikko.zazalng.pudel.commands.music;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
 public class MusicShuffle extends AbstractCommand {
     @Override
-    public void execute(SessionEntity session, String args) {
+    public MusicShuffle execute(SessionEntity session, String args) {
         super.execute(session, args);
+        return this;
     }
 
     @Override
-    protected void initialState(SessionEntity session, String args) {
-        Map<String, String> localizationArgs = new HashMap<>();
+    public MusicShuffle initialState(SessionEntity session, String args) {
         localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
         localizationArgs.put("args", args);
 
@@ -38,11 +35,12 @@ public class MusicShuffle extends AbstractCommand {
         session.getChannel().sendMessage(args).queue();
 
         session.setState("END");
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public MusicShuffle reload() {
+        return this;
     }
 
     @Override

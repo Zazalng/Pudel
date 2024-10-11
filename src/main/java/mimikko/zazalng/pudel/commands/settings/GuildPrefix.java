@@ -3,14 +3,14 @@ package mimikko.zazalng.pudel.commands.settings;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class GuildPrefix extends AbstractCommand {
+    public GuildPrefix execute(SessionEntity session, String args) {
+        super.execute(session, args);
+        return this;
+    }
 
     @Override
-    protected void initialState(SessionEntity session, String args) {
-        Map<String, String> localizationArgs = new HashMap<>();
+    public GuildPrefix initialState(SessionEntity session, String args) {
         localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
 
         if (args.isEmpty()) {
@@ -24,11 +24,13 @@ public class GuildPrefix extends AbstractCommand {
 
         session.getChannel().sendMessage(args).queue();
         session.setState("END");
+
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public GuildPrefix reload() {
+        return this;
     }
 
     @Override

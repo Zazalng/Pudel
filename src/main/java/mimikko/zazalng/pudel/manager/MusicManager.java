@@ -41,7 +41,7 @@ public class MusicManager implements Manager {
         return this.playerManager.createPlayer();
     }
 
-    public void loadAndPlay(SessionEntity session, String trackURL) {
+    public MusicManager loadAndPlay(SessionEntity session, String trackURL) {
         playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
@@ -89,7 +89,7 @@ public class MusicManager implements Manager {
                         getPudelWorld().getEmbedManager().createEmbed(session)
                                 .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.nomatch",null))
                                 .setDescription(String.format("`%s`",trackURL))
-                                .setThumbnail("https://puu.sh/KgxX3.gif")
+                                .setThumbnail("https://puu.sh/KgAxi.gif")
                                 .build())
                         .queue();
                 session.setState("END");
@@ -103,13 +103,14 @@ public class MusicManager implements Manager {
                                 .setColor((255 << 16) | (0 << 8) | 0)
                                 .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.exception",null))
                                 .setDescription(String.format("`%s`\n```%s```",trackURL,exception.toString()))
-                                .setThumbnail("https://puu.sh/KgxX3.gif")
+                                .setThumbnail("https://puu.sh/KgAxn.gif")
                                 .build())
                         .queue();
                 logger.error("LoadFailed", exception);
                 session.setState("END");
             }
         });
+        return this;
     }
 
     private String getSongList(SessionEntity session){
@@ -156,17 +157,17 @@ public class MusicManager implements Manager {
     }
 
     @Override
-    public void initialize() {
-
+    public MusicManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public MusicManager reload() {
+        return this;
     }
 
     @Override
-    public void shutdown() {
-
+    public MusicManager shutdown() {
+        return this;
     }
 }

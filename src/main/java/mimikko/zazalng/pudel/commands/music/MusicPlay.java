@@ -8,27 +8,28 @@ import static mimikko.zazalng.pudel.utility.ListUtility.*;
 
 public class MusicPlay extends AbstractCommand {
     @Override
-    public void execute(SessionEntity session, String args) {
+    public MusicPlay execute(SessionEntity session, String args) {
         super.execute(session, args);
         if(session.getState().equals("MUSIC.PLAY.SEARCHING")){
             searchingState(session,args);
         }
+        return this;
     }
 
     @Override
-    protected void initialState(SessionEntity session, String args) {
+    public MusicPlay initialState(SessionEntity session, String args) {
         if (args.isEmpty()) {
             args = localize(session,"music.play.error.input");
             session.getChannel().sendMessage(args).queue();
             session.setState("END");
-            return;
+            return this;
         }
 
         if (!session.getUser().getUserManager().isVoiceActive(session)) {
             args = localize(session,"music.play.error.voicechat");
             session.getChannel().sendMessage(args).queue();
             session.setState("END");
-            return;
+            return this;
         }
         localizationArgs.put("args",args);
 
@@ -36,14 +37,15 @@ public class MusicPlay extends AbstractCommand {
             args = "ytsearch:" + args;
         }
         queuingSong(session,args);
+        return this;
     }
 
-    private SessionEntity queuingSong(SessionEntity session, String url){
+    private MusicPlay queuingSong(SessionEntity session, String url){
         session.getPudelWorld().getMusicManager().loadAndPlay(session, url);
-        return session;
+        return this;
     }
 
-    private SessionEntity searchingState(SessionEntity session, String args){
+    private MusicPlay searchingState(SessionEntity session, String args){
         if(isNumberic(args)){
             int index = Integer.parseInt(args) - 1;
             try{
@@ -54,12 +56,12 @@ public class MusicPlay extends AbstractCommand {
         } else{
             session.setState("END");
         }
-        return session;
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public MusicPlay reload() {
+        return this;
     }
 
     @Override

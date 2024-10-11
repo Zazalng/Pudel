@@ -3,7 +3,6 @@ package mimikko.zazalng.pudel.manager;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +21,7 @@ public class EmbedManager implements Manager {
     // Create a reusable template for an embed
     public EmbedBuilder createEmbed(SessionEntity session) {
         return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
+                .setColor(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getColor())
                 .setAuthor(session.getUser().getUserManager().getUserName(session),null,session.getUser().getJDA().getAvatarUrl())
                 .setFooter(session.getCommand().getClass().getSimpleName() + " | " + session.getState(),session.getGuild().getJDA().getIconUrl());
     }
@@ -30,28 +30,26 @@ public class EmbedManager implements Manager {
         return (EmbedBuilder) session.getData(key,false);
     }
 
-    public EmbedManager sendingEmbed(SessionEntity session, MessageEmbed embed){
-        session.getChannel().sendMessageEmbeds(embed).queue();
-        return this;
-    }
-
     @Override
     public PudelWorld getPudelWorld() {
         return pudelWorld;
     }
 
     @Override
-    public void initialize() {
+    public EmbedManager initialize() {
         logger.info("EmbedManager initialized.");
+        return this;
     }
 
     @Override
-    public void reload() {
+    public EmbedManager reload() {
         logger.info("EmbedManager reloaded.");
+        return this;
     }
 
     @Override
-    public void shutdown() {
+    public EmbedManager shutdown() {
         logger.info("EmbedManager shut down.");
+        return this;
     }
 }

@@ -27,10 +27,6 @@ public class EventHandler extends ListenerAdapter{
         }
 
         if(!e.getAuthor().isBot()){
-            //From {guildName} in {channelName} by {userName} said: {contentRaw}
-            String fullRespond = "From "+e.getGuild().getName()+" in "+e.getGuildChannel().getName()+" by "+e.getAuthor().getName()+" said: \n"+e.getMessage().getContentRaw();
-            System.out.println(fullRespond);
-
             /*
                 Still Possible to implement command for direct message interacting
                 - A possible thing that can happen (from what I have discovery)

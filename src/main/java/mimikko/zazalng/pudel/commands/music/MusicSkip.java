@@ -3,20 +3,16 @@ package mimikko.zazalng.pudel.commands.music;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MusicSkip extends AbstractCommand {
     @Override
-    public void execute(SessionEntity session, String args) {
+    public MusicSkip execute(SessionEntity session, String args) {
         super.execute(session, args);
+        return this;
     }
 
     @Override
-    protected void initialState(SessionEntity session, String args){
+    public MusicSkip initialState(SessionEntity session, String args){
         session.getGuild().getMusicPlayer().nextTrack(true);
-
-        Map<String, String> localizationArgs = new HashMap<>();
         localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
         localizationArgs.put("args", args);
 
@@ -28,11 +24,12 @@ public class MusicSkip extends AbstractCommand {
         session.getChannel().sendMessage(args).queue();
 
         session.setState("END");
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public MusicSkip reload() {
+        return this;
     }
 
     @Override

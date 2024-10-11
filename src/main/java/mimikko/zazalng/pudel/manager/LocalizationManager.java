@@ -24,8 +24,9 @@ public class LocalizationManager implements Manager{
         this.languageFiles = new HashMap<>();
     }
 
-    public void loadLanguages() {
+    public LocalizationManager loadLanguages() {
         loadCSVLanguageFile(this.pudelWorld.getEnvironment().getWorldLocalization()); // Assuming you download the CSV manually to this location
+        return this;
     }
 
     public String getLocalizedText(SessionEntity session, String key, Map<String, String> args) {
@@ -56,7 +57,7 @@ public class LocalizationManager implements Manager{
         return text;
     }
 
-    public void loadCSVLanguageFile(String filePath) {
+    public LocalizationManager loadCSVLanguageFile(String filePath) {
         try (CSVReader reader = new CSVReader(new FileReader(Paths.get(filePath).toFile()))) {
             List<String[]> rows = reader.readAll();
             String[] headers = rows.get(0); // First line with language codes
@@ -89,6 +90,7 @@ public class LocalizationManager implements Manager{
         } catch (IOException | CsvException e) {
             logger.error("Failed to load CSV file", e);
         }
+        return this;
     }
 
     public String getLanguageName(SessionEntity session){
@@ -109,17 +111,17 @@ public class LocalizationManager implements Manager{
     }
 
     @Override
-    public void initialize() {
-
+    public LocalizationManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload() {
-        // Reload all language files
+    public LocalizationManager reload() {
+        return this;
     }
 
     @Override
-    public void shutdown() {
-        // Optional: shutdown logic
+    public LocalizationManager shutdown() {
+        return this;
     }
 }

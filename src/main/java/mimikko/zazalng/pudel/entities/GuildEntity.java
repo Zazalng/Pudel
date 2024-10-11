@@ -2,8 +2,6 @@ package mimikko.zazalng.pudel.entities;
 
 import mimikko.zazalng.pudel.manager.GuildManager;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +35,11 @@ public class GuildEntity {
         return this.guild;
     }
 
-    public Member getAsMember(User user){
-        return this.guild.getMemberById(user.getId());
-    }
-
     public MusicPlayerEntity getMusicPlayer() {
-        if (this.musicPlayer != null) {
-            return this.musicPlayer;
-        } else {
+        if (this.musicPlayer == null) {
             this.musicPlayer = new MusicPlayerEntity(guildManager.getPudelWorld().getMusicManager().musicManagerBuilder());
-            return this.musicPlayer;
         }
+        return this.musicPlayer;
     }
 
     public void setMusicPlayer(MusicPlayerEntity player){

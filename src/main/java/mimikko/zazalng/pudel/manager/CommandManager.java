@@ -44,42 +44,62 @@ public class CommandManager implements Manager {
     public void handleCommand(SessionEntity session, MessageReceivedEvent e) {
         String input = e.getMessage().getContentRaw();
         String prefix = session.getGuild().getPrefix();
-        if(session.getState().equals("INIT") && input.startsWith(prefix)){
-            String[] parts = input.substring(prefix.length()).split(" ",2);
-            String commandName = parts[0].toLowerCase();
-            input = parts.length > 1 ? parts[1] : "";
 
-            if (commandName.equalsIgnoreCase("help")) {
-                if (input.isEmpty()) {
-                    // Show the list of commands
-                    StringBuilder helpMessage = new StringBuilder("Available commands:\n");
-                    commands.forEach((name, command) -> helpMessage.append("`").append(prefix).append(name).append("` - ").append(command.getDescription(session)).append("\n"));
-                    e.getChannel().sendMessage(helpMessage.toString()).queue();
-                } else {
-                    // Show detailed help for a specific command
-                    Command command = commands.get(input.toLowerCase());
-                    if (command != null) {
-                        e.getChannel().sendMessage(command.getDetailedHelp(session)).queue();
-                    } else {
-                        e.getChannel().sendMessage("Unknown command!").queue();
-                    }
-                }
-            }else {
-                Command command = commands.get(commandName.toLowerCase());
-                if (command != null) {
-                    session.setCommand(command);
-                    session.execute(input);
-                } else {
-                    e.getChannel().sendMessage("Unknown command!").queue();
-                    session.setState("END");
-                }
-            }
-        } else if(!session.getState().isEmpty() && session.getCommand() != null){
+        if (session.getState().equals("INIT") && input.startsWith(prefix)) {
+            processInitialCommand(session, e, input, prefix);
+        } else if (!session.getState().isEmpty() && session.getCommand() != null) {
             session.execute(input);
-        } else{
+        } else {
             session.setState("END");
         }
     }
+
+    private void processInitialCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
+        String[] parts = input.substring(prefix.length()).split(" ", 2);
+        String commandName = parts[0].toLowerCase();
+        input = parts.length > 1 ? parts[1] : "";
+
+        if (commandName.equalsIgnoreCase("help")) {
+            handleHelpCommand(session, e, input, prefix);
+        } else {
+            executeCommand(session, e, commandName, input);
+        }
+    }
+
+    private void handleHelpCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
+        if (input.isEmpty()) {
+            showCommandList(session, e, prefix);
+        } else {
+            showCommandDetails(session, e, input);
+        }
+    }
+
+    private void showCommandList(SessionEntity session, MessageReceivedEvent e, String prefix) {
+        StringBuilder helpMessage = new StringBuilder("Available commands:\n");
+        commands.forEach((name, command) -> helpMessage.append("`").append(prefix).append(name).append("` - ").append(command.getDescription(session)).append("\n"));
+        e.getChannel().sendMessage(helpMessage.toString()).queue();
+    }
+
+    private void showCommandDetails(SessionEntity session, MessageReceivedEvent e, String input) {
+        Command command = commands.get(input.toLowerCase());
+        if (command != null) {
+            e.getChannel().sendMessage(command.getDetailedHelp(session)).queue();
+        } else {
+            e.getChannel().sendMessage("Unknown command!").queue();
+        }
+    }
+
+    private void executeCommand(SessionEntity session, MessageReceivedEvent e, String commandName, String input) {
+        Command command = commands.get(commandName.toLowerCase());
+        if (command != null) {
+            session.setCommand(command);
+            session.execute(input);
+        } else {
+            e.getChannel().sendMessage("Unknown command!").queue();
+            session.setState("END");
+        }
+    }
+
 
     @Override
     public PudelWorld getPudelWorld(){
@@ -87,17 +107,17 @@ public class CommandManager implements Manager {
     }
 
     @Override
-    public void initialize() {
-
+    public CommandManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public CommandManager reload() {
+        return this;
     }
 
     @Override
-    public void shutdown() {
-
+    public CommandManager shutdown() {
+        return this;
     }
 }

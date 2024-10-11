@@ -45,17 +45,17 @@ public class UserManager implements Manager {
     }
 
     @Override
-    public void initialize() {
-
+    public UserManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public UserManager reload() {
+        return this;
     }
 
     @Override
-    public void shutdown() {
-
+    public UserManager shutdown() {
+        return this;
     }
 }

@@ -52,17 +52,17 @@ public class PudelManager implements Manager {
     }
 
     @Override
-    public void initialize() {
-
+    public PudelManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload() {
-
+    public PudelManager reload() {
+        return this;
     }
 
     @Override
-    public void shutdown() {
-
+    public PudelManager shutdown() {
+        return this;
     }
 }
