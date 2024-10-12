@@ -8,14 +8,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 
 public class AudioTrackHandler extends AudioEventAdapter {
-    protected MusicPlayerEntity playerManager;
+    protected MusicPlayerEntity player;
 
-    public AudioTrackHandler(MusicPlayerEntity playerManager) {
-        this.playerManager = playerManager;
+    public AudioTrackHandler(MusicPlayerEntity player) {
+        this.player = player;
     }
 
     public MusicPlayerEntity getMusicManager(){
-        return this.playerManager;
+        return this.player;
     }
 
     @Override
@@ -52,7 +52,10 @@ public class AudioTrackHandler extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        // An already playing track threw an exception (track end event will still be received separately)
+        System.out.println(this.getClass().getSimpleName() + "at 'onTrackException' | " + exception.getMessage());
+        if(exception.getMessage().equals("Please sign in")){
+            player.playTrack(track.makeClone());
+        }
     }
 
     @Override
