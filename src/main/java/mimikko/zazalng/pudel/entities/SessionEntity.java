@@ -4,8 +4,11 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.manager.SessionManager;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SessionEntity {
@@ -13,6 +16,7 @@ public class SessionEntity {
     private final UserEntity user;
     private final GuildEntity guild;
     private final MessageChannelUnion channel;
+    private final List<MessageReceivedEvent> sessionCollector = new ArrayList<>();
     private Command command;
     private final Map<String, Object> promptCollection = new HashMap<>();
     private String sessionState;
@@ -27,6 +31,16 @@ public class SessionEntity {
 
     public SessionEntity setState(String sessionState) {
         this.sessionState = sessionState;
+        if(getState().equals("END")){
+            clearPromtSession();
+        }
+        return this;
+    }
+
+    public SessionEntity clearPromtSession() {
+        for (int i = 1; i < sessionCollector.size(); i++) {
+            sessionCollector.get(i).getMessage().delete().queue();
+        }
         return this;
     }
 
@@ -42,8 +56,9 @@ public class SessionEntity {
         return delObject ? promptCollection.remove(key) : promptCollection.get(key);
     }
 
-    public void setCommand(Command command){
+    public SessionEntity setCommand(Command command){
         this.command = command;
+        return this;
     }
 
     public Command getCommand(){

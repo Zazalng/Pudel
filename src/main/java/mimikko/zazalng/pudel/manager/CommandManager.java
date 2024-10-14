@@ -22,7 +22,6 @@ public class CommandManager implements Manager {
         //music category
         loadCommand("loop", new MusicLoop());
         loadCommand("play", new MusicPlay());
-        loadCommand("np", new MusicPlaying());
         loadCommand("shuffle", new MusicShuffle());
         loadCommand("skip", new MusicSkip());
         loadCommand("stop", new MusicStop());

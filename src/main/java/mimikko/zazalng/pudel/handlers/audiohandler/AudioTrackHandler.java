@@ -52,7 +52,7 @@ public class AudioTrackHandler extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        System.out.println(this.getClass().getSimpleName() + "at 'onTrackException' | " + exception.getMessage());
+        System.out.println(this.getClass().getSimpleName() + " at 'onTrackException' | " + exception.getMessage());
         if(exception.getMessage().equals("Please sign in")){
             player.playTrack(track.makeClone());
         }

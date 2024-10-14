@@ -19,8 +19,23 @@ public class MusicPlay extends AbstractCommand {
     @Override
     public MusicPlay initialState(SessionEntity session, String args) {
         if (args.isEmpty()) {
-            args = localize(session,"music.play.error.input");
-            session.getChannel().sendMessage(args).queue();
+            if(session.getGuild().getMusicPlayer().getPlayingTrack()==null){
+                session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().createEmbed(session)
+                        .setTitle(localize(session, "music.play.empty"))
+                        .setThumbnail("https://puu.sh/KgLS9.gif")
+                        .build()
+                ).queue();
+            } else {
+                args = session.getPudelWorld().getMusicManager().getTrackFormat(session.getGuild().getMusicPlayer().getPlayingTrack());
+                session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().createEmbed(session)
+                        .setTitle(args, session.getPudelWorld().getMusicManager().getTrackUrl(session.getGuild().getMusicPlayer().getPlayingTrack()))
+                        .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(session.getGuild().getMusicPlayer().getPlayingTrack()))
+                        .addField(localize(session, "music.play.loop"), session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isLoop()), true)
+                        .addField(localize(session, "music.play.shuffle"), session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()), true)
+                        .addField(localize(session, "music.play.duration"), session.getPudelWorld().getMusicManager().getTrackDuration(session.getGuild().getMusicPlayer().getPlayingTrack()), true)
+                        .build()
+                ).queue();
+            }
             session.setState("END");
             return this;
         }
