@@ -20,27 +20,30 @@ public class CommandManager implements Manager {
         this.commands = new HashMap<>();
 
         //music category
-        loadCommand("loop", new MusicLoop());
-        loadCommand("play", new MusicPlay());
-        loadCommand("shuffle", new MusicShuffle());
-        loadCommand("skip", new MusicSkip());
-        loadCommand("stop", new MusicStop());
+        loadCommand("loop", new MusicLoop())
+                .loadCommand("play", new MusicPlay())
+                .loadCommand("shuffle", new MusicShuffle())
+                .loadCommand("skip", new MusicSkip())
+                .loadCommand("stop", new MusicStop())
         //settings category
-        loadCommand("language", new GuildLanguage());
-        loadCommand("prefix", new GuildPrefix());
+                .loadCommand("language", new GuildLanguage())
+                .loadCommand("prefix", new GuildPrefix())
         //utility category
-        loadCommand("invite", new UtilityInvite());
+                .loadCommand("invite", new UtilityInvite())
+        ;
     }
 
-    public void loadCommand(String name, Command command) {
+    public CommandManager loadCommand(String name, Command command) {
         commands.put(name, command);
+        return this;
     }
 
-    public void reloadCommand(String name) {
+    public CommandManager reloadCommand(String name) {
         commands.remove(name);
+        return this;
     }
 
-    public void handleCommand(SessionEntity session, MessageReceivedEvent e) {
+    public CommandManager handleCommand(SessionEntity session, MessageReceivedEvent e) {
         String input = e.getMessage().getContentRaw();
         String prefix = session.getGuild().getPrefix();
 
@@ -51,9 +54,10 @@ public class CommandManager implements Manager {
         } else {
             session.setState("END");
         }
+        return this;
     }
 
-    private void processInitialCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
+    private CommandManager processInitialCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
         String[] parts = input.substring(prefix.length()).split(" ", 2);
         String commandName = parts[0].toLowerCase();
         input = parts.length > 1 ? parts[1] : "";
@@ -63,32 +67,36 @@ public class CommandManager implements Manager {
         } else {
             executeCommand(session, e, commandName, input);
         }
+        return this;
     }
 
-    private void handleHelpCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
+    private CommandManager handleHelpCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
         if (input.isEmpty()) {
             showCommandList(session, e, prefix);
         } else {
             showCommandDetails(session, e, input);
         }
+        return this;
     }
 
-    private void showCommandList(SessionEntity session, MessageReceivedEvent e, String prefix) {
+    private CommandManager showCommandList(SessionEntity session, MessageReceivedEvent e, String prefix) {
         StringBuilder helpMessage = new StringBuilder("Available commands:\n");
         commands.forEach((name, command) -> helpMessage.append("`").append(prefix).append(name).append("` - ").append(command.getDescription(session)).append("\n"));
         e.getChannel().sendMessage(helpMessage.toString()).queue();
+        return this;
     }
 
-    private void showCommandDetails(SessionEntity session, MessageReceivedEvent e, String input) {
+    private CommandManager showCommandDetails(SessionEntity session, MessageReceivedEvent e, String input) {
         Command command = commands.get(input.toLowerCase());
         if (command != null) {
             e.getChannel().sendMessage(command.getDetailedHelp(session)).queue();
         } else {
             e.getChannel().sendMessage("Unknown command!").queue();
         }
+        return this;
     }
 
-    private void executeCommand(SessionEntity session, MessageReceivedEvent e, String commandName, String input) {
+    private CommandManager executeCommand(SessionEntity session, MessageReceivedEvent e, String commandName, String input) {
         Command command = commands.get(commandName.toLowerCase());
         if (command != null) {
             session.setCommand(command);
@@ -97,6 +105,7 @@ public class CommandManager implements Manager {
             e.getChannel().sendMessage("Unknown command!").queue();
             session.setState("END");
         }
+        return this;
     }
 
 

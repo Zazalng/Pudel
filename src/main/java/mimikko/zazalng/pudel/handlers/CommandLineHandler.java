@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CompletableFuture;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -31,10 +30,9 @@ public class CommandLineHandler implements Runnable{
     public void stopWorld() {
         if(pudelWorld.getWorldStatus()) {
             logger.info("Disconnecting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
-            CompletableFuture<Void> shutdownFuture = CompletableFuture.runAsync(() -> pudelWorld.getJDAshardManager().shutdown());
-            shutdownFuture.join();
-            pudelWorld.setJDAshardManager(null);
-            pudelWorld.setWorldStatus(false);
+            pudelWorld.shutdownWorld()
+                    .setJDAshardManager(null)
+                    .setWorldStatus(false);
             logger.info("`{}` world has stopped.", pudelWorld.getEnvironment().getWorldName());
         } else{
             logger.warn("`{}` world is not running currently.",pudelWorld.getEnvironment().getWorldName());
@@ -45,9 +43,10 @@ public class CommandLineHandler implements Runnable{
         if(pudelWorld.getEnvironment().isLoaded()){
             if(!pudelWorld.getWorldStatus()){
                 logger.info("Starting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
-                pudelWorld.buildShard(pudelWorld.getEnvironment().getDiscordAPI());
-                pudelWorld.getJDAshardManager().setActivity(Activity.streaming("Pudel V2 (Dev. Build)","https://github.com/Zazalng/Pudel"));
-                pudelWorld.setWorldStatus(true);
+                pudelWorld.buildShard(pudelWorld.getEnvironment().getDiscordAPI())
+                        .setWorldStatus(true)
+                        .getJDAshardManager().setActivity(Activity.streaming("Pudel V2 (Dev. Build)","https://github.com/Zazalng/Pudel"))
+                ;
             } else{
                 logger.warn("`{}` world is still running.",pudelWorld.getEnvironment().getWorldName());
             }

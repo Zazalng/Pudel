@@ -32,7 +32,8 @@ public class MusicPlay extends AbstractCommand {
                         .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(session.getGuild().getMusicPlayer().getPlayingTrack()))
                         .addField(localize(session, "music.play.loop"), session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isLoop()), true)
                         .addField(localize(session, "music.play.shuffle"), session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()), true)
-                        .addField(localize(session, "music.play.duration"), session.getPudelWorld().getMusicManager().getTrackDuration(session.getGuild().getMusicPlayer().getPlayingTrack()), true)
+                        .addField(localize(session, "music.play.queueby"), session.getPudelWorld().getUserManager().castUserEntity(session.getGuild().getMusicPlayer().getPlayingTrack().getUserData()).getJDA().getAsMention(), true)
+                        .addField(localize(session, "music.play.duration"), session.getPudelWorld().getMusicManager().getTrackDuration(session.getGuild().getMusicPlayer().getPlayingTrack()), false)
                         .build()
                 ).queue();
             }
@@ -41,8 +42,11 @@ public class MusicPlay extends AbstractCommand {
         }
 
         if (!session.getUser().getUserManager().isVoiceActive(session)) {
-            args = localize(session,"music.play.error.voicechat");
-            session.getChannel().sendMessage(args).queue();
+            session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().createEmbed(session)
+                    .setTitle(localize(session,"music.play.error.voicechat"))
+                    .setThumbnail("https://puu.sh/KgP67.gif")
+                    .build()
+            ).queue();
             session.setState("END");
             return this;
         }

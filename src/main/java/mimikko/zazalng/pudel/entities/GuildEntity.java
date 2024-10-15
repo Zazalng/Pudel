@@ -42,8 +42,9 @@ public class GuildEntity {
         return this.musicPlayer;
     }
 
-    public void setMusicPlayer(MusicPlayerEntity player){
+    public GuildEntity setMusicPlayer(MusicPlayerEntity player){
         this.musicPlayer = player;
+        return this;
     }
 
     public List<String> getIgnoreChannel() {
@@ -58,16 +59,18 @@ public class GuildEntity {
         return prefix;
     }
 
-    public void setPrefix(String prefix) {
+    public GuildEntity setPrefix(String prefix) {
         this.prefix = prefix;
+        return this;
     }
 
     public String getStaffLogChannel() {
         return staffLogChannel;
     }
 
-    public void setStaffLogChannel(String staffLogChannel) {
+    public GuildEntity setStaffLogChannel(String staffLogChannel) {
         this.staffLogChannel = staffLogChannel;
+        return this;
     }
 
     public String getOwnerID() {
@@ -78,7 +81,8 @@ public class GuildEntity {
         return languageCode;
     }
 
-    public void setLanguageCode(String languageCode) {
+    public GuildEntity setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
+        return this;
     }
 }

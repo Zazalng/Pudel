@@ -18,7 +18,7 @@ public class MusicStop extends AbstractCommand {
 
         session.getGuild().getMusicPlayer().stop();
         session.getGuild().setMusicPlayer(null);
-        session.getPudelWorld().getPudelManager().CloseVoiceConnection(session);
+        session.getPudelWorld().getPudelManager().closeVoiceConnection(session);
         session.getChannel().sendMessage(args).queue();
         session.setState("END");
         return this;

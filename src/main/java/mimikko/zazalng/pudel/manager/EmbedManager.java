@@ -22,7 +22,7 @@ public class EmbedManager implements Manager {
     public EmbedBuilder createEmbed(SessionEntity session) {
         return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
                 .setColor(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getColor())
-                .setAuthor(session.getUser().getUserManager().getUserName(session),null,session.getUser().getJDA().getAvatarUrl())
+                .setAuthor(session.getUser().getUserManager().getUserName(session), null, session.getUser().getJDA().getAvatarUrl())
                 .setFooter(session.getCommand().getClass().getSimpleName() + " | " + session.getState(),session.getGuild().getJDA().getIconUrl());
     }
 

@@ -45,6 +45,7 @@ public class MusicManager implements Manager {
         playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
+                track.setUserData(session.getUser());
                 session.getGuild().getMusicPlayer().queueUp(track);
                 session.getChannel().sendMessageEmbeds(
                         getPudelWorld().getEmbedManager().createEmbed(session)
@@ -53,7 +54,7 @@ public class MusicManager implements Manager {
                                 .setThumbnail(getTrackThumbnail(track)).build())
                         .queue();
                 session.setState("END");
-                getPudelWorld().getPudelManager().OpenVoiceConnection(session).setSendingHandler(session);
+                getPudelWorld().getPudelManager().openVoiceConnection(session).setSendingHandler(session);
             }
 
             @Override
@@ -71,16 +72,17 @@ public class MusicManager implements Manager {
                     session.setState("MUSIC.PLAY.SEARCHING");
                 } else {
                     // Add all tracks in the playlist to the queue
-                    session.getGuild().getMusicPlayer().queueUp(playlist);
+                    session.getGuild().getMusicPlayer().queueUp(playlist.getTracks().stream().peek(track -> track.setUserData(session.getUser())).toList());
                     session.getChannel().sendMessageEmbeds(
                             getPudelWorld().getEmbedManager().createEmbed(session)
-                                    .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.playlist",null),trackURL)
+                                    .setTitle(playlist.getName(),trackURL)
+                                    .setDescription(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.playlist",null))
                                     .setThumbnail("https://puu.sh/KgxX3.gif")
                                     .build())
                             .queue();
                     session.setState("END");
                 }
-                getPudelWorld().getPudelManager().OpenVoiceConnection(session).setSendingHandler(session);
+                getPudelWorld().getPudelManager().openVoiceConnection(session).setSendingHandler(session);
             }
 
             @Override
@@ -93,7 +95,7 @@ public class MusicManager implements Manager {
                                 .build())
                         .queue();
                 session.setState("END");
-                getPudelWorld().getPudelManager().OpenVoiceConnection(session).setSendingHandler(session);
+                getPudelWorld().getPudelManager().openVoiceConnection(session).setSendingHandler(session);
             }
 
             @Override
@@ -152,7 +154,11 @@ public class MusicManager implements Manager {
     }
 
     public String getTrackDuration(Object track){
-        long seconds = castAudioTrack(track).getDuration() / 1000;
+        return String.format("%s / %s", castDuration(castAudioTrack(track).getPosition()), castDuration(castAudioTrack(track).getDuration()));
+    }
+
+    public String castDuration(long duration){
+        long seconds = duration / 1000;
         long hours = seconds / 3600;
         long minutes = (seconds % 3600) / 60;
         seconds = seconds % 60;
@@ -176,6 +182,7 @@ public class MusicManager implements Manager {
 
     @Override
     public MusicManager shutdown() {
+        getPudelWorld().getGuildManager().getGuildEntity().forEach(guild -> guild.getMusicPlayer().stop());
         return this;
     }
 }

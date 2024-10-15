@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.entities;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import mimikko.zazalng.pudel.handlers.audiohandler.AudioPlayerSendHandler;
 import mimikko.zazalng.pudel.handlers.audiohandler.AudioTrackHandler;
@@ -33,7 +32,7 @@ public class MusicPlayerEntity {
         return player;
     }
 
-    public void queueUp(AudioTrack track) {
+    public MusicPlayerEntity queueUp(AudioTrack track) {
         if (this.player.getAudioPlayer().getPlayingTrack() == null) {
             getPlaylist().add(track);
             this.audioTrack = track;
@@ -41,14 +40,17 @@ public class MusicPlayerEntity {
         } else {
             getPlaylist().add(track);
         }
+        return this;
     }
 
-    public void queueUp(AudioPlaylist playlist) {
-        getPlaylist().addAll(playlist.getTracks());
+    public MusicPlayerEntity queueUp(List<AudioTrack> playlist) {
+        getPlaylist().addAll(playlist);
 
         if (this.player.getAudioPlayer().getPlayingTrack() == null) {
             this.player.getAudioPlayer().playTrack(trackSelection());
         }
+
+        return this;
     }
 
     public AudioTrack getPlayingTrack(){
@@ -78,38 +80,43 @@ public class MusicPlayerEntity {
         }
     }
 
-    public void shufflePlaylist(){
+    public MusicPlayerEntity shufflePlaylist(){
         Collections.shuffle(this.playlist);
+        return this;
     }
 
-    public void nextTrack(boolean isSkip) {
+    public MusicPlayerEntity nextTrack(boolean isSkip) {
         if (isSkip || flagLoop) {
             this.player.getAudioPlayer().playTrack(trackSelection());
         } else {
             this.player.getAudioPlayer().startTrack(trackSelection(), true);
         }
+        return this;
     }
 
-    public void stop() {
+    public MusicPlayerEntity stop() {
         this.playlist.clear();
         this.player.getAudioPlayer().stopTrack();
         this.player.getAudioPlayer().destroy();
         this.player = null;
+        return this;
     }
 
     public boolean isLoop(){
         return this.flagLoop;
     }
 
-    public void setLoop(boolean flag){
+    public MusicPlayerEntity setLoop(boolean flag){
         this.flagLoop = flag;
+        return this;
     }
 
     public boolean isShuffle() {
         return this.flagShuffle;
     }
 
-    public void setShuffle(boolean flag) {
+    public MusicPlayerEntity setShuffle(boolean flag) {
         this.flagShuffle = flag;
+        return this;
     }
 }

@@ -17,24 +17,24 @@ public class EnvironmentHandler {
         this.isLoaded = false;
     }
 
-    public void loadEnv(String filepath){
-        if(isLoaded()){
-            return;
-        }
+    public EnvironmentHandler loadEnv(String filepath){
+        if(!isLoaded()){
+            System.out.println("Getting filepath: \"" + filepath + "\"");
+            try (FileInputStream fileInputStream = new FileInputStream(filepath)) {
+                this.env.load(fileInputStream);
+                this.pudelWorld.getLocalizationManager().loadLanguages();
+                setLoaded(true);
+            } catch (IOException e) {
 
-        System.out.println("Getting filepath: \""+filepath+"\"");
-        try(FileInputStream fileInputStream = new FileInputStream(filepath)){
-            this.env.load(fileInputStream);
-            this.pudelWorld.getLocalizationManager().loadLanguages();
-            setLoaded(true);
-        }catch(IOException e){
-
+            }
         }
+        return this;
     }
 
-    public void unloadEnv(){
+    public EnvironmentHandler unloadEnv(){
         this.env.clear();
         setLoaded(false);
+        return this;
     }
 
     public String getDiscordAPI() {
@@ -69,7 +69,8 @@ public class EnvironmentHandler {
         return this.isLoaded;
     }
 
-    public void setLoaded(boolean flag) {
+    public EnvironmentHandler setLoaded(boolean flag) {
         this.isLoaded = flag;
+        return this;
     }
 }

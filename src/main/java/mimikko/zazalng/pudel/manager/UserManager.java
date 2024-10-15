@@ -33,6 +33,10 @@ public class UserManager implements Manager {
         return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(this, JDAuser));
     }
 
+    public UserEntity castUserEntity(Object user){
+        return (UserEntity) user;
+    }
+
     public void fetchUserEntity(){
         StringBuilder helpMessage = new StringBuilder("Loaded User Entity: "+userEntity.size()+"\n");
         userEntity.forEach((id, user) -> helpMessage.append(id).append(" - ").append(user.getJDA().getName()).append("\n"));

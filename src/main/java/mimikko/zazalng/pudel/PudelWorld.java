@@ -3,7 +3,11 @@ package mimikko.zazalng.pudel;
 import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import mimikko.zazalng.pudel.handlers.EnvironmentHandler;
 import mimikko.zazalng.pudel.manager.*;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.sharding.ShardManager;
+
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 import static mimikko.zazalng.pudel.utility.JDAshardBuilder.buildJDAshardManager;
 
@@ -44,7 +48,7 @@ public class PudelWorld {
     }
 
     public ManagerFactory getManagerFactory() {
-        return managerFactory;
+        return this.managerFactory;
     }
 
     public CommandManager getCommandManager(){
@@ -83,30 +87,55 @@ public class PudelWorld {
         return this.worldStatus;
     }
 
-    public void setWorldStatus(boolean status){
+    public PudelWorld setWorldStatus(boolean status){
         this.worldStatus = status;
+        return this;
     }
 
     public ShardManager getJDAshardManager(){
         return this.JDAshardManager;
     }
 
-    public void setJDAshardManager(ShardManager shardManager){
+    public PudelWorld setJDAshardManager(ShardManager shardManager){
         this.JDAshardManager = shardManager;
+        return this;
     }
     ///////////////////////////////////////////////////
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
-    public void buildShard(String api){
+    public PudelWorld buildShard(String api){
         setJDAshardManager(buildJDAshardManager(this,api));
+        return this;
     }
 
-    public void reloadManager(String managerName) {
-        managerFactory.reloadManager(managerName);
+    public PudelWorld reloadManager(String managerName) {
+        getManagerFactory().reloadManager(managerName);
+        return this;
     }
 
-    public void shutdownWorld() {
-        managerFactory.shutdownAllManagers();
-        // Additional shutdown logic for the world
+    public PudelWorld shutdownWorld() {
+        CompletableFuture<Void> shutdownFuture = CompletableFuture.runAsync(() -> {
+            getManagerFactory().shutdownAllManagers();
+        });
+        shutdownFuture.join();
+
+        // Shut down JDA shard manager gracefully
+        shutdownFuture = CompletableFuture.runAsync(() -> {
+            try {
+                // Wait for all shutdown processes to complete
+                for (JDA jda : getJDAshardManager().getShards()) {
+                    if (!jda.awaitShutdown(Duration.ofSeconds(10))) {
+                        jda.shutdownNow(); // Cancel all remaining requests
+                        jda.awaitShutdown(); // Wait until shutdown is complete (indefinitely)
+                    }
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();  // Restore interrupt status
+            }
+        });
+        shutdownFuture.join();
+
+        return this;
     }
+
 }

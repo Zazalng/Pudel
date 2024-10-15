@@ -48,8 +48,9 @@ public class SessionEntity {
         return this.sessionState;
     }
 
-    public void addData(String key, Object value) {
+    public SessionEntity addData(String key, Object value) {
         promptCollection.put(key, value);
+        return this;
     }
 
     public Object getData(String key, boolean delObject) {

@@ -1,9 +1,9 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
-import net.dv8tion.jda.api.entities.User;
 
 public class PudelManager implements Manager {
     protected PudelWorld pudelWorld;
@@ -13,36 +13,46 @@ public class PudelManager implements Manager {
         this.pudelWorld = pudelWorld;
     }
     public String getName(SessionEntity session) {
-        if(session.getGuild().getJDA().getMemberById(getJDA().getId()).getNickname()==null){
+        if(session.getGuild().getJDA().getMemberById(getPudelEntity().getJDA().getId()).getNickname()==null){
             return this.pudelWorld.getLocalizationManager().getLocalizedText(session,"bot.name",null);
         } else{
-            return session.getGuild().getJDA().getMemberById(getJDA().getId()).getNickname();
+            return session.getGuild().getJDA().getMemberById(getPudelEntity().getJDA().getId()).getNickname();
         }
     }
 
-    public User getJDA() {
-        return PudelEntity.getJDA();
+    public UserEntity getPudelEntity(){
+        return this.PudelEntity;
     }
 
     public PudelManager setPudelEntity(UserEntity pudelEntity) {
-        PudelEntity = pudelEntity;
+        this.PudelEntity = pudelEntity;
         return this;
     }
 
-    public PudelManager OpenVoiceConnection(SessionEntity session){
+    public PudelManager openVoiceConnection(SessionEntity session){
         session.getGuild().getJDA().getAudioManager().openAudioConnection(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getVoiceState().getChannel());
         setSendingHandler(session);
         return this;
     }
 
-    public PudelManager CloseVoiceConnection(SessionEntity session){
-        session.getGuild().getJDA().getAudioManager().closeAudioConnection();
-        setSendingHandler(session);
+    public PudelManager closeVoiceConnection(SessionEntity session){
+        closeVoiceConnection(session.getGuild());
+        return this;
+    }
+
+    public PudelManager closeVoiceConnection(GuildEntity guild){
+        guild.getJDA().getAudioManager().closeAudioConnection();
+        setSendingHandler(guild);
         return this;
     }
 
     public PudelManager setSendingHandler(SessionEntity session){
-        session.getGuild().getJDA().getAudioManager().setSendingHandler(session.getGuild().getMusicPlayer().getPlayer());
+        setSendingHandler(session.getGuild());
+        return this;
+    }
+
+    public PudelManager setSendingHandler(GuildEntity guild){
+        guild.getJDA().getAudioManager().setSendingHandler(guild.getMusicPlayer().getPlayer());
         return this;
     }
 
@@ -63,6 +73,7 @@ public class PudelManager implements Manager {
 
     @Override
     public PudelManager shutdown() {
+        getPudelWorld().getGuildManager().getGuildEntity().forEach(guild -> closeVoiceConnection(guild));
         return this;
     }
 }
