@@ -17,7 +17,7 @@ public class BooleanUtility {
         }
     }
 
-    public static boolean isNumberic(String test){
+    public static boolean isNumeric(String test){
         return test != null && test.matches("\\d+");
     }
 }

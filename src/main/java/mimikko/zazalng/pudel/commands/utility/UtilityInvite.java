@@ -4,7 +4,6 @@ import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class UtilityInvite extends AbstractCommand {
-
     @Override
     public UtilityInvite execute(SessionEntity session, String args) {
         super.execute(session, args);

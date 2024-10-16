@@ -4,6 +4,7 @@ import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class GuildPrefix extends AbstractCommand {
+    @Override
     public GuildPrefix execute(SessionEntity session, String args) {
         super.execute(session, args);
         return this;

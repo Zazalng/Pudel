@@ -2,6 +2,7 @@ package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
+import mimikko.zazalng.pudel.commands.gacha.GachaDrawing;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.UtilityInvite;
@@ -19,8 +20,9 @@ public class CommandManager implements Manager {
         this.pudelWorld = pudelWorld;
         this.commands = new HashMap<>();
 
+        loadCommand("drawing", new GachaDrawing())
         //music category
-        loadCommand("loop", new MusicLoop())
+                .loadCommand("loop", new MusicLoop())
                 .loadCommand("play", new MusicPlay())
                 .loadCommand("shuffle", new MusicShuffle())
                 .loadCommand("skip", new MusicSkip())

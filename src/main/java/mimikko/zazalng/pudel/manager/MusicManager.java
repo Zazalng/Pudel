@@ -14,155 +14,198 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static mimikko.zazalng.pudel.utility.ListUtility.getListObject;
-import static mimikko.zazalng.pudel.utility.ListUtility.getListSize;
 
 public class MusicManager implements Manager {
     private static final Logger logger = LoggerFactory.getLogger(MusicManager.class);
     protected final PudelWorld pudelWorld;
     private final AudioPlayerManager playerManager;
 
-    public MusicManager(PudelWorld pudelWorld){
+    public MusicManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
                 true,   // Allow direct video IDs
-                true   // Allow direct playlist IDs
+                true    // Allow direct playlist IDs
         );
         this.playerManager = new DefaultAudioPlayerManager();
         this.playerManager.registerSourceManager(ytSourceManager);
-        AudioSourceManagers.registerRemoteSources(this.playerManager,com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
+        AudioSourceManagers.registerRemoteSources(this.playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
     }
 
-    public AudioPlayer musicManagerBuilder(){
+    public class MusicLoadResult {
+
+        public enum Type {
+            TRACK,       // A single track was loaded
+            PLAYLIST,    // A playlist was loaded
+            SEARCH,      // Search results were returned
+            NO_MATCH,    // No match found for the input
+            LOAD_FAILED  // An error occurred during loading
+        }
+
+        private boolean success;           // Indicates if the load was successful
+        private Type type;                 // The type of result (TRACK, PLAYLIST, etc.)
+        private AudioTrack track;          // The loaded track (if any)
+        private AudioPlaylist playlist;    // The loaded playlist (if any)
+        private List<AudioTrack> topTracks; // The top search results (if it's a search result)
+        private String message;            // An optional message (e.g., for errors)
+
+        // Getters and Setters
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public MusicLoadResult setSuccess(boolean success) {
+            this.success = success;
+            return this;
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+        public MusicLoadResult setType(Type type) {
+            this.type = type;
+            return this;
+        }
+
+        public AudioTrack getTrack() {
+            return track;
+        }
+
+        public MusicLoadResult setTrack(AudioTrack track) {
+            this.track = track;
+            return this;
+        }
+
+        public AudioPlaylist getPlaylist() {
+            return playlist;
+        }
+
+        public MusicLoadResult setPlaylist(AudioPlaylist playlist) {
+            this.playlist = playlist;
+            return this;
+        }
+
+        public List<AudioTrack> getTopTracks() {
+            return topTracks;
+        }
+
+        public MusicLoadResult setTopTracks(List<AudioTrack> topTracks) {
+            this.topTracks = topTracks;
+            return this;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public MusicLoadResult setMessage(String message) {
+            this.message = message;
+            return this;
+        }
+    }
+
+    public AudioPlayer musicManagerBuilder() {
         return this.playerManager.createPlayer();
     }
 
-    public MusicManager loadAndPlay(SessionEntity session, String trackURL) {
+    /**
+     * Loads and plays a track or playlist based on the given track URL.
+     * Returns a result object to inform the calling command about the outcome.
+     */
+    public MusicLoadResult loadAndPlay(SessionEntity session, String trackURL) {
+        MusicLoadResult result = new MusicLoadResult();
+
         playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 track.setUserData(session.getUser());
                 session.getGuild().getMusicPlayer().queueUp(track);
-                session.getChannel().sendMessageEmbeds(
-                        getPudelWorld().getEmbedManager().createEmbed(session)
-                                .setTitle(getTrackFormat(track),track.getInfo().uri)
-                                .setDescription(getPudelWorld().getLocalizationManager().getLocalizedText(session,"music.manager.accept",null))
-                                .setThumbnail(getTrackThumbnail(track)).build())
-                        .queue();
-                session.setState("END");
-                getPudelWorld().getPudelManager().openVoiceConnection(session).setSendingHandler(session);
+
+                // Prepare result with track information
+                result.setTrack(track)
+                        .setSuccess(true)
+                        .setType(MusicLoadResult.Type.TRACK);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 if (playlist.isSearchResult()) {
-                    // If it's a search result, add the first track to the queue
-                    session.addData("music.play.searching.top5",playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
-                    session.getChannel().sendMessageEmbeds(
-                            getPudelWorld().getEmbedManager().createEmbed(session)
-                                    .setTitle(String.format("%s\n%s",getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.searching",null),trackURL))
-                                    .setThumbnail("https://puu.sh/KgdPy.gif")
-                                    .setDescription(getSongList(session))
-                                    .build())
-                            .queue();
-                    session.setState("MUSIC.PLAY.SEARCHING");
+                    // Search result, return the top 5 tracks for further selection
+                    session.addData("music.play.searching.top5", playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
+
+                    result.setTopTracks(playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())))
+                            .setSuccess(true)
+                            .setType(MusicLoadResult.Type.SEARCH);
                 } else {
-                    // Add all tracks in the playlist to the queue
-                    session.getGuild().getMusicPlayer().queueUp(playlist.getTracks().stream().peek(track -> track.setUserData(session.getUser())).toList());
-                    session.getChannel().sendMessageEmbeds(
-                            getPudelWorld().getEmbedManager().createEmbed(session)
-                                    .setTitle(playlist.getName(),trackURL)
-                                    .setDescription(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.playlist",null))
-                                    .setThumbnail("https://puu.sh/KgxX3.gif")
-                                    .build())
-                            .queue();
-                    session.setState("END");
+                    // Full playlist
+                    session.getGuild().getMusicPlayer().queueUp(playlist.getTracks().stream()
+                            .peek(track -> track.setUserData(session.getUser())).toList());
+
+                    result.setPlaylist(playlist)
+                            .setSuccess(true)
+                            .setType(MusicLoadResult.Type.PLAYLIST);
                 }
-                getPudelWorld().getPudelManager().openVoiceConnection(session).setSendingHandler(session);
             }
 
             @Override
             public void noMatches() {
-                session.getChannel().sendMessageEmbeds(
-                        getPudelWorld().getEmbedManager().createEmbed(session)
-                                .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.nomatch",null))
-                                .setDescription(String.format("`%s`",trackURL))
-                                .setThumbnail("https://puu.sh/KgAxi.gif")
-                                .build())
-                        .queue();
-                session.setState("END");
-                getPudelWorld().getPudelManager().openVoiceConnection(session).setSendingHandler(session);
+                result.setSuccess(false)
+                        .setType(MusicLoadResult.Type.NO_MATCH)
+                        .setMessage("No matches found for: " + trackURL);
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                session.getChannel().sendMessageEmbeds(
-                        getPudelWorld().getEmbedManager().createEmbed(session)
-                                .setColor((255 << 16) | (0 << 8) | 0)
-                                .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.exception",null))
-                                .setDescription(String.format("`%s`\n```%s```",trackURL,exception.toString()))
-                                .setThumbnail("https://puu.sh/KgAxn.gif")
-                                .build())
-                        .queue();
+                result.setSuccess(false)
+                        .setType(MusicLoadResult.Type.LOAD_FAILED)
+                        .setMessage("Failed to load track: " + exception.getMessage());
                 logger.error("LoadFailed", exception);
-                session.setState("END");
             }
         });
-        return this;
+
+        return result;
     }
 
-    private String getSongList(SessionEntity session){
-        StringBuilder str = new StringBuilder();
-        int size = getListSize(session.getData("music.play.searching.top5",false));
-        for(int i = 0; i<size;i++){
-            str.append("[").append(i+1).append(". ")
-                    .append(session.getPudelWorld().getMusicManager().getTrackFormat(getListObject(session.getData("music.play.searching.top5",false),i)))
-                    .append("](").append(session.getPudelWorld().getMusicManager().getTrackUrl(getListObject(session.getData("music.play.searching.top5",false),i)))
-                    .append(")\n");
-        }
-        str.append("\n").append(getPudelWorld().getLocalizationManager().getLocalizedText(session, "music.manager.searching.tooltips",null));
-        return str.toString();
-    }
-
-    public AudioTrack castAudioTrack(Object track){
-        return (AudioTrack) track;
-    }
-
+    // Utility methods for track information
     public String getTrackFormat(Object track) {
         return getTrackTitle(track) + " - " + getTrackUploader(track);
     }
 
-    public String getTrackThumbnail(Object track){
+    public String getTrackThumbnail(Object track) {
         Matcher matcher = Pattern.compile("v=([^&]+)").matcher(castAudioTrack(track).getInfo().uri);
         return matcher.find() ? "https://img.youtube.com/vi/" + matcher.group(1) + "/maxresdefault.jpg" : "https://puu.sh/KgqvW.gif";
     }
 
-    public String getTrackTitle(Object track){
+    public String getTrackTitle(Object track) {
         return castAudioTrack(track).getInfo().title;
     }
 
-    public String getTrackUrl(Object track){
+    public String getTrackUrl(Object track) {
         return castAudioTrack(track).getInfo().uri;
     }
 
-    public String getTrackUploader(Object track){
+    public String getTrackUploader(Object track) {
         return castAudioTrack(track).getInfo().author;
     }
 
-    public String getTrackDuration(Object track){
+    public String getTrackDuration(Object track) {
         return String.format("%s / %s", castDuration(castAudioTrack(track).getPosition()), castDuration(castAudioTrack(track).getDuration()));
     }
 
-    public String castDuration(long duration){
+    public String castDuration(long duration) {
         long seconds = duration / 1000;
         long hours = seconds / 3600;
         long minutes = (seconds % 3600) / 60;
         seconds = seconds % 60;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    public AudioTrack castAudioTrack(Object track) {
+        return (AudioTrack) track;
     }
 
     @Override
