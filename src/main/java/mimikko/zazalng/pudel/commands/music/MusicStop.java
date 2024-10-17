@@ -16,8 +16,7 @@ public class MusicStop extends AbstractCommand {
 
         args = localize(session,"music.stop.init",localizationArgs);
 
-        session.getGuild().getMusicPlayer().stop();
-        session.getGuild().setMusicPlayer(null);
+        session.getGuild().stopPlayer();
         session.getPudelWorld().getPudelManager().closeVoiceConnection(session);
         session.getChannel().sendMessage(args).queue();
         session.setState("END");

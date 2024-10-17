@@ -12,20 +12,25 @@ import java.util.List;
 import static mimikko.zazalng.pudel.utility.IntegerUtility.randomInt;
 
 public class MusicPlayerEntity {
-    private final List<AudioTrack> playlist;
-    private AudioPlayerSendHandler player;
-    private AudioTrack audioTrack;
+    private final List<AudioTrack> activePlaylist;
+    private final List<AudioTrack> historyPlaylist;
+    private final AudioPlayerSendHandler player;
     private boolean flagLoop;
     private boolean flagShuffle;
 
-    public MusicPlayerEntity(AudioPlayer playerManager){
-        this.playlist = new ArrayList<>();
-        this.player = new AudioPlayerSendHandler(playerManager);
+    public MusicPlayerEntity(AudioPlayer player){
+        this.activePlaylist = new ArrayList<>();
+        this.historyPlaylist = new ArrayList<>();
+        this.player = new AudioPlayerSendHandler(player);
         this.player.getAudioPlayer().addListener(new AudioTrackHandler(this));
     }
 
-    public List<AudioTrack> getPlaylist(){
-        return this.playlist;
+    public List<AudioTrack> getActivePlaylist(){
+        return this.activePlaylist;
+    }
+
+    public List<AudioTrack> getHistoryPlaylist(){
+        return this.historyPlaylist;
     }
 
     public AudioPlayerSendHandler getPlayer() {
@@ -33,23 +38,12 @@ public class MusicPlayerEntity {
     }
 
     public MusicPlayerEntity queueUp(AudioTrack track) {
-        if (this.player.getAudioPlayer().getPlayingTrack() == null) {
-            getPlaylist().add(track);
-            this.audioTrack = track;
-            this.player.getAudioPlayer().playTrack(trackSelection());
-        } else {
-            getPlaylist().add(track);
-        }
+        getActivePlaylist().add(track);
         return this;
     }
 
     public MusicPlayerEntity queueUp(List<AudioTrack> playlist) {
-        getPlaylist().addAll(playlist);
-
-        if (this.player.getAudioPlayer().getPlayingTrack() == null) {
-            this.player.getAudioPlayer().playTrack(trackSelection());
-        }
-
+        getActivePlaylist().addAll(playlist);
         return this;
     }
 
@@ -60,45 +54,35 @@ public class MusicPlayerEntity {
         return this.player.getAudioPlayer().getPlayingTrack();
     }
 
-    private AudioTrack trackSelection() {
-        if (flagLoop && audioTrack != null) {
-            // If looping is enabled, replay the current track
-            return audioTrack.makeClone();
-        } else if (flagShuffle && !getPlaylist().isEmpty()) {
-            // If shuffle is enabled, pick a random track from the playlist
-            int index = randomInt(getPlaylist().size());
-            AudioTrack selectedTrack = getPlaylist().remove(index);
-            this.audioTrack = selectedTrack.makeClone();
-            return this.audioTrack;
-        } else if (!getPlaylist().isEmpty()) {
-            // Play the next track in the playlist
-            AudioTrack nextTrack = getPlaylist().remove(0);
-            this.audioTrack = nextTrack.makeClone();
-            return this.audioTrack;
+    public MusicPlayerEntity nextTrack(boolean isSkip) {
+        if (isSkip) {
+            getPlayer().getAudioPlayer().playTrack(trackSelection());
         } else {
-            return null; // No track to play
+            getPlayer().getAudioPlayer().startTrack(trackSelection(), true);
+        }
+        return this;
+    }
+
+    private AudioTrack trackSelection() {
+        if(flagLoop){
+            return this.player.getAudioPlayer().getPlayingTrack().makeClone();
+        } else if(flagShuffle){
+            return getActivePlaylist().remove(randomInt(getActivePlaylist().size()));
+        } else if(!getActivePlaylist().isEmpty()){
+            return getActivePlaylist().remove(0);
+        } else{
+            return null;
         }
     }
 
     public MusicPlayerEntity shufflePlaylist(){
-        Collections.shuffle(this.playlist);
-        return this;
-    }
-
-    public MusicPlayerEntity nextTrack(boolean isSkip) {
-        if (isSkip || flagLoop) {
-            this.player.getAudioPlayer().playTrack(trackSelection());
-        } else {
-            this.player.getAudioPlayer().startTrack(trackSelection(), true);
-        }
+        Collections.shuffle(this.activePlaylist);
         return this;
     }
 
     public MusicPlayerEntity stop() {
-        this.playlist.clear();
-        this.player.getAudioPlayer().stopTrack();
-        this.player.getAudioPlayer().destroy();
-        this.player = null;
+        getActivePlaylist().clear();
+        getPlayer().getAudioPlayer().stopTrack();
         return this;
     }
 

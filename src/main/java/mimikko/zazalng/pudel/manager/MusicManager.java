@@ -11,10 +11,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.handlers.MusicResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,79 +35,6 @@ public class MusicManager implements Manager {
         AudioSourceManagers.registerRemoteSources(this.playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
     }
 
-    public class MusicLoadResult {
-
-        public enum Type {
-            TRACK,       // A single track was loaded
-            PLAYLIST,    // A playlist was loaded
-            SEARCH,      // Search results were returned
-            NO_MATCH,    // No match found for the input
-            LOAD_FAILED  // An error occurred during loading
-        }
-
-        private boolean success;           // Indicates if the load was successful
-        private Type type;                 // The type of result (TRACK, PLAYLIST, etc.)
-        private AudioTrack track;          // The loaded track (if any)
-        private AudioPlaylist playlist;    // The loaded playlist (if any)
-        private List<AudioTrack> topTracks; // The top search results (if it's a search result)
-        private String message;            // An optional message (e.g., for errors)
-
-        // Getters and Setters
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public MusicLoadResult setSuccess(boolean success) {
-            this.success = success;
-            return this;
-        }
-
-        public Type getType() {
-            return type;
-        }
-
-        public MusicLoadResult setType(Type type) {
-            this.type = type;
-            return this;
-        }
-
-        public AudioTrack getTrack() {
-            return track;
-        }
-
-        public MusicLoadResult setTrack(AudioTrack track) {
-            this.track = track;
-            return this;
-        }
-
-        public AudioPlaylist getPlaylist() {
-            return playlist;
-        }
-
-        public MusicLoadResult setPlaylist(AudioPlaylist playlist) {
-            this.playlist = playlist;
-            return this;
-        }
-
-        public List<AudioTrack> getTopTracks() {
-            return topTracks;
-        }
-
-        public MusicLoadResult setTopTracks(List<AudioTrack> topTracks) {
-            this.topTracks = topTracks;
-            return this;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public MusicLoadResult setMessage(String message) {
-            this.message = message;
-            return this;
-        }
-    }
-
     public AudioPlayer musicManagerBuilder() {
         return this.playerManager.createPlayer();
     }
@@ -116,53 +43,43 @@ public class MusicManager implements Manager {
      * Loads and plays a track or playlist based on the given track URL.
      * Returns a result object to inform the calling command about the outcome.
      */
-    public MusicLoadResult loadAndPlay(SessionEntity session, String trackURL) {
-        MusicLoadResult result = new MusicLoadResult();
+    public MusicResultHandler loadAndPlay(SessionEntity session, String trackURL) {
+        MusicResultHandler result = new MusicResultHandler();
 
         playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 track.setUserData(session.getUser());
-                session.getGuild().getMusicPlayer().queueUp(track);
-
-                // Prepare result with track information
                 result.setTrack(track)
                         .setSuccess(true)
-                        .setType(MusicLoadResult.Type.TRACK);
+                        .setType(MusicResultHandler.Type.TRACK);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 if (playlist.isSearchResult()) {
-                    // Search result, return the top 5 tracks for further selection
-                    session.addData("music.play.searching.top5", playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())));
-
                     result.setTopTracks(playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())))
                             .setSuccess(true)
-                            .setType(MusicLoadResult.Type.SEARCH);
+                            .setType(MusicResultHandler.Type.SEARCH);
                 } else {
-                    // Full playlist
-                    session.getGuild().getMusicPlayer().queueUp(playlist.getTracks().stream()
-                            .peek(track -> track.setUserData(session.getUser())).toList());
+                    playlist.getTracks().stream().peek(track -> track.setUserData(session.getUser())).toList();
 
                     result.setPlaylist(playlist)
                             .setSuccess(true)
-                            .setType(MusicLoadResult.Type.PLAYLIST);
+                            .setType(MusicResultHandler.Type.PLAYLIST);
                 }
             }
 
             @Override
             public void noMatches() {
                 result.setSuccess(false)
-                        .setType(MusicLoadResult.Type.NO_MATCH)
-                        .setMessage("No matches found for: " + trackURL);
+                        .setType(MusicResultHandler.Type.NO_MATCH);
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
                 result.setSuccess(false)
-                        .setType(MusicLoadResult.Type.LOAD_FAILED)
-                        .setMessage("Failed to load track: " + exception.getMessage());
+                        .setType(MusicResultHandler.Type.LOAD_FAILED);
                 logger.error("LoadFailed", exception);
             }
         });

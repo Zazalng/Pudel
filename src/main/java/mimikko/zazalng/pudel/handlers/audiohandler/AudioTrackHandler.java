@@ -14,7 +14,7 @@ public class AudioTrackHandler extends AudioEventAdapter {
         this.player = player;
     }
 
-    public MusicPlayerEntity getMusicManager(){
+    public MusicPlayerEntity getMusicEntity(){
         return this.player;
     }
 
@@ -37,8 +37,15 @@ public class AudioTrackHandler extends AudioEventAdapter {
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
             // Start next track
-            getMusicManager().nextTrack(false);
+            if(!getMusicEntity().isLoop()){
+                getMusicEntity().getHistoryPlaylist().add(0,track);
+            }
+            getMusicEntity().nextTrack(false);
         } else if(endReason == AudioTrackEndReason.STOPPED){
+
+        } else if(endReason == AudioTrackEndReason.REPLACED){
+
+        } else if(endReason == AudioTrackEndReason.CLEANUP){
 
         }
 
@@ -52,7 +59,6 @@ public class AudioTrackHandler extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        System.out.println(this.getClass().getSimpleName() + " at 'onTrackException' | " + exception.getMessage());
         if(exception.getMessage().equals("Please sign in")){
             player.playTrack(track.makeClone());
         }

@@ -5,7 +5,7 @@ import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.contracts.Command.BaseCommandState;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-import mimikko.zazalng.pudel.manager.MusicManager;
+import mimikko.zazalng.pudel.handlers.MusicResultHandler;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
         if (args.isEmpty()) {
             handleNoArgs(session);
         } else if (!isUserInVoiceChat(session)) {
-            handleNotInVoiceChat(session);
+            sendNotInVoiceChat(session);
         } else {
             // Proceed to queue the song based on input
             queueSong(session, args);
@@ -71,7 +71,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
     // ---- Private Methods ----
 
     // Handle case when no arguments are provided
-    private void handleNoArgs(SessionEntity session) {
+    private MusicPlay handleNoArgs(SessionEntity session) {
         MusicPlayerEntity player = session.getGuild().getMusicPlayer();
 
         if (player.getPlayingTrack() == null) {
@@ -81,6 +81,8 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
         }
 
         session.setState(BaseCommandState.END);
+
+        return this;
     }
 
     // Check if user is in a voice channel
@@ -89,7 +91,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
     }
 
     // Handle case when user is not in a voice channel
-    private void handleNotInVoiceChat(SessionEntity session) {
+    private MusicPlay sendNotInVoiceChat(SessionEntity session) {
         session.getChannel().sendMessageEmbeds(
                 session.getPudelWorld().getEmbedManager().createEmbed(session)
                         .setTitle(localize(session, "music.play.error.voicechat"))
@@ -98,22 +100,25 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
         ).queue();
 
         session.setState(BaseCommandState.END);
+        return this;
     }
 
     // Queue the song or search
-    private void queueSong(SessionEntity session, String args) {
+    private MusicPlay queueSong(SessionEntity session, String args) {
         if (!args.startsWith("http://") && !args.startsWith("https://")) {
             args = "ytsearch:" + args;
         }
         queueTrack(session, args);
+
+        return this;
     }
 
     // Queue a song URL
-    private void queueTrack(SessionEntity session, String url) {
-        MusicManager.MusicLoadResult result = session.getPudelWorld().getMusicManager().loadAndPlay(session, url);
+    private MusicPlay queueTrack(SessionEntity session, String url) {
+        MusicResultHandler result = session.getPudelWorld().getMusicManager().loadAndPlay(session, url);
 
-// If it's a search result, display the top 5 tracks to the user
-        if (result.getType() == MusicManager.MusicLoadResult.Type.SEARCH) {
+        // If it's a search result, display the top 5 tracks to the user
+        if (result.getType() == MusicResultHandler.Type.SEARCH) {
             StringBuilder searchResults = new StringBuilder("Top 5 Search Results:\n");
             List<AudioTrack> topTracks = result.getTopTracks();
             for (int i = 0; i < topTracks.size(); i++) {
@@ -122,8 +127,10 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
             session.getChannel().sendMessage(searchResults.toString()).queue();
 
             // Set the session to SEARCHING state
-            session.setState(State.SEARCHING);
+            session.setState(State.SEARCHING.getName());
         }
+
+        return this;
     }
 
     // Handle searching state
@@ -144,17 +151,19 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
     }
 
     // Send no track currently playing message
-    private void sendNoTrackMessage(SessionEntity session) {
+    private MusicPlay sendNoTrackMessage(SessionEntity session) {
         session.getChannel().sendMessageEmbeds(
                 session.getPudelWorld().getEmbedManager().createEmbed(session)
                         .setTitle(localize(session, "music.play.empty"))
                         .setThumbnail("https://puu.sh/KgLS9.gif")
                         .build()
         ).queue();
+
+        return this;
     }
 
     // Send current track details
-    private void sendCurrentTrackMessage(SessionEntity session, MusicPlayerEntity player) {
+    private MusicPlay sendCurrentTrackMessage(SessionEntity session, MusicPlayerEntity player) {
         String trackFormat = session.getPudelWorld().getMusicManager().getTrackFormat(player.getPlayingTrack());
         session.getChannel().sendMessageEmbeds(
                 session.getPudelWorld().getEmbedManager().createEmbed(session)
@@ -170,5 +179,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
                                 session.getPudelWorld().getMusicManager().getTrackDuration(player.getPlayingTrack()), false)
                         .build()
         ).queue();
+
+        return this;
     }
 }

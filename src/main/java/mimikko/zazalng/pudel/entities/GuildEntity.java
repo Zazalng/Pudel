@@ -22,8 +22,6 @@ public class GuildEntity {
     public GuildEntity(GuildManager guildManager, Guild guild){
         this.guildManager = guildManager;
         this.guild = guild;
-        this.musicPlayer = null;
-
         this.ignoreChannel = new ArrayList<>();
         this.disableCommand = new ArrayList<>();
         this.languageCode = "ENG";
@@ -31,19 +29,24 @@ public class GuildEntity {
         this.staffLogChannel = "";
     }
 
+    public GuildManager getGuildManager(){
+        return this.guildManager;
+    }
+
     public Guild getJDA() {
         return this.guild;
     }
 
     public MusicPlayerEntity getMusicPlayer() {
-        if (this.musicPlayer == null) {
-            this.musicPlayer = new MusicPlayerEntity(guildManager.getPudelWorld().getMusicManager().musicManagerBuilder());
+        if(this.musicPlayer == null){
+            return new MusicPlayerEntity(getGuildManager().getPudelWorld().getMusicManager().musicManagerBuilder());
         }
         return this.musicPlayer;
     }
 
-    public GuildEntity setMusicPlayer(MusicPlayerEntity player){
-        this.musicPlayer = player;
+    public GuildEntity stopPlayer(){
+        this.musicPlayer.stop();
+        this.musicPlayer = null;
         return this;
     }
 
