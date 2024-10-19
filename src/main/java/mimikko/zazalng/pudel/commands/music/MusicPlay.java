@@ -1,6 +1,5 @@
 package mimikko.zazalng.pudel.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.contracts.Command.BaseCommandState;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
@@ -12,10 +11,10 @@ import java.util.List;
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 import static mimikko.zazalng.pudel.utility.ListUtility.*;
 
-public class MusicPlay extends AbstractCommand<MusicPlay.State> {
+public class MusicPlay extends AbstractCommand<MusicPlay.state> {
 
     // Enum for MusicPlay states
-    public enum State implements BaseCommandState {
+    public enum state implements BaseCommandState {
         SEARCHING;
 
         @Override
@@ -30,7 +29,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
         super.execute(session, args);
 
         // Handle specific state: SEARCHING
-        if (session.getState().equals(State.SEARCHING.getName())) {
+        if (session.getState().equals(state.SEARCHING.getName())) {
             return handleSearchingState(session, args);
         }
 
@@ -80,8 +79,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
             sendCurrentTrackMessage(session, player);
         }
 
-        session.setState(BaseCommandState.END);
-
+        super.stateEnd(session);
         return this;
     }
 
@@ -99,7 +97,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
                         .build()
         ).queue();
 
-        session.setState(BaseCommandState.END);
+        super.stateEnd(session);
         return this;
     }
 
@@ -115,20 +113,62 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
 
     // Queue a song URL
     private MusicPlay queueTrack(SessionEntity session, String url) {
-        MusicResultHandler result = session.getPudelWorld().getMusicManager().loadAndPlay(session, url);
+        session.getPudelWorld().getMusicManager().loadAndPlay(session, url).thenAccept(result ->{
+            // If it's a search result, display the top 5 tracks to the user
+            if (result.getType() == MusicResultHandler.Type.SEARCH) {
+                List topTracks = (List) session.addData("music.play.searching.top5",result.getTopTracks()).getData("music.play.searching.top5",false);
+                StringBuilder searchResults = new StringBuilder();
+                for (int i = 0; i < topTracks.size(); i++) {
+                    searchResults.append("[")
+                            .append(i + 1)
+                            .append(". ")
+                            .append(session.getPudelWorld().getMusicManager().getTrackFormat(topTracks.get(i)))
+                            .append("](")
+                            .append(session.getPudelWorld().getMusicManager().getTrackUrl(topTracks.get(i)))
+                            .append(")\n");
+                }
+                searchResults.append(localize(session,"music.play.searching.tooltips"));
 
-        // If it's a search result, display the top 5 tracks to the user
-        if (result.getType() == MusicResultHandler.Type.SEARCH) {
-            StringBuilder searchResults = new StringBuilder("Top 5 Search Results:\n");
-            List<AudioTrack> topTracks = result.getTopTracks();
-            for (int i = 0; i < topTracks.size(); i++) {
-                searchResults.append(i + 1).append(". ").append(topTracks.get(i).getInfo().title).append("\n");
+                session.getChannel().sendMessageEmbeds(
+                        session.getPudelWorld().getEmbedManager().createEmbed(session)
+                                .setTitle(localize(session,"music.play.searching")+"\n"+result.getInput().substring(9))
+                                .setThumbnail("https://puu.sh/KgdPy.gif")
+                                .setDescription(searchResults.toString())
+                                .build()
+                ).queue();
+
+                session.setState(state.SEARCHING.getName());
+            } else if(result.getType() == MusicResultHandler.Type.TRACK){
+                session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
+                session.getChannel().sendMessageEmbeds(
+                        session.getPudelWorld().getEmbedManager().createEmbed(session)
+                                .setTitle(session.getPudelWorld().getMusicManager().getTrackFormat(result.getTrack()),session.getPudelWorld().getMusicManager().getTrackUrl(result.getTrack()))
+                                .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(result.getTrack()))
+                                .setDescription(localize(session,"music.play.accept"))
+                                .build()
+                ).queue();
+                super.stateEnd(session);
+            } else if(result.getType() == MusicResultHandler.Type.PLAYLIST){
+                session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
+                session.getChannel().sendMessageEmbeds(
+                        session.getPudelWorld().getEmbedManager().createEmbed(session)
+                                .setTitle(result.getPlaylist().getName(),result.getInput())
+                                .setThumbnail("https://puu.sh/KgxX3.gif")
+                                .setDescription(localize(session, "music.play.playlist"))
+                                .build()
+                ).queue();
+                super.stateEnd(session);
+            } else{
+                session.getChannel().sendMessageEmbeds(
+                        session.getPudelWorld().getEmbedManager().createEmbed(session)
+                                .setTitle(localize(session, "music.play.exception"))
+                                .setThumbnail("https://puu.sh/KgAxi.gif")
+                                .setDescription(result.getInput())
+                                .build()
+                ).queue();
+                super.stateEnd(session);
             }
-            session.getChannel().sendMessage(searchResults.toString()).queue();
-
-            // Set the session to SEARCHING state
-            session.setState(State.SEARCHING.getName());
-        }
+        });
 
         return this;
     }
@@ -141,10 +181,10 @@ public class MusicPlay extends AbstractCommand<MusicPlay.State> {
                 String trackUrl = session.getPudelWorld().getMusicManager().getTrackUrl(getListObject(session.getData("music.play.searching.top5", true), index));
                 queueTrack(session, trackUrl);
             } catch (IndexOutOfBoundsException e) {
-                session.setState(BaseCommandState.END);
+                super.stateEnd(session);
             }
         } else {
-            session.setState(BaseCommandState.END);
+            super.stateEnd(session);
         }
 
         return this;

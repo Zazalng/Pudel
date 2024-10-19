@@ -9,12 +9,15 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.clients.*;
+import dev.lavalink.youtube.clients.skeleton.Client;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.handlers.MusicResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +31,13 @@ public class MusicManager implements Manager {
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
                 true,   // Allow search
                 true,   // Allow direct video IDs
-                true    // Allow direct playlist IDs
+                true,    // Allow direct playlist IDs
+                new Client[]
+                        {
+                                new Music(),
+                                new Web(),
+                                new WebEmbedded()
+                        }
         );
         this.playerManager = new DefaultAudioPlayerManager();
         this.playerManager.registerSourceManager(ytSourceManager);
@@ -43,48 +52,58 @@ public class MusicManager implements Manager {
      * Loads and plays a track or playlist based on the given track URL.
      * Returns a result object to inform the calling command about the outcome.
      */
-    public MusicResultHandler loadAndPlay(SessionEntity session, String trackURL) {
-        MusicResultHandler result = new MusicResultHandler();
+    public CompletableFuture<MusicResultHandler> loadAndPlay(SessionEntity session, String trackURL) {
+        CompletableFuture<MusicResultHandler> resultFuture = new CompletableFuture<>();
+        MusicResultHandler result = new MusicResultHandler(trackURL);
 
         playerManager.loadItem(trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 track.setUserData(session.getUser());
                 result.setTrack(track)
-                        .setSuccess(true)
                         .setType(MusicResultHandler.Type.TRACK);
+                resultFuture.complete(result);  // Complete the future with the result
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 if (playlist.isSearchResult()) {
                     result.setTopTracks(playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())))
-                            .setSuccess(true)
                             .setType(MusicResultHandler.Type.SEARCH);
                 } else {
-                    playlist.getTracks().stream().peek(track -> track.setUserData(session.getUser())).toList();
-
+                    playlist.getTracks().forEach(track -> track.setUserData(session.getUser()));
                     result.setPlaylist(playlist)
-                            .setSuccess(true)
                             .setType(MusicResultHandler.Type.PLAYLIST);
                 }
+                resultFuture.complete(result);  // Complete the future with the result
             }
 
             @Override
             public void noMatches() {
-                result.setSuccess(false)
-                        .setType(MusicResultHandler.Type.NO_MATCH);
+                result.setType(MusicResultHandler.Type.NO_MATCH);
+                resultFuture.complete(result);  // Complete the future with the result
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                result.setSuccess(false)
-                        .setType(MusicResultHandler.Type.LOAD_FAILED);
+                result.setType(MusicResultHandler.Type.LOAD_FAILED);
                 logger.error("LoadFailed", exception);
+                resultFuture.complete(result);  // Complete the future with the result
             }
         });
 
-        return result;
+        return resultFuture;
+    }
+
+
+    public MusicManager loadAndPlay(SessionEntity session, MusicResultHandler result){
+        getPudelWorld().getPudelManager().openVoiceConnection(session);
+        if(result.getType() == MusicResultHandler.Type.TRACK){
+            session.getGuild().getMusicPlayer().queueUp(result.getTrack()).nextTrack(false);
+        }else{
+            session.getGuild().getMusicPlayer().queueUp(result.getPlaylist().getTracks()).nextTrack(false);
+        }
+        return this;
     }
 
     // Utility methods for track information

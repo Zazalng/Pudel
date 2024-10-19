@@ -17,6 +17,12 @@ public abstract class AbstractCommand<S extends Enum<S> & BaseCommandState> impl
         return (T) this;
     }
 
+    @Override
+    public <T extends Command<S>> T stateEnd(SessionEntity session){
+        session.setState(BaseCommandState.END);
+        return (T) this;
+    }
+
     protected String localize(SessionEntity session, String key, Map<String, String> args) {
         return session.getPudelWorld().getLocalizationManager().getLocalizedText(session, key, args);
     }
