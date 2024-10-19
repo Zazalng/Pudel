@@ -39,7 +39,7 @@ public class GuildEntity {
 
     public MusicPlayerEntity getMusicPlayer() {
         if(this.musicPlayer == null){
-            return new MusicPlayerEntity(getGuildManager().getPudelWorld().getMusicManager().musicManagerBuilder());
+            this.musicPlayer = new MusicPlayerEntity(getGuildManager().getPudelWorld().getMusicManager().musicManagerBuilder());
         }
         return this.musicPlayer;
     }

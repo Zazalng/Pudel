@@ -48,14 +48,14 @@ public class MusicPlayerEntity {
     }
 
     public AudioTrack getPlayingTrack(){
-        if(this.player.getAudioPlayer().getPlayingTrack() == null){
+        if(getPlayer().getAudioPlayer().getPlayingTrack() == null){
             return null;
         }
-        return this.player.getAudioPlayer().getPlayingTrack();
+        return getPlayer().getAudioPlayer().getPlayingTrack();
     }
 
     public MusicPlayerEntity nextTrack(boolean isSkip) {
-        if (isSkip) {
+        if (isSkip || getPlayer().getAudioPlayer().getPlayingTrack()==null) {
             getPlayer().getAudioPlayer().playTrack(trackSelection());
         } else {
             getPlayer().getAudioPlayer().startTrack(trackSelection(), true);
@@ -64,12 +64,10 @@ public class MusicPlayerEntity {
     }
 
     private AudioTrack trackSelection() {
-        if(flagLoop){
-            return this.player.getAudioPlayer().getPlayingTrack().makeClone();
-        } else if(flagShuffle){
-            return getActivePlaylist().remove(randomInt(getActivePlaylist().size()));
+        if(flagShuffle){
+            return getActivePlaylist().get(randomInt(getActivePlaylist().size()));
         } else if(!getActivePlaylist().isEmpty()){
-            return getActivePlaylist().remove(0);
+            return getActivePlaylist().get(0);
         } else{
             return null;
         }
