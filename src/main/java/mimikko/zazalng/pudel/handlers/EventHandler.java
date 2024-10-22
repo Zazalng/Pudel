@@ -30,6 +30,8 @@ public class EventHandler extends ListenerAdapter{
                 Still Possible to implement command for direct message interacting
                 - A possible thing that can happen (from what I have discovery)
                 1. Message from Guild asTextChannel
+                2. Message from Guild asVoiceChannel
+                2. Message from Direct Message
              */
 
             //e.getChannel().sendTyping().queue();

@@ -1,7 +1,7 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.contracts.Command.BaseCommandState;
+import mimikko.zazalng.pudel.commands.CommandState;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
@@ -10,28 +10,24 @@ import java.util.List;
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 import static mimikko.zazalng.pudel.utility.ListUtility.*;
 
-public class MusicPlay extends AbstractCommand<MusicPlay.state> {
+public class MusicPlay extends AbstractCommand{
 
     // Enum for MusicPlay states
-    public enum state implements BaseCommandState {
+    public enum state implements CommandState {
         SEARCHING;
-
-        @Override
-        public String getName() {
-            return name();
-        }
     }
 
     // Entry point of the command execution
     @Override
     public MusicPlay execute(SessionEntity session, String args) {
-        super.execute(session, args);
-
-        // Handle specific state: SEARCHING
-        if (session.getState().equals(state.SEARCHING.getName())) {
-            return handleSearchingState(session, args);
+        switch ((state) session.getState()) {
+            case SEARCHING:
+                handleSearchingState(session, args);
+                break;
+            default:
+                initialState(session, args);
+                break;
         }
-
         return this;
     }
 
@@ -130,7 +126,7 @@ public class MusicPlay extends AbstractCommand<MusicPlay.state> {
                                     .build()
                     ).queue();
 
-                    session.setState(state.SEARCHING.getName());
+                    session.setState(state.SEARCHING);
                     break;
                 case TRACK:
                     session.getPudelWorld().getMusicManager().loadAndPlay(session, result);

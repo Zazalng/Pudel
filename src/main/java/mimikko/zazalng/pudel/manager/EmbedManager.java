@@ -26,6 +26,11 @@ public class EmbedManager implements Manager {
                 .setFooter(session.getCommand().getClass().getSimpleName() + " | " + session.getState(),session.getGuild().getJDA().getIconUrl());
     }
 
+    public EmbedBuilder createHelper(SessionEntity session){
+        return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
+                .setColor(getPudelWorld().getPudelManager().getPudelEntity().)
+    }
+
     public EmbedBuilder castEmbedBuilder(SessionEntity session, String key){
         return (EmbedBuilder) session.getData(key,false);
     }

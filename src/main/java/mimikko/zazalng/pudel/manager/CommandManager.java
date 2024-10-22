@@ -6,6 +6,7 @@ import mimikko.zazalng.pudel.commands.gacha.GachaDrawing;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.UtilityInvite;
+import mimikko.zazalng.pudel.contracts.BaseCommandState;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -49,12 +50,12 @@ public class CommandManager implements Manager {
         String input = e.getMessage().getContentRaw();
         String prefix = session.getGuild().getPrefix();
 
-        if (session.getState().equals("INIT") && input.startsWith(prefix)) {
+        if (session.getState() == BaseCommandState.INIT && input.startsWith(prefix)) {
             processInitialCommand(session, e, input, prefix);
-        } else if (!session.getState().isEmpty() && session.getCommand() != null) {
+        } else if (session.getState() != BaseCommandState.END && session.getCommand() != null) {
             session.execute(input);
         } else {
-            session.setState("END");
+            session.setState(BaseCommandState.END);
         }
         return this;
     }
@@ -105,7 +106,7 @@ public class CommandManager implements Manager {
             session.execute(input);
         } else {
             e.getChannel().sendMessage("Unknown command!").queue();
-            session.setState("END");
+            session.setState(BaseCommandState.END);
         }
         return this;
     }

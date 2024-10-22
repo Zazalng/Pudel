@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.contracts.BaseCommandState;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SessionManager implements Manager{
-    private static final Logger logger = LoggerFactory.getLogger(CommandManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
     protected final PudelWorld pudelWorld;
     private final Map<String, SessionEntity> sessions;
 
@@ -29,7 +30,7 @@ public class SessionManager implements Manager{
         String sessionKey = createSessionKey(e);
 
         return this.sessions.compute(sessionKey, (k, v) -> {
-            if (v == null || v.getState().equals("END")) {
+            if (v == null || v.getState() == BaseCommandState.END) {
                 return new SessionEntity(this, user, guild, channelIssue);
             }
             return v;

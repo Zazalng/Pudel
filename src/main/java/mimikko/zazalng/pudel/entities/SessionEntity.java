@@ -2,7 +2,8 @@ package mimikko.zazalng.pudel.entities;
 
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.contracts.Command.BaseCommandState;
+import mimikko.zazalng.pudel.commands.CommandState;
+import mimikko.zazalng.pudel.contracts.BaseCommandState;
 import mimikko.zazalng.pudel.manager.SessionManager;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,9 +19,9 @@ public class SessionEntity {
     private final GuildEntity guild;
     private final MessageChannelUnion channel;
     private final List<MessageReceivedEvent> sessionCollector = new ArrayList<>();
-    private Command<?> command;
+    private Command command;
     private final Map<String, Object> promptCollection = new HashMap<>();
-    private String sessionState;
+    private CommandState sessionState;
 
     public SessionEntity(SessionManager sessionManager, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue) {
         this.sessionManager = sessionManager;
@@ -30,15 +31,12 @@ public class SessionEntity {
         this.sessionState = BaseCommandState.INIT;
     }
 
-    public SessionEntity setState(String sessionState) {
-        this.sessionState = sessionState;
-        if (sessionState.equals(BaseCommandState.END)) {
-            clearPromptSession();
-        }
+    public SessionEntity setState(CommandState state) {
+        this.sessionState = state;
         return this;
     }
 
-    public String getState() {
+    public CommandState getState() {
         return this.sessionState;
     }
 
@@ -84,7 +82,7 @@ public class SessionEntity {
     }
 
     public SessionEntity execute(String args){
-        command.execute(this,args);
+        getCommand().execute(this,args);
         return this;
     }
 }
