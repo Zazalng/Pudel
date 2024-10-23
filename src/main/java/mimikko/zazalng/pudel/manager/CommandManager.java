@@ -2,11 +2,9 @@ package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.commands.gacha.GachaDrawing;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.UtilityInvite;
-import mimikko.zazalng.pudel.contracts.BaseCommandState;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -20,10 +18,8 @@ public class CommandManager implements Manager {
     public CommandManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         this.commands = new HashMap<>();
-
-        loadCommand("drawing", new GachaDrawing())
         //music category
-                .loadCommand("loop", new MusicLoop())
+                loadCommand("loop", new MusicLoop())
                 .loadCommand("play", new MusicPlay())
                 .loadCommand("shuffle", new MusicShuffle())
                 .loadCommand("skip", new MusicSkip())
@@ -50,13 +46,7 @@ public class CommandManager implements Manager {
         String input = e.getMessage().getContentRaw();
         String prefix = session.getGuild().getPrefix();
 
-        if (session.getState() == BaseCommandState.INIT && input.startsWith(prefix)) {
-            processInitialCommand(session, e, input, prefix);
-        } else if (session.getState() != BaseCommandState.END && session.getCommand() != null) {
-            session.execute(input);
-        } else {
-            session.setState(BaseCommandState.END);
-        }
+        processInitialCommand(session, e, input, prefix);
         return this;
     }
 
@@ -102,15 +92,12 @@ public class CommandManager implements Manager {
     private CommandManager executeCommand(SessionEntity session, MessageReceivedEvent e, String commandName, String input) {
         Command command = commands.get(commandName.toLowerCase());
         if (command != null) {
-            session.setCommand(command);
-            session.execute(input);
+            session.setCommand(command).execute(input);
         } else {
             e.getChannel().sendMessage("Unknown command!").queue();
-            session.setState(BaseCommandState.END);
         }
         return this;
     }
-
 
     @Override
     public PudelWorld getPudelWorld(){

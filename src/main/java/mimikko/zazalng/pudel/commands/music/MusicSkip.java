@@ -6,7 +6,7 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 public class MusicSkip extends AbstractCommand {
     @Override
     public MusicSkip execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
         return this;
     }
 
@@ -23,7 +23,7 @@ public class MusicSkip extends AbstractCommand {
         }
         session.getChannel().sendMessage(args).queue();
 
-        session.setState("END");
+        super.stateEnd(session);
         return this;
     }
 

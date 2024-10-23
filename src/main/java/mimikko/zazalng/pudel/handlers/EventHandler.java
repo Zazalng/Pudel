@@ -36,7 +36,7 @@ public class EventHandler extends ListenerAdapter{
 
             //e.getChannel().sendTyping().queue();
 
-            SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
+            SessionEntity<?> session = this.pudelWorld.getSessionManager().getSession(e);
             this.pudelWorld.getCommandManager().handleCommand(session, e);
         }
     }

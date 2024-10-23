@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.CommandState;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
@@ -11,16 +10,16 @@ import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 import static mimikko.zazalng.pudel.utility.ListUtility.*;
 
 public class MusicPlay extends AbstractCommand{
-
+    public state state;
     // Enum for MusicPlay states
-    public enum state implements CommandState {
-        SEARCHING;
+    public enum state {
+        SEARCHING
     }
 
     // Entry point of the command execution
     @Override
     public MusicPlay execute(SessionEntity session, String args) {
-        switch ((state) session.getState()) {
+        switch (state) {
             case SEARCHING:
                 handleSearchingState(session, args);
                 break;
@@ -50,6 +49,15 @@ public class MusicPlay extends AbstractCommand{
     public MusicPlay reload() {
         return this;
     }
+
+    /**
+     * @return
+     */
+    @Override
+    public String getState() {
+        return (state == null) ? "INIT" : state.name();
+    }
+
 
     // Description and detailed help methods
     @Override
@@ -86,7 +94,7 @@ public class MusicPlay extends AbstractCommand{
     // Handle case when user is not in a voice channel
     private MusicPlay sendNotInVoiceChat(SessionEntity session) {
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().createEmbed(session)
+                session.getPudelWorld().getEmbedManager().embedCommand(session)
                         .setTitle(localize(session, "music.play.error.voicechat"))
                         .setThumbnail("https://puu.sh/KgP67.gif")
                         .build()
@@ -119,7 +127,7 @@ public class MusicPlay extends AbstractCommand{
                     searchResults.append(localize(session,"music.play.searching.tooltips"));
 
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().createEmbed(session)
+                            session.getPudelWorld().getEmbedManager().embedCommand(session)
                                     .setTitle(localize(session, "music.play.searching") + "\n" + result.getInput().substring(9))
                                     .setThumbnail("https://puu.sh/KgdPy.gif")
                                     .setDescription(searchResults.toString())
@@ -131,7 +139,7 @@ public class MusicPlay extends AbstractCommand{
                 case TRACK:
                     session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().createEmbed(session)
+                            session.getPudelWorld().getEmbedManager().embedCommand(session)
                                     .setTitle(session.getPudelWorld().getMusicManager().getTrackFormat(result.getTrack()), session.getPudelWorld().getMusicManager().getTrackUrl(result.getTrack()))
                                     .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(result.getTrack()))
                                     .setDescription(localize(session, "music.play.accept"))
@@ -142,7 +150,7 @@ public class MusicPlay extends AbstractCommand{
                 case PLAYLIST:
                     session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().createEmbed(session)
+                            session.getPudelWorld().getEmbedManager().embedCommand(session)
                                     .setTitle(result.getPlaylist().getName(), result.getInput())
                                     .setThumbnail("https://puu.sh/KgxX3.gif")
                                     .setDescription(localize(session, "music.play.playlist"))
@@ -152,7 +160,7 @@ public class MusicPlay extends AbstractCommand{
                     break;
                 default:
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().createEmbed(session)
+                            session.getPudelWorld().getEmbedManager().embedCommand(session)
                                     .setTitle(localize(session, "music.play.exception"))
                                     .setThumbnail("https://puu.sh/KgAxi.gif")
                                     .setDescription(result.getInput())
@@ -167,7 +175,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Handle searching state
-    private MusicPlay handleSearchingState(SessionEntity session, String args) {
+    private MusicPlay handleSearchingState(SessionEntity<MusicPlay.state> session, String args) {
         if (isNumeric(args)) {
             int index = Integer.parseInt(args) - 1;
             try {
@@ -184,9 +192,9 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Send no track currently playing message
-    private MusicPlay sendNoTrackMessage(SessionEntity session) {
+    private MusicPlay sendNoTrackMessage(SessionEntity<MusicPlay.state> session) {
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().createEmbed(session)
+                session.getPudelWorld().getEmbedManager().embedCommand(session)
                         .setTitle(localize(session, "music.play.empty"))
                         .setThumbnail("https://puu.sh/KgLS9.gif")
                         .build()
@@ -196,10 +204,10 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Send current track details
-    private MusicPlay sendCurrentTrackMessage(SessionEntity session, MusicPlayerEntity player) {
+    private MusicPlay sendCurrentTrackMessage(SessionEntity<MusicPlay.state> session, MusicPlayerEntity player) {
         String trackFormat = session.getPudelWorld().getMusicManager().getTrackFormat(player.getPlayingTrack());
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().createEmbed(session)
+                session.getPudelWorld().getEmbedManager().embedCommand(session)
                         .setTitle(trackFormat, session.getPudelWorld().getMusicManager().getTrackUrl(player.getPlayingTrack()))
                         .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(player.getPlayingTrack()))
                         .addField(localize(session, "music.play.loop"),

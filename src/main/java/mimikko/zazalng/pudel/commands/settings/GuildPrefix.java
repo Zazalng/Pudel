@@ -6,7 +6,7 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 public class GuildPrefix extends AbstractCommand {
     @Override
     public GuildPrefix execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
         return this;
     }
 
@@ -24,7 +24,7 @@ public class GuildPrefix extends AbstractCommand {
         }
 
         session.getChannel().sendMessage(args).queue();
-        session.setState("END");
+        super.stateEnd(session);
 
         return this;
     }

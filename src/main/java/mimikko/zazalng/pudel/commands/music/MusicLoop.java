@@ -8,7 +8,7 @@ import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 public class MusicLoop extends AbstractCommand{
     @Override
     public MusicLoop execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
         return this;
     }
 
@@ -29,7 +29,7 @@ public class MusicLoop extends AbstractCommand{
             args = localize(session,"music.loop.init.display",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();
-        session.setState("END");
+        super.stateEnd(session);
         return this;
     }
 

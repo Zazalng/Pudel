@@ -6,7 +6,7 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 public class MusicStop extends AbstractCommand {
     @Override
     public MusicStop execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
         return this;
     }
 
@@ -19,7 +19,7 @@ public class MusicStop extends AbstractCommand {
         session.getGuild().stopPlayer();
         session.getPudelWorld().getPudelManager().closeVoiceConnection(session);
         session.getChannel().sendMessage(args).queue();
-        session.setState("END");
+        super.stateEnd(session);
         return this;
     }
 

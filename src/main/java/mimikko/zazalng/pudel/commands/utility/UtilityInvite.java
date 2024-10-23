@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.commands.utility;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.contracts.BaseCommandState;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class UtilityInvite extends AbstractCommand {
@@ -18,7 +17,7 @@ public class UtilityInvite extends AbstractCommand {
         args = localize(session,"utility.invite.init",localizationArgs);
 
         session.getChannel().sendMessage(args).queue();
-        session.setState(BaseCommandState.END);
+        super.stateEnd(session);
         return this;
     }
 

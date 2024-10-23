@@ -2,8 +2,6 @@ package mimikko.zazalng.pudel.entities;
 
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
-import mimikko.zazalng.pudel.commands.CommandState;
-import mimikko.zazalng.pudel.contracts.BaseCommandState;
 import mimikko.zazalng.pudel.manager.SessionManager;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -13,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SessionEntity {
+public class SessionEntity{
     protected final SessionManager sessionManager;
     private final UserEntity user;
     private final GuildEntity guild;
@@ -21,30 +19,12 @@ public class SessionEntity {
     private final List<MessageReceivedEvent> sessionCollector = new ArrayList<>();
     private Command command;
     private final Map<String, Object> promptCollection = new HashMap<>();
-    private CommandState sessionState;
 
     public SessionEntity(SessionManager sessionManager, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue) {
         this.sessionManager = sessionManager;
         this.user = user;
         this.guild = guild;
         this.channel = channelIssue;
-        this.sessionState = BaseCommandState.INIT;
-    }
-
-    public SessionEntity setState(CommandState state) {
-        this.sessionState = state;
-        return this;
-    }
-
-    public CommandState getState() {
-        return this.sessionState;
-    }
-
-    public SessionEntity clearPromptSession() {
-        for (int i = 1; i < sessionCollector.size(); i++) {
-            sessionCollector.get(i).getMessage().delete().queue();
-        }
-        return this;
     }
 
     public SessionEntity addData(String key, Object value) {
@@ -79,6 +59,10 @@ public class SessionEntity {
 
     public MessageChannelUnion getChannel() {
         return channel;
+    }
+
+    public String getState(){
+        return getCommand().getState();
     }
 
     public SessionEntity execute(String args){

@@ -6,7 +6,7 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 public class GuildLanguage extends AbstractCommand {
     @Override
     public GuildLanguage execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
         return this;
     }
 
@@ -23,7 +23,7 @@ public class GuildLanguage extends AbstractCommand {
             args = localize(session,"guild.language.init.accept",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();
-        session.setState("END");
+        super.stateEnd(session);
         return this;
     }
 

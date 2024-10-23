@@ -1,11 +1,11 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.CommandState;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
-public class MusicPlaylist extends AbstractCommand {
-    public enum state implements CommandState {
+public class MusicPlaylist extends AbstractCommand{
+    @Override
+    public enum state {
         ADD,
         REMOVE,
         SWAP;
@@ -13,7 +13,7 @@ public class MusicPlaylist extends AbstractCommand {
 
     @Override
     public MusicPlaylist execute(SessionEntity session, String args) {
-        switch ((state) session.getState()) {
+        switch (session.getState()) {
             case ADD:
                 // Add logic
                 break;

@@ -18,17 +18,30 @@ public class EmbedManager implements Manager {
         this.pudelWorld = pudelWorld;
     }
 
-    // Create a reusable template for an embed
-    public EmbedBuilder createEmbed(SessionEntity session) {
+    public EmbedBuilder createEmbed(SessionEntity session){
         return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
+                .setAuthor(session.getUser().getUserManager().getUserName(session), null, session.getUser().getJDA().getAvatarUrl());
+    }
+
+    public EmbedBuilder embedCommand(SessionEntity session) {
+        return createEmbed(session)
                 .setColor(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getColor())
-                .setAuthor(session.getUser().getUserManager().getUserName(session), null, session.getUser().getJDA().getAvatarUrl())
                 .setFooter(session.getCommand().getClass().getSimpleName() + " | " + session.getState(),session.getGuild().getJDA().getIconUrl());
     }
 
-    public EmbedBuilder createHelper(SessionEntity session){
-        return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
-                .setColor(getPudelWorld().getPudelManager().getPudelEntity().)
+    public EmbedBuilder embedHelp(SessionEntity session){
+        return createEmbed(session)
+                .setColor(session.getGuild().getJDA().getMember(getPudelWorld().getPudelManager().getPudelEntity().getJDA()).getColor())
+                .setThumbnail("https://puu.sh/KgdPy.gif")
+                .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "command.available",null))
+                .setFooter("Help Command | " + session.getState(),session.getGuild().getJDA().getIconUrl());
+    }
+
+    public EmbedBuilder embedDetail(SessionEntity session){
+        return createEmbed(session)
+                .setColor(session.getGuild().getJDA().getMember(getPudelWorld().getPudelManager().getPudelEntity().getJDA()).getColor())
+                .setThumbnail("https://puu.sh/KgdPy.gif")
+                .setFooter("Help Command | " + session.getState(),session.getGuild().getJDA().getIconUrl());
     }
 
     public EmbedBuilder castEmbedBuilder(SessionEntity session, String key){

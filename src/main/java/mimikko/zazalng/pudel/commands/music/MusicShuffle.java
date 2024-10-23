@@ -8,7 +8,7 @@ import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 public class MusicShuffle extends AbstractCommand {
     @Override
     public MusicShuffle execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
         return this;
     }
 
@@ -34,7 +34,7 @@ public class MusicShuffle extends AbstractCommand {
         }
         session.getChannel().sendMessage(args).queue();
 
-        session.setState("END");
+        super.stateEnd(session);
         return this;
     }
 
