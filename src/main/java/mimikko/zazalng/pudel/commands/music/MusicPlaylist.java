@@ -4,26 +4,21 @@ import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class MusicPlaylist extends AbstractCommand{
-    @Override
     public enum state {
-        ADD,
         REMOVE,
-        SWAP;
+        SWAP
     }
 
     @Override
     public MusicPlaylist execute(SessionEntity session, String args) {
-        switch (session.getState()) {
-            case ADD:
-                // Add logic
-                break;
+        switch ( (MusicPlaylist.state) session.getData("state",false)) {
             case REMOVE:
                 // Remove logic
                 break;
             case SWAP:
                 // Swap logic
                 break;
-            default:
+            case null:
                 initialState(session, args);
                 break;
         }
@@ -32,7 +27,6 @@ public class MusicPlaylist extends AbstractCommand{
 
     @Override
     public MusicPlaylist initialState(SessionEntity session, String args) {
-        session.setState(state.ADD); // Example initial state
         return this;
     }
 

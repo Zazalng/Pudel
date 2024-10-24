@@ -29,7 +29,7 @@ public class MusicLoop extends AbstractCommand{
             args = localize(session,"music.loop.init.display",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();
-        super.stateEnd(session);
+        super.terminate(session);
         return this;
     }
 

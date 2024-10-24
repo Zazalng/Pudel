@@ -26,7 +26,7 @@ public class EmbedManager implements Manager {
     public EmbedBuilder embedCommand(SessionEntity session) {
         return createEmbed(session)
                 .setColor(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getColor())
-                .setFooter(session.getCommand().getClass().getSimpleName() + " | " + session.getState(),session.getGuild().getJDA().getIconUrl());
+                .setFooter(session.getCommand().getClass().getSimpleName(),session.getGuild().getJDA().getIconUrl());
     }
 
     public EmbedBuilder embedHelp(SessionEntity session){
@@ -34,14 +34,14 @@ public class EmbedManager implements Manager {
                 .setColor(session.getGuild().getJDA().getMember(getPudelWorld().getPudelManager().getPudelEntity().getJDA()).getColor())
                 .setThumbnail("https://puu.sh/KgdPy.gif")
                 .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "command.available",null))
-                .setFooter("Help Command | " + session.getState(),session.getGuild().getJDA().getIconUrl());
+                .setFooter("Help Command",session.getGuild().getJDA().getIconUrl());
     }
 
     public EmbedBuilder embedDetail(SessionEntity session){
         return createEmbed(session)
                 .setColor(session.getGuild().getJDA().getMember(getPudelWorld().getPudelManager().getPudelEntity().getJDA()).getColor())
                 .setThumbnail("https://puu.sh/KgdPy.gif")
-                .setFooter("Help Command | " + session.getState(),session.getGuild().getJDA().getIconUrl());
+                .setFooter("Help Command",session.getGuild().getJDA().getIconUrl());
     }
 
     public EmbedBuilder castEmbedBuilder(SessionEntity session, String key){

@@ -23,7 +23,7 @@ public class MusicSkip extends AbstractCommand {
         }
         session.getChannel().sendMessage(args).queue();
 
-        super.stateEnd(session);
+        super.terminate(session);
         return this;
     }
 

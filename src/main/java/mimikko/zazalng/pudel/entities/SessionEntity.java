@@ -61,10 +61,6 @@ public class SessionEntity{
         return channel;
     }
 
-    public String getState(){
-        return getCommand().getState();
-    }
-
     public SessionEntity execute(String args){
         getCommand().execute(this,args);
         return this;

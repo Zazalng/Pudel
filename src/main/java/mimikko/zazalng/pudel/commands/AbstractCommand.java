@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractCommand implements Command{
-    protected enum state{};
     protected Map<String, String> localizationArgs = new HashMap<>();
 
-    protected Command end(SessionEntity session){
+    @Override
+    public Command terminate(SessionEntity session){
         session.getPudelWorld().getSessionManager().sessionEnd(session);
         return this;
     }

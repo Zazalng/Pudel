@@ -6,7 +6,7 @@ public interface Command{
     Command execute(SessionEntity session, String args);
     Command initialState(SessionEntity session, String args);
     Command reload();
-    String getState();
+    Command terminate(SessionEntity session);
     String getDescription(SessionEntity session);
     String getDetailedHelp(SessionEntity session);
 }

@@ -17,7 +17,7 @@ public class UtilityInvite extends AbstractCommand {
         args = localize(session,"utility.invite.init",localizationArgs);
 
         session.getChannel().sendMessage(args).queue();
-        super.stateEnd(session);
+        super.terminate(session);
         return this;
     }
 

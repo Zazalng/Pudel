@@ -23,7 +23,7 @@ public class GuildLanguage extends AbstractCommand {
             args = localize(session,"guild.language.init.accept",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();
-        super.stateEnd(session);
+        super.terminate(session);
         return this;
     }
 

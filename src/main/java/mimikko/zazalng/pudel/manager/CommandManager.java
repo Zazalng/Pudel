@@ -46,7 +46,19 @@ public class CommandManager implements Manager {
         String input = e.getMessage().getContentRaw();
         String prefix = session.getGuild().getPrefix();
 
-        processInitialCommand(session, e, input, prefix);
+        // Check if the message starts with the command prefix
+        if (input.startsWith(prefix)) {
+            processInitialCommand(session, e, input, prefix);
+        } else {
+            // If there is an ongoing session, execute the continuation
+            if (session.getCommand() != null) {
+                session.execute(input);
+            } else {
+                // This case means the message isn't a command and there's no ongoing session
+                // Optionally, log or ignore such messages
+                System.out.printf("%s in %s by %s say:\n%s%n",session.getGuild().getJDA().getName(), session.getChannel().getName(), getPudelWorld().getUserManager().getUserName(session),input);
+            }
+        }
         return this;
     }
 

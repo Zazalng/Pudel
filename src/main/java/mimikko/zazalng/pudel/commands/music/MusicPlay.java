@@ -11,7 +11,6 @@ import static mimikko.zazalng.pudel.utility.ListUtility.*;
 
 public class MusicPlay extends AbstractCommand{
     public state state;
-    // Enum for MusicPlay states
     public enum state {
         SEARCHING
     }
@@ -19,11 +18,11 @@ public class MusicPlay extends AbstractCommand{
     // Entry point of the command execution
     @Override
     public MusicPlay execute(SessionEntity session, String args) {
-        switch (state) {
+        switch (getState()) {
             case SEARCHING:
                 handleSearchingState(session, args);
                 break;
-            default:
+            case null:
                 initialState(session, args);
                 break;
         }
@@ -50,15 +49,6 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public String getState() {
-        return (state == null) ? "INIT" : state.name();
-    }
-
-
     // Description and detailed help methods
     @Override
     public String getDescription(SessionEntity session) {
@@ -82,7 +72,7 @@ public class MusicPlay extends AbstractCommand{
             sendCurrentTrackMessage(session, player);
         }
 
-        super.stateEnd(session);
+        super.terminate(session);
         return this;
     }
 
@@ -100,7 +90,7 @@ public class MusicPlay extends AbstractCommand{
                         .build()
         ).queue();
 
-        super.stateEnd(session);
+        super.terminate(session);
         return this;
     }
 
@@ -134,7 +124,7 @@ public class MusicPlay extends AbstractCommand{
                                     .build()
                     ).queue();
 
-                    session.setState(state.SEARCHING);
+                    setState(state.SEARCHING);
                     break;
                 case TRACK:
                     session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
@@ -145,7 +135,7 @@ public class MusicPlay extends AbstractCommand{
                                     .setDescription(localize(session, "music.play.accept"))
                                     .build()
                     ).queue();
-                    super.stateEnd(session);
+                    super.terminate(session);
                     break;
                 case PLAYLIST:
                     session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
@@ -156,7 +146,7 @@ public class MusicPlay extends AbstractCommand{
                                     .setDescription(localize(session, "music.play.playlist"))
                                     .build()
                     ).queue();
-                    super.stateEnd(session);
+                    super.terminate(session);
                     break;
                 default:
                     session.getChannel().sendMessageEmbeds(
@@ -166,7 +156,7 @@ public class MusicPlay extends AbstractCommand{
                                     .setDescription(result.getInput())
                                     .build()
                     ).queue();
-                    super.stateEnd(session);
+                    super.terminate(session);
                     break;
             }
         });
@@ -175,24 +165,24 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Handle searching state
-    private MusicPlay handleSearchingState(SessionEntity<MusicPlay.state> session, String args) {
+    private MusicPlay handleSearchingState(SessionEntity session, String args) {
         if (isNumeric(args)) {
             int index = Integer.parseInt(args) - 1;
             try {
                 String trackUrl = session.getPudelWorld().getMusicManager().getTrackUrl(getListObject(session.getData("music.play.searching.top5", true), index));
                 queueTrack(session, trackUrl);
             } catch (IndexOutOfBoundsException e) {
-                super.stateEnd(session);
+                super.terminate(session);
             }
         } else {
-            super.stateEnd(session);
+            super.terminate(session);
         }
 
         return this;
     }
 
     // Send no track currently playing message
-    private MusicPlay sendNoTrackMessage(SessionEntity<MusicPlay.state> session) {
+    private MusicPlay sendNoTrackMessage(SessionEntity session) {
         session.getChannel().sendMessageEmbeds(
                 session.getPudelWorld().getEmbedManager().embedCommand(session)
                         .setTitle(localize(session, "music.play.empty"))
@@ -204,7 +194,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Send current track details
-    private MusicPlay sendCurrentTrackMessage(SessionEntity<MusicPlay.state> session, MusicPlayerEntity player) {
+    private MusicPlay sendCurrentTrackMessage(SessionEntity session, MusicPlayerEntity player) {
         String trackFormat = session.getPudelWorld().getMusicManager().getTrackFormat(player.getPlayingTrack());
         session.getChannel().sendMessageEmbeds(
                 session.getPudelWorld().getEmbedManager().embedCommand(session)
@@ -214,13 +204,25 @@ public class MusicPlay extends AbstractCommand{
                                 session.getPudelWorld().getLocalizationManager().getBooleanText(session, player.isLoop()), true)
                         .addField(localize(session, "music.play.shuffle"),
                                 session.getPudelWorld().getLocalizationManager().getBooleanText(session, player.isShuffle()), true)
+                        .addField(localize(session, "music.play.remaining"),
+                                String.valueOf(session.getGuild().getMusicPlayer().getActivePlaylist().size()),true)
+                        .addField(localize(session, "music.play.duration"),
+                                session.getPudelWorld().getMusicManager().getTrackDuration(player.getPlayingTrack()), true)
                         .addField(localize(session, "music.play.queueby"),
                                 session.getPudelWorld().getUserManager().castUserEntity(player.getPlayingTrack().getUserData()).getJDA().getAsMention(), true)
-                        .addField(localize(session, "music.play.duration"),
-                                session.getPudelWorld().getMusicManager().getTrackDuration(player.getPlayingTrack()), false)
+
                         .build()
         ).queue();
 
+        return this;
+    }
+
+    private state getState(){
+        return this.state;
+    }
+
+    private MusicPlay setState(state state){
+        this.state = state;
         return this;
     }
 }

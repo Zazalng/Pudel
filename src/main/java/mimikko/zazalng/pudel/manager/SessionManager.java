@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static mimikko.zazalng.pudel.utility.StringUtility.stringFormat;
+
 public class SessionManager implements Manager{
     private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
     protected final PudelWorld pudelWorld;
@@ -30,15 +32,20 @@ public class SessionManager implements Manager{
 
         return this.sessions.compute(sessionKey, (k, v) -> {
             if (v == null || v.getCommand() == null) {
+                logger.debug(stringFormat("[New Session] %s",sessionKey));
                 return new SessionEntity(this, user, guild, channelIssue);
             }
+            logger.debug(stringFormat("[Exist Session] %s",sessionKey));
             return v;
         });
 
     }
 
-    public SessionManager sessionEnd(SessionEntity session){
-        this.sessions.remove(session);
+    public SessionManager sessionEnd(SessionEntity session) {
+        this.sessions.entrySet().removeIf(entry -> {
+            logger.debug(stringFormat("[Terminate Session] %s",entry.getKey()));
+            return entry.getValue().equals(session);
+        });
         return this;
     }
 
