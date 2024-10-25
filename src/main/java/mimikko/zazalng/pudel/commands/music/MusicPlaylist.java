@@ -25,7 +25,6 @@ public class MusicPlaylist extends AbstractCommand{
         return this;
     }
 
-    @Override
     public MusicPlaylist initialState(SessionEntity session, String args) {
         return this;
     }

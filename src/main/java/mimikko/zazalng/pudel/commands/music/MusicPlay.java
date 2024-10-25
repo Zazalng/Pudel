@@ -30,7 +30,6 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Initialization logic when state is INIT
-    @Override
     public MusicPlay initialState(SessionEntity session, String args) {
         if (args.isEmpty()) {
             handleNoArgs(session);
