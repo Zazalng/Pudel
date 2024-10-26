@@ -12,7 +12,6 @@ public class MusicShuffle extends AbstractCommand {
         return this;
     }
 
-    @Override
     public MusicShuffle initialState(SessionEntity session, String args) {
         localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
         localizationArgs.put("args", args);

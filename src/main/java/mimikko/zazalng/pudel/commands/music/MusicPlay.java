@@ -10,8 +10,8 @@ import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 import static mimikko.zazalng.pudel.utility.ListUtility.*;
 
 public class MusicPlay extends AbstractCommand{
-    public state state;
-    public enum state {
+    private state state;
+    private enum state {
         SEARCHING
     }
 
@@ -25,19 +25,6 @@ public class MusicPlay extends AbstractCommand{
             case null:
                 initialState(session, args);
                 break;
-        }
-        return this;
-    }
-
-    // Initialization logic when state is INIT
-    public MusicPlay initialState(SessionEntity session, String args) {
-        if (args.isEmpty()) {
-            handleNoArgs(session);
-        } else if (!isUserInVoiceChat(session)) {
-            sendNotInVoiceChat(session);
-        } else {
-            // Proceed to queue the song based on input
-            queueSong(session, args);
         }
         return this;
     }
@@ -60,6 +47,17 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // ---- Private Methods ----
+    private MusicPlay initialState(SessionEntity session, String args) {
+        if (args.isEmpty()) {
+            handleNoArgs(session);
+        } else if (!isUserInVoiceChat(session)) {
+            sendNotInVoiceChat(session);
+        } else {
+            // Proceed to queue the song based on input
+            queueSong(session, args);
+        }
+        return this;
+    }
 
     // Handle case when no arguments are provided
     private MusicPlay handleNoArgs(SessionEntity session) {
@@ -209,7 +207,6 @@ public class MusicPlay extends AbstractCommand{
                                 session.getPudelWorld().getMusicManager().getTrackDuration(player.getPlayingTrack()), true)
                         .addField(localize(session, "music.play.queueby"),
                                 session.getPudelWorld().getUserManager().castUserEntity(player.getPlayingTrack().getUserData()).getJDA().getAsMention(), true)
-
                         .build()
         ).queue();
 

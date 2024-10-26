@@ -32,10 +32,10 @@ public class SessionManager implements Manager{
 
         return this.sessions.compute(sessionKey, (k, v) -> {
             if (v == null || v.getCommand() == null) {
-                logger.debug(stringFormat("[New Session] %s",sessionKey));
+                logger.info(stringFormat("[Create Session] %s",sessionKey));
                 return new SessionEntity(this, user, guild, channelIssue);
             }
-            logger.debug(stringFormat("[Exist Session] %s",sessionKey));
+            logger.debug(stringFormat("[Active Session] %s",sessionKey));
             return v;
         });
 
@@ -43,14 +43,14 @@ public class SessionManager implements Manager{
 
     public SessionManager sessionEnd(SessionEntity session) {
         this.sessions.entrySet().removeIf(entry -> {
-            logger.debug(stringFormat("[Terminate Session] %s",entry.getKey()));
+            logger.info(stringFormat("[Terminate Session] %s",entry.getKey()));
             return entry.getValue().equals(session);
         });
         return this;
     }
 
     private String createSessionKey(MessageReceivedEvent e) {
-        return e.getAuthor().getId() + ":" + e.getGuild().getId() + ":" + e.getChannel().getId();
+        return e.getGuild().getId() + ":" + e.getChannel().getId() + ":" + e.getAuthor().getId();
     }
 
     @Override

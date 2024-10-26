@@ -55,8 +55,10 @@ public class MusicPlayerEntity {
     }
 
     public MusicPlayerEntity nextTrack(boolean isSkip) {
-        if (isSkip || getPlayer().getAudioPlayer().getPlayingTrack()==null) {
+        if (getPlayer().getAudioPlayer().getPlayingTrack()==null) {
             getPlayer().getAudioPlayer().playTrack(trackSelection());
+        } else if(isSkip){
+            getPlayer().getAudioPlayer().stopTrack();
         } else {
             getPlayer().getAudioPlayer().startTrack(trackSelection(), true);
         }
@@ -67,7 +69,7 @@ public class MusicPlayerEntity {
         if(flagShuffle){
             return getActivePlaylist().get(randomInt(getActivePlaylist().size()));
         } else if(!getActivePlaylist().isEmpty()){
-            return getActivePlaylist().get(0);
+            return getActivePlaylist().getFirst();
         } else{
             return null;
         }

@@ -10,7 +10,6 @@ public class MusicSkip extends AbstractCommand {
         return this;
     }
 
-    @Override
     public MusicSkip initialState(SessionEntity session, String args){
         session.getGuild().getMusicPlayer().nextTrack(true);
         localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));

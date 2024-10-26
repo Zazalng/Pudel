@@ -12,7 +12,6 @@ public class MusicLoop extends AbstractCommand{
         return this;
     }
 
-    @Override
     public MusicLoop initialState(SessionEntity session, String args) {
         localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
 

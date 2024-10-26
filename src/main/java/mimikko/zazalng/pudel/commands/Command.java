@@ -3,9 +3,9 @@ package mimikko.zazalng.pudel.commands;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public interface Command{
-    Command execute(SessionEntity session, String args);
-    Command reload();
-    Command terminate(SessionEntity session);
+    <T extends Command> T execute(SessionEntity session, String args);
+    <T extends Command> T reload();
+    <T extends Command> T terminate(SessionEntity session);
     String getDescription(SessionEntity session);
     String getDetailedHelp(SessionEntity session);
 }

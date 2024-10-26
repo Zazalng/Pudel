@@ -10,7 +10,6 @@ public class UtilityInvite extends AbstractCommand {
         return this;
     }
 
-    @Override
     public UtilityInvite initialState(SessionEntity session, String args) {
         localizationArgs.put("inviteurl", session.getPudelWorld().getEnvironment().getInviteURL());
 

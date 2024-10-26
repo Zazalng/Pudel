@@ -31,7 +31,7 @@ public class EventHandler extends ListenerAdapter{
                 - A possible thing that can happen (from what I have discovery)
                 1. Message from Guild asTextChannel
                 2. Message from Guild asVoiceChannel
-                2. Message from Direct Message
+                3. Message from Direct Message
              */
 
             //e.getChannel().sendTyping().queue();

@@ -4,14 +4,16 @@ import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class MusicPlaylist extends AbstractCommand{
-    public enum state {
+    private state state;
+    private Object lookupTrack;
+    private enum state {
         REMOVE,
         SWAP
     }
 
     @Override
     public MusicPlaylist execute(SessionEntity session, String args) {
-        switch ( (MusicPlaylist.state) session.getData("state",false)) {
+        switch (getState()) {
             case REMOVE:
                 // Remove logic
                 break;
@@ -42,5 +44,14 @@ public class MusicPlaylist extends AbstractCommand{
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return "";
+    }
+
+    private state getState(){
+        return this.state;
+    }
+
+    private MusicPlaylist setState(state state){
+        this.state = state;
+        return this;
     }
 }

@@ -10,7 +10,6 @@ public class GuildPrefix extends AbstractCommand {
         return this;
     }
 
-    @Override
     public GuildPrefix initialState(SessionEntity session, String args) {
         localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
 

@@ -1,6 +1,5 @@
 package mimikko.zazalng.pudel.commands;
 
-import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import java.util.HashMap;
@@ -10,9 +9,9 @@ public abstract class AbstractCommand implements Command{
     protected Map<String, String> localizationArgs = new HashMap<>();
 
     @Override
-    public Command terminate(SessionEntity session){
+    public <T extends Command> T terminate(SessionEntity session){
         session.getPudelWorld().getSessionManager().sessionEnd(session);
-        return this;
+        return (T) this;
     }
 
     protected String localize(SessionEntity session, String key, Map<String, String> args) {

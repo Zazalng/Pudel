@@ -10,35 +10,36 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class CommandManager implements Manager {
     protected final PudelWorld pudelWorld;
-    private final Map<String, Command> commands;
+    private final Map<String, Supplier<Command>> commandFactories;
 
     public CommandManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
-        this.commands = new HashMap<>();
-        //music category
-                loadCommand("loop", new MusicLoop())
-                .loadCommand("play", new MusicPlay())
-                .loadCommand("shuffle", new MusicShuffle())
-                .loadCommand("skip", new MusicSkip())
-                .loadCommand("stop", new MusicStop())
-        //settings category
-                .loadCommand("language", new GuildLanguage())
-                .loadCommand("prefix", new GuildPrefix())
-        //utility category
-                .loadCommand("invite", new UtilityInvite())
-        ;
+        this.commandFactories = new HashMap<>();
+
+        // Music category commands
+        loadCommand("loop", MusicLoop::new)
+                .loadCommand("play", MusicPlay::new)
+                .loadCommand("shuffle", MusicShuffle::new)
+                .loadCommand("skip", MusicSkip::new)
+                .loadCommand("stop", MusicStop::new)
+                // Settings category commands
+                .loadCommand("language", GuildLanguage::new)
+                .loadCommand("prefix", GuildPrefix::new)
+                // Utility category commands
+                .loadCommand("invite", UtilityInvite::new);
     }
 
-    public CommandManager loadCommand(String name, Command command) {
-        commands.put(name, command);
+    public CommandManager loadCommand(String name, Supplier<Command> commandFactory) {
+        commandFactories.put(name, commandFactory);
         return this;
     }
 
     public CommandManager reloadCommand(String name) {
-        commands.remove(name);
+        commandFactories.remove(name);
         return this;
     }
 
@@ -54,9 +55,13 @@ public class CommandManager implements Manager {
             if (session.getCommand() != null) {
                 session.execute(input);
             } else {
-                // This case means the message isn't a command and there's no ongoing session
-                // Optionally, log or ignore such messages
-                System.out.printf("%s in %s by %s say:\n%s%n",session.getGuild().getJDA().getName(), session.getChannel().getName(), getPudelWorld().getUserManager().getUserName(session),input);
+                // Log or ignore non-command messages
+                System.out.printf("%s in %s by %s say:\n%s%n",
+                        session.getGuild().getJDA().getName(),
+                        session.getChannel().getName(),
+                        getPudelWorld().getUserManager().getUserName(session),
+                        input);
+                getPudelWorld().getSessionManager().sessionEnd(session);
             }
         }
         return this;
@@ -81,20 +86,24 @@ public class CommandManager implements Manager {
         } else {
             showCommandDetails(session, e, input);
         }
+        getPudelWorld().getSessionManager().sessionEnd(session);
         return this;
     }
 
     private CommandManager showCommandList(SessionEntity session, MessageReceivedEvent e, String prefix) {
         StringBuilder helpMessage = new StringBuilder("Available commands:\n");
-        commands.forEach((name, command) -> helpMessage.append("`").append(prefix).append(name).append("` - ").append(command.getDescription(session)).append("\n"));
+        commandFactories.forEach((name, commandFactory) ->
+                helpMessage.append("`").append(prefix).append(name).append("` - ")
+                        .append(commandFactory.get().getDescription(session)).append("\n")
+        );
         e.getChannel().sendMessage(helpMessage.toString()).queue();
         return this;
     }
 
     private CommandManager showCommandDetails(SessionEntity session, MessageReceivedEvent e, String input) {
-        Command command = commands.get(input.toLowerCase());
-        if (command != null) {
-            e.getChannel().sendMessage(command.getDetailedHelp(session)).queue();
+        Supplier<Command> commandFactory = commandFactories.get(input.toLowerCase());
+        if (commandFactory != null) {
+            e.getChannel().sendMessage(commandFactory.get().getDetailedHelp(session)).queue();
         } else {
             e.getChannel().sendMessage("Unknown command!").queue();
         }
@@ -102,11 +111,14 @@ public class CommandManager implements Manager {
     }
 
     private CommandManager executeCommand(SessionEntity session, MessageReceivedEvent e, String commandName, String input) {
-        Command command = commands.get(commandName.toLowerCase());
-        if (command != null) {
+        Supplier<Command> commandFactory = commandFactories.get(commandName.toLowerCase());
+        if (commandFactory != null) {
+            // Create a new command instance for this session
+            Command command = commandFactory.get();
             session.setCommand(command).execute(input);
         } else {
             e.getChannel().sendMessage("Unknown command!").queue();
+            getPudelWorld().getSessionManager().sessionEnd(session);
         }
         return this;
     }
