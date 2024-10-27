@@ -23,11 +23,6 @@ public class MusicStop extends AbstractCommand {
     }
 
     @Override
-    public MusicStop reload() {
-        return this;
-    }
-
-    @Override
     public String getDescription(SessionEntity session) {
         return localize(session,"music.stop.help");
     }

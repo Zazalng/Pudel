@@ -27,11 +27,6 @@ public class MusicSkip extends AbstractCommand {
     }
 
     @Override
-    public MusicSkip reload() {
-        return this;
-    }
-
-    @Override
     public String getDescription(SessionEntity session) {
         return localize(session, "music.skip.help");
     }

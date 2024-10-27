@@ -29,11 +29,6 @@ public class GuildPrefix extends AbstractCommand {
     }
 
     @Override
-    public GuildPrefix reload() {
-        return this;
-    }
-
-    @Override
     public String getDescription(SessionEntity session) {
         return localize(session, "guild.prefix.help");
     }

@@ -27,11 +27,6 @@ public class GuildLanguage extends AbstractCommand {
     }
 
     @Override
-    public GuildLanguage reload() {
-        return this;
-    }
-
-    @Override
     public String getDescription(SessionEntity session) {
         return localize(session,"guild.language.help");
     }

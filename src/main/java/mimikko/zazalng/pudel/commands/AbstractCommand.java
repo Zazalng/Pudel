@@ -9,6 +9,12 @@ public abstract class AbstractCommand implements Command{
     protected Map<String, String> localizationArgs = new HashMap<>();
 
     @Override
+    public <T extends Command> T reload(SessionEntity session){
+        terminate(session);
+        return (T) this;
+    }
+
+    @Override
     public <T extends Command> T terminate(SessionEntity session){
         session.getPudelWorld().getSessionManager().sessionEnd(session);
         return (T) this;

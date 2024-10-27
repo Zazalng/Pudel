@@ -32,11 +32,6 @@ public class MusicPlaylist extends AbstractCommand{
     }
 
     @Override
-    public MusicPlaylist reload() {
-        return this;
-    }
-
-    @Override
     public String getDescription(SessionEntity session) {
         return "";
     }

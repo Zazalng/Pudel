@@ -29,12 +29,6 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
-    // Reload command logic
-    @Override
-    public MusicPlay reload() {
-        return this;
-    }
-
     // Description and detailed help methods
     @Override
     public String getDescription(SessionEntity session) {

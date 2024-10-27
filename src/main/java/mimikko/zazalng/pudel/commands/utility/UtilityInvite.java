@@ -21,12 +21,6 @@ public class UtilityInvite extends AbstractCommand {
     }
 
     @Override
-    public UtilityInvite reload() {
-        // Optional: reload logic if necessary
-        return this;
-    }
-
-    @Override
     public String getDescription(SessionEntity session) {
         localizationArgs.put("bot.name", session.getPudelWorld().getPudelManager().getName(session));
         return localize(session, "utility.invite.help",localizationArgs);

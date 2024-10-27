@@ -55,10 +55,10 @@ public class MusicPlayerEntity {
     }
 
     public MusicPlayerEntity nextTrack(boolean isSkip) {
-        if (getPlayer().getAudioPlayer().getPlayingTrack()==null) {
+        if (isSkip || getPlayer().getAudioPlayer().getPlayingTrack()==null) {
             getPlayer().getAudioPlayer().playTrack(trackSelection());
-        } else if(isSkip){
-            getPlayer().getAudioPlayer().stopTrack();
+        /*} else if(isSkip){
+            getPlayer().getAudioPlayer().playTrack(trackSelection());*/
         } else {
             getPlayer().getAudioPlayer().startTrack(trackSelection(), true);
         }
@@ -66,12 +66,12 @@ public class MusicPlayerEntity {
     }
 
     private AudioTrack trackSelection() {
-        if(flagShuffle){
-            return getActivePlaylist().get(randomInt(getActivePlaylist().size()));
-        } else if(!getActivePlaylist().isEmpty()){
-            return getActivePlaylist().getFirst();
-        } else{
+        if(getActivePlaylist().isEmpty()){
             return null;
+        } else if(flagShuffle){
+            return getActivePlaylist().get(randomInt(getActivePlaylist().size()));
+        } else{
+            return getActivePlaylist().getFirst();
         }
     }
 

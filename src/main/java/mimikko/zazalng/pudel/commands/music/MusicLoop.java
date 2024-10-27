@@ -12,31 +12,6 @@ public class MusicLoop extends AbstractCommand{
         return this;
     }
 
-    public MusicLoop initialState(SessionEntity session, String args) {
-        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
-
-        if (toggleLogic(args,true)) {
-            session.getGuild().getMusicPlayer().setLoop(true);
-            localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isLoop()));
-            args = localize(session,"music.loop.init.set",localizationArgs);
-        } else if (toggleLogic(args,false)) {
-            session.getGuild().getMusicPlayer().setLoop(false);
-            localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isLoop()));
-            args = localize(session,"music.loop.init.set",localizationArgs);
-        } else {
-            localizationArgs.put("player.loop", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isLoop()));
-            args = localize(session,"music.loop.init.display",localizationArgs);
-        }
-        session.getChannel().sendMessage(args).queue();
-        super.terminate(session);
-        return this;
-    }
-
-    @Override
-    public MusicLoop reload() {
-        return this;
-    }
-
     @Override
     public String getDescription(SessionEntity session) {
         return localize(session,"music.loop.help");
@@ -45,5 +20,34 @@ public class MusicLoop extends AbstractCommand{
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return localize(session,"music.loop.details");
+    }
+
+    private MusicLoop initialState(SessionEntity session, String args) {
+        if (toggleLogic(args,true)) { //Handle when input was logical able (TRUE result)
+            toggleValue(session,true);
+        } else if (toggleLogic(args,false)) { //Handle when input was logical able (FALSE result)
+            toggleValue(session,false);
+        } else {
+            showCurrent(session);
+        }
+        super.terminate(session);
+        return this;
+    }
+
+    private MusicLoop toggleValue(SessionEntity session, boolean flag){
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.loop.title"))
+                .addField(localize(session,"old.value"), String.valueOf(session.getGuild().getMusicPlayer().isLoop()),false)
+                .addField(localize(session,"new.value"), String.valueOf(session.getGuild().getMusicPlayer().setLoop(flag).isLoop()),false)
+                .build()).queue();
+        return this;
+    }
+
+    private MusicLoop showCurrent(SessionEntity session){
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.loop.title"))
+                .addField(localize(session,"current.value"), String.valueOf(session.getGuild().getMusicPlayer().isLoop()),false)
+                .build()).queue();
+        return this;
     }
 }

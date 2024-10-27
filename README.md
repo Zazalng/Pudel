@@ -13,17 +13,17 @@ The inspiration behind Pudel's creation stems from the discontinuation of the hi
 
 ## Dependencies
 
-- JDA: version 5.0.2
-- Twitter4J Core: version 4.0.7
-- Logback Classic: version 1.2.8
-- MySQL Connector/J: version 8.0.33
+- JDA: [![maven-central](https://img.shields.io/maven-central/v/net.dv8tion/JDA?color=blue)](https://mvnrepository.com/artifact/net.dv8tion/JDA/latest)
+- LavaPlayer: [![Maven Central](https://img.shields.io/maven-central/v/dev.arbjerg/lavaplayer?versionPrefix=2)](https://central.sonatype.com/artifact/dev.arbjerg/lavaplayer)
+- youtube-source: ![GitHub Release](https://img.shields.io/github/v/release/lavalink-devs/youtube-source)
+- Opencsv: [![Maven Central](https://img.shields.io/maven-central/v/com.opencsv/opencsv)](https://opencsv.sourceforge.net/scm.html)
 
 ## Getting Started
 
 To get started with Pudel, follow these steps:
 
 1. Clone the Pudel repository to your local machine.
-2. Ensure you have Java 20 installed on your system.
+2. Ensure you have Java 23 installed on your system.
 3. Set up the required dependencies as specified in `pom.xml`.
 4. Run the Pudel application and start interacting with the chatbot on Discord.
 

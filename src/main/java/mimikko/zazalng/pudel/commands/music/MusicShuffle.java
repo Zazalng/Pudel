@@ -17,28 +17,15 @@ public class MusicShuffle extends AbstractCommand {
         localizationArgs.put("args", args);
 
         if(toggleLogic(args,true)){
-            session.getGuild().getMusicPlayer().setShuffle(true);
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()));
-            args = localize(session,"music.shuffle.init.set",localizationArgs);
+            toggleValue(session,true);
         } else if(toggleLogic(args,false)){
-            session.getGuild().getMusicPlayer().setShuffle(false);
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()));
-            args = localize(session,"music.shuffle.init.set",localizationArgs);
+            toggleValue(session,false);
         } else if(args.isEmpty()){
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session, session.getGuild().getMusicPlayer().isShuffle()));
-            args = localize(session,"music.shuffle.init.display",localizationArgs);
+            showCurrent(session);
         } else{
-            session.getGuild().getMusicPlayer().shufflePlaylist();
-            args = localize(session,"music.shuffle.init.seed",localizationArgs);
+            seedShuffle(session,args);
         }
-        session.getChannel().sendMessage(args).queue();
-
         super.terminate(session);
-        return this;
-    }
-
-    @Override
-    public MusicShuffle reload() {
         return this;
     }
 
@@ -50,5 +37,31 @@ public class MusicShuffle extends AbstractCommand {
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return localize(session, "music.shuffle.details");
+    }
+
+    private MusicShuffle toggleValue(SessionEntity session, boolean flag){
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.shuffle.title"))
+                .addField(localize(session,"old.value"), String.valueOf(session.getGuild().getMusicPlayer().isShuffle()),false)
+                .addField(localize(session,"new.value"), String.valueOf(session.getGuild().getMusicPlayer().setShuffle(flag).isShuffle()),false)
+                .build()).queue();
+        return this;
+    }
+
+    private MusicShuffle showCurrent(SessionEntity session){
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.shuffle.title"))
+                .addField(localize(session,"current.value"), String.valueOf(session.getGuild().getMusicPlayer().isShuffle()),false)
+                .build()).queue();
+        return this;
+    }
+
+    private MusicShuffle seedShuffle(SessionEntity session, String args){
+        session.getGuild().getMusicPlayer().shufflePlaylist();
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.shuffle.seed"))
+                .addField(localize(session,"music.shuffle.seedmsg"), String.format("`%s`",args),false)
+                .build()).queue();
+        return this;
     }
 }

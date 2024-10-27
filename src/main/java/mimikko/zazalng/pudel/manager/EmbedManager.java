@@ -18,7 +18,7 @@ public class EmbedManager implements Manager {
         this.pudelWorld = pudelWorld;
     }
 
-    public EmbedBuilder createEmbed(SessionEntity session){
+    private EmbedBuilder createEmbed(SessionEntity session){
         return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
                 .setAuthor(session.getUser().getUserManager().getUserName(session), null, session.getUser().getJDA().getAvatarUrl());
     }
