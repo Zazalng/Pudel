@@ -37,18 +37,18 @@ public class AudioTrackHandler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (endReason.mayStartNext) {
+        if (endReason == AudioTrackEndReason.FINISHED) {
             // Start next track
             if(getMusicEntity().isLoop()){
                 getMusicEntity().getMusicManager().nextTrack(getMusicEntity(), track.makeClone());
             } else{
                 getMusicEntity().getMusicManager().nextTrack(getMusicEntity(),false);
             }
-
         } else if(endReason == AudioTrackEndReason.STOPPED){
 
         } else if(endReason == AudioTrackEndReason.REPLACED){
-
+            player.stopTrack();
+            getMusicEntity().getMusicManager().nextTrack(getMusicEntity(),false);
         } else if(endReason == AudioTrackEndReason.CLEANUP){
 
         }

@@ -60,7 +60,7 @@ public class MusicShuffle extends AbstractCommand {
         session.getPudelWorld().getMusicManager().getMusicPlayer(session).shufflePlaylist();
         session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
                 .setTitle(localize(session,"music.shuffle.seed"))
-                .addField(localize(session,"music.shuffle.seedmsg"), String.format("`%s`",args),false)
+                .addField(null, String.format("`%s`",args),false)
                 .build()).queue();
         return this;
     }
