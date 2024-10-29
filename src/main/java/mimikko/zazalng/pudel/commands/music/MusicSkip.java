@@ -10,22 +10,6 @@ public class MusicSkip extends AbstractCommand {
         return this;
     }
 
-    public MusicSkip initialState(SessionEntity session, String args){
-        session.getGuild().getMusicPlayer().nextTrack(true);
-        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
-        localizationArgs.put("args", args);
-
-        if(args.isEmpty()){
-            args = localize(session, "music.skip.init", localizationArgs);
-        } else{
-            args = localize(session, "music.skip.init.reason", localizationArgs);
-        }
-        session.getChannel().sendMessage(args).queue();
-
-        super.terminate(session);
-        return this;
-    }
-
     @Override
     public String getDescription(SessionEntity session) {
         return localize(session, "music.skip.help");
@@ -34,5 +18,36 @@ public class MusicSkip extends AbstractCommand {
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return localize(session, "music.skip.details");
+    }
+
+    private MusicSkip initialState(SessionEntity session, String args){
+        session.getPudelWorld().getMusicManager().nextTrack(session,true);
+        if(args.isEmpty()){
+            replyBack(session);
+        } else{
+            replyBack(session,args);
+        }
+
+        super.terminate(session);
+        return this;
+    }
+
+    private MusicSkip replyBack(SessionEntity session){
+        session.getChannel().sendMessageEmbeds(
+                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                        .setTitle("music.skip.title").build()
+        ).queue();
+
+        return this;
+    }
+
+    private MusicSkip replyBack(SessionEntity session, String args){
+        session.getChannel().sendMessageEmbeds(
+                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                        .setTitle("music.skip.title.reason")
+                        .setDescription(String.format("`%s`",args)).build()
+        ).queue();
+
+        return this;
     }
 }

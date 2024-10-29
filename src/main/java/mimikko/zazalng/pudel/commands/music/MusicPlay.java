@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import java.util.List;
@@ -55,12 +54,10 @@ public class MusicPlay extends AbstractCommand{
 
     // Handle case when no arguments are provided
     private MusicPlay handleNoArgs(SessionEntity session) {
-        MusicPlayerEntity player = session.getGuild().getMusicPlayer();
-
-        if (player.getPlayingTrack() == null) {
+        if (session.getPudelWorld().getMusicManager().getPlayingTrack(session) == null) {
             sendNoTrackMessage(session);
         } else {
-            sendCurrentTrackMessage(session, player);
+            sendCurrentTrackMessage(session);
         }
 
         super.terminate(session);
@@ -185,22 +182,22 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Send current track details
-    private MusicPlay sendCurrentTrackMessage(SessionEntity session, MusicPlayerEntity player) {
-        String trackFormat = session.getPudelWorld().getMusicManager().getTrackFormat(player.getPlayingTrack());
+    private MusicPlay sendCurrentTrackMessage(SessionEntity session) {
+        String trackFormat = session.getPudelWorld().getMusicManager().getTrackFormat(session.getPudelWorld().getMusicManager().getPlayingTrack(session));
         session.getChannel().sendMessageEmbeds(
                 session.getPudelWorld().getEmbedManager().embedCommand(session)
-                        .setTitle(trackFormat, session.getPudelWorld().getMusicManager().getTrackUrl(player.getPlayingTrack()))
-                        .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(player.getPlayingTrack()))
+                        .setTitle(trackFormat, session.getPudelWorld().getMusicManager().getTrackUrl(session.getPudelWorld().getMusicManager().getPlayingTrack(session)))
+                        .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(session.getPudelWorld().getMusicManager().getPlayingTrack(session)))
                         .addField(localize(session, "music.play.loop"),
-                                session.getPudelWorld().getLocalizationManager().getBooleanText(session, player.isLoop()), true)
+                                localize(session, session.getPudelWorld().getMusicManager().getMusicPlayer(session).isLoop()), true)
                         .addField(localize(session, "music.play.shuffle"),
-                                session.getPudelWorld().getLocalizationManager().getBooleanText(session, player.isShuffle()), true)
+                                localize(session, session.getPudelWorld().getMusicManager().getMusicPlayer(session).isShuffle()), true)
                         .addField(localize(session, "music.play.remaining"),
-                                String.valueOf(session.getGuild().getMusicPlayer().getActivePlaylist().size()),true)
+                                String.valueOf(session.getPudelWorld().getMusicManager().getMusicPlayer(session).getActivePlaylist().size()),true)
                         .addField(localize(session, "music.play.duration"),
-                                session.getPudelWorld().getMusicManager().getTrackDuration(player.getPlayingTrack()), true)
+                                session.getPudelWorld().getMusicManager().getTrackDuration(session.getPudelWorld().getMusicManager().getPlayingTrack(session)), true)
                         .addField(localize(session, "music.play.queueby"),
-                                session.getPudelWorld().getUserManager().castUserEntity(player.getPlayingTrack().getUserData()).getJDA().getAsMention(), true)
+                                session.getPudelWorld().getUserManager().castUserEntity(session.getPudelWorld().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
         ).queue();
 

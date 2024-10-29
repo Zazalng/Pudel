@@ -10,18 +10,6 @@ public class MusicStop extends AbstractCommand {
         return this;
     }
 
-    public MusicStop initialState(SessionEntity session, String args){
-        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
-
-        args = localize(session,"music.stop.init",localizationArgs);
-
-        session.getGuild().stopPlayer();
-        session.getPudelWorld().getPudelManager().closeVoiceConnection(session);
-        session.getChannel().sendMessage(args).queue();
-        super.terminate(session);
-        return this;
-    }
-
     @Override
     public String getDescription(SessionEntity session) {
         return localize(session,"music.stop.help");
@@ -30,5 +18,15 @@ public class MusicStop extends AbstractCommand {
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return localize(session,"music.stop.details");
+    }
+
+    private MusicStop initialState(SessionEntity session, String args){
+        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
+
+        args = localize(session,"music.stop.init",localizationArgs);
+        //https://puu.sh/KgAxn.gif
+        session.getPudelWorld().getMusicManager().stopPlayer(session);
+        super.terminate(session);
+        return this;
     }
 }

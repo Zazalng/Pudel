@@ -33,10 +33,10 @@ public class SessionManager implements Manager{
         return this.sessions.compute(sessionKey, (k, v) -> {
             if (v == null || v.getCommand() == null) {
                 logger.info(stringFormat("[Create Session] %s",sessionKey));
-                return new SessionEntity(this, user, guild, channelIssue);
+                return new SessionEntity(this, user, guild, channelIssue).setEvent(e);
             }
             logger.debug(stringFormat("[Active Session] %s",sessionKey));
-            return v;
+            return v.setEvent(e);
         });
 
     }

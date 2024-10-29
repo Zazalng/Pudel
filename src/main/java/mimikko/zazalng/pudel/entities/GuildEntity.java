@@ -10,7 +10,6 @@ public class GuildEntity {
     //Import variable
     protected final GuildManager guildManager;
     private final Guild guild;
-    private MusicPlayerEntity musicPlayer;
 
     //Class variable
     private final List<String> ignoreChannel;
@@ -35,19 +34,6 @@ public class GuildEntity {
 
     public Guild getJDA() {
         return this.guild;
-    }
-
-    public MusicPlayerEntity getMusicPlayer() {
-        if(this.musicPlayer == null){
-            this.musicPlayer = new MusicPlayerEntity(getGuildManager().getPudelWorld().getMusicManager().musicManagerBuilder());
-        }
-        return this.musicPlayer;
-    }
-
-    public GuildEntity stopPlayer(){
-        this.musicPlayer.stop();
-        this.musicPlayer = null;
-        return this;
     }
 
     public List<String> getIgnoreChannel() {

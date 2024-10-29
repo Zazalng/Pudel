@@ -1,9 +1,9 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
+import net.dv8tion.jda.api.audio.AudioSendHandler;
 
 public class PudelManager implements Manager {
     protected PudelWorld pudelWorld;
@@ -28,31 +28,15 @@ public class PudelManager implements Manager {
         this.PudelEntity = pudelEntity;
         return this;
     }
-
-    public PudelManager openVoiceConnection(SessionEntity session){
+    public PudelManager openVoiceConnection(SessionEntity session, AudioSendHandler audio){
         session.getGuild().getJDA().getAudioManager().openAudioConnection(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getVoiceState().getChannel());
-        setSendingHandler(session);
+        session.getGuild().getJDA().getAudioManager().setSendingHandler(audio);
         return this;
     }
 
     public PudelManager closeVoiceConnection(SessionEntity session){
-        closeVoiceConnection(session.getGuild());
-        return this;
-    }
-
-    public PudelManager closeVoiceConnection(GuildEntity guild){
-        guild.getJDA().getAudioManager().closeAudioConnection();
-        setSendingHandler(guild);
-        return this;
-    }
-
-    public PudelManager setSendingHandler(SessionEntity session){
-        setSendingHandler(session.getGuild());
-        return this;
-    }
-
-    public PudelManager setSendingHandler(GuildEntity guild){
-        guild.getJDA().getAudioManager().setSendingHandler(guild.getMusicPlayer().getPlayer());
+        session.getGuild().getJDA().getAudioManager().closeAudioConnection();
+        session.getGuild().getJDA().getAudioManager().setSendingHandler(null);
         return this;
     }
 
@@ -73,7 +57,6 @@ public class PudelManager implements Manager {
 
     @Override
     public PudelManager shutdown() {
-        getPudelWorld().getGuildManager().getGuildEntity().forEach(guild -> closeVoiceConnection(guild));
         return this;
     }
 }

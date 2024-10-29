@@ -1,5 +1,6 @@
 package mimikko.zazalng.pudel.commands;
 
+import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import java.util.HashMap;
@@ -26,5 +27,9 @@ public abstract class AbstractCommand implements Command{
 
     protected String localize(SessionEntity session, String key) {
         return localize(session, key, null);
+    }
+
+    protected String localize(SessionEntity session, Boolean flag) {
+        return session.getPudelWorld().getLocalizationManager().getBooleanText(session, flag);
     }
 }
