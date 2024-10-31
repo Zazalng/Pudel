@@ -121,7 +121,7 @@ public class LocalizationManager implements Manager{
     }
 
     @Override
-    public LocalizationManager shutdown() {
-        return this;
+    public void shutdown() {
+
     }
 }

@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static mimikko.zazalng.pudel.utility.IntegerUtility.randomInt;
-
 public class MusicPlayerEntity {
-    private MusicManager musicManager;
+    protected final MusicManager musicManager;
     private final List<AudioTrack> activePlaylist;
     private final List<AudioTrack> historyPlaylist;
     private boolean flagLoop;

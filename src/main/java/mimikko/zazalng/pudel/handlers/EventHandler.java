@@ -3,6 +3,7 @@ package mimikko.zazalng.pudel.handlers;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,8 @@ public class EventHandler extends ListenerAdapter{
             return;
         }
 
+        SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
+
         if(!e.getAuthor().isBot()){
             /*
                 Still Possible to implement command for direct message interacting
@@ -36,8 +39,13 @@ public class EventHandler extends ListenerAdapter{
 
             //e.getChannel().sendTyping().queue();
 
-            SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
+
             this.pudelWorld.getCommandManager().handleCommand(session, e);
         }
+    }
+
+    @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent e){
+
     }
 }

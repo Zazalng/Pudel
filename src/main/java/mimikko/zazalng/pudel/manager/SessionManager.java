@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static mimikko.zazalng.pudel.utility.StringUtility.stringFormat;
@@ -38,14 +39,25 @@ public class SessionManager implements Manager{
             logger.debug(stringFormat("[Active Session] %s",sessionKey));
             return v.setEvent(e);
         });
-
     }
 
-    public SessionManager sessionEnd(SessionEntity session) {
-        this.sessions.entrySet().removeIf(entry -> {
-            logger.info(stringFormat("[Terminate Session] %s",entry.getKey()));
-            return entry.getValue().equals(session);
-        });
+    public SessionManager sessionTerminate(SessionEntity session) {
+        Iterator<Map.Entry<String, SessionEntity>> iterator = this.sessions.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, SessionEntity> entry = iterator.next();
+            if (entry.getValue().equals(session)) {
+                logger.info(String.format("[Terminate Session] %s", entry.getKey()));
+                iterator.remove();
+            }
+        }
+
+        return this;
+    }
+
+    public SessionManager sessionEnd(SessionEntity session){
+        session.getSessionCollector().stream().peek(messageReceivedEvent -> messageReceivedEvent.getMessage().delete().queue());
+        sessionTerminate(session);
         return this;
     }
 
@@ -69,8 +81,7 @@ public class SessionManager implements Manager{
     }
 
     @Override
-    public SessionManager shutdown() {
-        this.sessions.clear();
-        return this;
+    public void shutdown() {
+
     }
 }

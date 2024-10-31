@@ -139,7 +139,7 @@ public class CommandManager implements Manager {
     }
 
     @Override
-    public CommandManager shutdown() {
-        return this;
+    public void shutdown() {
+
     }
 }

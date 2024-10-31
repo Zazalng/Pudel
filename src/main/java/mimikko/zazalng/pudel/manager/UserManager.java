@@ -59,7 +59,7 @@ public class UserManager implements Manager {
     }
 
     @Override
-    public UserManager shutdown() {
-        return this;
+    public void shutdown() {
+
     }
 }

@@ -243,7 +243,7 @@ public class MusicManager implements Manager {
     }
 
     @Override
-    public MusicManager shutdown() {
-        return this;
+    public void shutdown() {
+
     }
 }

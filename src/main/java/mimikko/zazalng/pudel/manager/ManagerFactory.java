@@ -14,6 +14,7 @@ public class ManagerFactory {
         loadManager("commandManager", new CommandManager(pudelWorld))
             .loadManager("embedManager", new EmbedManager(pudelWorld))
             .loadManager("guildManager", new GuildManager(pudelWorld))
+            .loadManager("interactionManager", new InteractionManager(pudelWorld))
             .loadManager("localizationManager", new LocalizationManager(pudelWorld))
             .loadManager("musicManager", new MusicManager(pudelWorld))
             .loadManager("pudelManager", new PudelManager(pudelWorld))

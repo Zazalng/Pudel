@@ -17,7 +17,7 @@ public class SessionEntity{
     private final GuildEntity guild;
     private final MessageChannelUnion channel;
     private final List<MessageReceivedEvent> sessionCollector = new ArrayList<>();
-    private final Map<String, Object> objectCollection = new HashMap<>();
+    private final Map<String, Object> objectCollector = new HashMap<>();
     private Command command;
     private MessageReceivedEvent event;
 
@@ -28,13 +28,17 @@ public class SessionEntity{
         this.channel = channelIssue;
     }
 
+    public List<MessageReceivedEvent> getSessionCollector() {
+        return sessionCollector;
+    }
+
     public SessionEntity addData(String key, Object value) {
-        objectCollection.put(key, value);
+        objectCollector.put(key, value);
         return this;
     }
 
     public Object getData(String key, boolean delObject) {
-        return delObject ? objectCollection.remove(key) : objectCollection.get(key);
+        return delObject ? objectCollector.remove(key) : objectCollector.get(key);
     }
 
     public SessionEntity setCommand(Command command){
@@ -68,7 +72,7 @@ public class SessionEntity{
     }
 
     public MessageReceivedEvent lastEvent() {
-        return event;
+        return this.event;
     }
 
     public SessionEntity setEvent(MessageReceivedEvent e) {

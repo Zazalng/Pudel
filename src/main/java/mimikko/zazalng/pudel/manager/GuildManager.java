@@ -48,7 +48,7 @@ public class GuildManager implements Manager {
     }
 
     @Override
-    public GuildManager shutdown() {
-        return this;
+    public void shutdown() {
+
     }
 }

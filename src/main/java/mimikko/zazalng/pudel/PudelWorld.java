@@ -63,6 +63,10 @@ public class PudelWorld {
         return this.managerFactory.getManager("guildManager", GuildManager.class);
     }
 
+    public InteractionManager getInteractionManager(){
+        return this.managerFactory.getManager("interactionManager", InteractionManager.class);
+    }
+
     public LocalizationManager getLocalizationManager(){
         return this.managerFactory.getManager("localizationManager", LocalizationManager.class);
     }

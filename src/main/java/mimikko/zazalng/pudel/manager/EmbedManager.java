@@ -66,8 +66,8 @@ public class EmbedManager implements Manager {
     }
 
     @Override
-    public EmbedManager shutdown() {
+    public void shutdown() {
         logger.info("EmbedManager shut down.");
-        return this;
+
     }
 }

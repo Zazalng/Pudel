@@ -56,7 +56,7 @@ public class PudelManager implements Manager {
     }
 
     @Override
-    public PudelManager shutdown() {
-        return this;
+    public void shutdown() {
+
     }
 }
