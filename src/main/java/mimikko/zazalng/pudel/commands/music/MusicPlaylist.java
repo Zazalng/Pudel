@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class MusicPlaylist extends AbstractCommand{
@@ -28,6 +29,15 @@ public class MusicPlaylist extends AbstractCommand{
     }
 
     public MusicPlaylist initialState(SessionEntity session, String args) {
+        return this;
+    }
+
+    /**
+     * @param interaction
+     * @return
+     */
+    @Override
+    public MusicPlaylist execute(InteractionEntity interaction) {
         return this;
     }
 

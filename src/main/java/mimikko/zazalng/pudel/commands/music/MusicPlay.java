@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import java.util.List;
@@ -25,6 +26,10 @@ public class MusicPlay extends AbstractCommand{
                 initialState(session, args);
                 break;
         }
+        return this;
+    }
+    @Override
+    public MusicPlay execute(InteractionEntity interaction) {
         return this;
     }
 
@@ -199,8 +204,11 @@ public class MusicPlay extends AbstractCommand{
                         .addField(localize(session, "music.play.queueby"),
                                 session.getPudelWorld().getUserManager().castUserEntity(session.getPudelWorld().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
-        ).queue();
-
+        ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session).getPudelWorld().getPudelManager()
+                .addRection(e,"U+23F9")//STOP
+                .addRection(e,"U+23ED")//SKIP
+                .addRection(e,"U+1F501")//LOOP
+                .addRection(e,"U+1F500"));//SHUFFLE
         return this;
     }
 

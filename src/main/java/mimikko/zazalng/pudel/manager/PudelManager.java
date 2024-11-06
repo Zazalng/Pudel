@@ -4,6 +4,9 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
 
 public class PudelManager implements Manager {
     protected PudelWorld pudelWorld;
@@ -28,6 +31,12 @@ public class PudelManager implements Manager {
         this.PudelEntity = pudelEntity;
         return this;
     }
+
+    public PudelManager addRection(Message msg, String unicode){
+        msg.addReaction(Emoji.fromFormatted(unicode)).queue();
+        return this;
+    }
+
     public PudelManager openVoiceConnection(SessionEntity session, AudioSendHandler audio){
         session.getGuild().getJDA().getAudioManager().openAudioConnection(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getVoiceState().getChannel());
         session.getGuild().getJDA().getAudioManager().setSendingHandler(audio);

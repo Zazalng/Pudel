@@ -1,6 +1,8 @@
 package mimikko.zazalng.pudel.commands.utility;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.commands.Command;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class UtilityInvite extends AbstractCommand {
@@ -17,6 +19,15 @@ public class UtilityInvite extends AbstractCommand {
 
         session.getChannel().sendMessage(args).queue();
         super.terminate(session);
+        return this;
+    }
+
+    /**
+     * @param interaction
+     * @return
+     */
+    @Override
+    public UtilityInvite execute(InteractionEntity interaction) {
         return this;
     }
 

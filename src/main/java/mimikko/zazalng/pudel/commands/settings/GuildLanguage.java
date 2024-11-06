@@ -1,6 +1,8 @@
 package mimikko.zazalng.pudel.commands.settings;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.commands.Command;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class GuildLanguage extends AbstractCommand {
@@ -23,6 +25,15 @@ public class GuildLanguage extends AbstractCommand {
         }
         session.getChannel().sendMessage(args).queue();
         super.terminate(session);
+        return this;
+    }
+
+    /**
+     * @param interaction
+     * @return
+     */
+    @Override
+    public GuildLanguage execute(InteractionEntity interaction) {
         return this;
     }
 

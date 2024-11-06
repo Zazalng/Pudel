@@ -26,9 +26,11 @@ public class EventHandler extends ListenerAdapter{
             return;
         }
 
-        SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
+        if(e.getAuthor().isBot()){
+            return;
+        }
 
-        if(!e.getAuthor().isBot()){
+        SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
             /*
                 Still Possible to implement command for direct message interacting
                 - A possible thing that can happen (from what I have discovery)
@@ -40,12 +42,13 @@ public class EventHandler extends ListenerAdapter{
             //e.getChannel().sendTyping().queue();
 
 
-            this.pudelWorld.getCommandManager().handleCommand(session, e);
-        }
+        this.pudelWorld.getCommandManager().handleCommand(session, e);
     }
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent e){
-
+        if(!e.getUser().isBot()){
+            this.pudelWorld.getInteractionManager().getInteraction(e);
+        }
     }
 }

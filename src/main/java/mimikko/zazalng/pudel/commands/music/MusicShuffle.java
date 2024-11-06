@@ -1,6 +1,8 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.commands.Command;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
@@ -26,6 +28,15 @@ public class MusicShuffle extends AbstractCommand {
             seedShuffle(session,args);
         }
         super.terminate(session);
+        return this;
+    }
+
+    /**
+     * @param interaction
+     * @return
+     */
+    @Override
+    public MusicShuffle execute(InteractionEntity interaction) {
         return this;
     }
 

@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuildEntity {
+public class GuildEntity{
     //Import variable
     protected final GuildManager guildManager;
     private final Guild guild;

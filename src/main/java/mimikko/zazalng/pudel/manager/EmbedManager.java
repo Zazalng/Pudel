@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class EmbedManager implements Manager {
-
     private final PudelWorld pudelWorld; // Your bot world
     private final Logger logger = LoggerFactory.getLogger(EmbedManager.class);
 

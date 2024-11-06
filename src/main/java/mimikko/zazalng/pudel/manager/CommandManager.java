@@ -7,6 +7,8 @@ import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.UtilityInvite;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,7 @@ import java.util.function.Supplier;
 public class CommandManager implements Manager {
     protected final PudelWorld pudelWorld;
     private final Map<String, Supplier<Command>> commandFactories;
+    private final Logger logger = LoggerFactory.getLogger(CommandManager.class);
 
     public CommandManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
