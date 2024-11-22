@@ -8,9 +8,8 @@ import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
 public class MusicLoop extends AbstractCommand{
     @Override
-    public MusicLoop execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         initialState(session, args);
-        return this;
     }
 
     /**
@@ -18,8 +17,7 @@ public class MusicLoop extends AbstractCommand{
      * @return
      */
     @Override
-    public MusicLoop execute(InteractionEntity interaction) {
-        return this;
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override

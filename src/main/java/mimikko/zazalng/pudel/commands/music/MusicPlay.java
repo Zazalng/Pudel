@@ -17,7 +17,7 @@ public class MusicPlay extends AbstractCommand{
 
     // Entry point of the command execution
     @Override
-    public MusicPlay execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         switch (getState()) {
             case SEARCHING:
                 handleSearchingState(session, args);
@@ -26,11 +26,9 @@ public class MusicPlay extends AbstractCommand{
                 initialState(session, args);
                 break;
         }
-        return this;
     }
     @Override
-    public MusicPlay execute(InteractionEntity interaction) {
-        return this;
+    public void execute(InteractionEntity interaction) {
     }
 
     // Description and detailed help methods
@@ -115,7 +113,13 @@ public class MusicPlay extends AbstractCommand{
                                     .setThumbnail("https://puu.sh/KgdPy.gif")
                                     .setDescription(searchResults.toString())
                                     .build()
-                    ).queue();
+                    ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session,10).getPudelWorld().getPudelManager()
+                            .addRection(e,"U+0031")
+                            .addRection(e,"U+0032")
+                            .addRection(e,"U+0033")
+                            .addRection(e,"U+0034")
+                            .addRection(e,"U+0035")
+                            .addRection(e,"U+1F528"));
 
                     setState(state.SEARCHING);
                     break;

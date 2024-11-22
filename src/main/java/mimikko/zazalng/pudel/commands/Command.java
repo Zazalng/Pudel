@@ -4,10 +4,11 @@ import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public interface Command{
-    <T extends Command> T execute(SessionEntity session, String args);
-    <T extends Command> T execute(InteractionEntity interaction);
-    <T extends Command> T reload(SessionEntity session);
-    <T extends Command> T terminate(SessionEntity session);
+    void execute(SessionEntity session, String args);
+    void execute(InteractionEntity interaction);
+    void reload(SessionEntity session);
+    void terminate(SessionEntity session);
+    void terminate(InteractionEntity interaction);
     String getDescription(SessionEntity session);
     String getDetailedHelp(SessionEntity session);
 }

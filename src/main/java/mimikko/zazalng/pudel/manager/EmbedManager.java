@@ -3,6 +3,7 @@ package mimikko.zazalng.pudel.manager;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +48,10 @@ public class EmbedManager implements Manager {
         return (EmbedBuilder) session.getData(key,false);
     }
 
+    public EmbedBuilder castEmbedBuilder(MessageEmbed msg){
+        return new EmbedBuilder(msg);
+    }
+
     @Override
     public PudelWorld getPudelWorld() {
         return pudelWorld;
@@ -59,9 +64,8 @@ public class EmbedManager implements Manager {
     }
 
     @Override
-    public EmbedManager reload() {
+    public void reload() {
         logger.info("EmbedManager reloaded.");
-        return this;
     }
 
     @Override

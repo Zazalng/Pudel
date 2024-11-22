@@ -76,8 +76,8 @@ public class SessionManager implements Manager{
     }
 
     @Override
-    public SessionManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     @Override

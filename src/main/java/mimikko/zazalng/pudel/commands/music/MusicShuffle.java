@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
@@ -9,26 +8,8 @@ import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
 public class MusicShuffle extends AbstractCommand {
     @Override
-    public MusicShuffle execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         initialState(session, args);
-        return this;
-    }
-
-    public MusicShuffle initialState(SessionEntity session, String args) {
-        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
-        localizationArgs.put("args", args);
-
-        if(toggleLogic(args,true)){
-            toggleValue(session,true);
-        } else if(toggleLogic(args,false)){
-            toggleValue(session,false);
-        } else if(args.isEmpty()){
-            showCurrent(session);
-        } else{
-            seedShuffle(session,args);
-        }
-        super.terminate(session);
-        return this;
     }
 
     /**
@@ -36,8 +17,7 @@ public class MusicShuffle extends AbstractCommand {
      * @return
      */
     @Override
-    public MusicShuffle execute(InteractionEntity interaction) {
-        return this;
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override
@@ -73,6 +53,23 @@ public class MusicShuffle extends AbstractCommand {
                 .setTitle(localize(session,"music.shuffle.seed"))
                 .addField(null, String.format("`%s`",args),false)
                 .build()).queue();
+        return this;
+    }
+
+    private MusicShuffle initialState(SessionEntity session, String args) {
+        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
+        localizationArgs.put("args", args);
+
+        if(toggleLogic(args,true)){
+            toggleValue(session,true);
+        } else if(toggleLogic(args,false)){
+            toggleValue(session,false);
+        } else if(args.isEmpty()){
+            showCurrent(session);
+        } else{
+            seedShuffle(session,args);
+        }
+        super.terminate(session);
         return this;
     }
 }

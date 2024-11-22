@@ -13,7 +13,7 @@ public class MusicPlaylist extends AbstractCommand{
     }
 
     @Override
-    public MusicPlaylist execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         switch (getState()) {
             case REMOVE:
                 // Remove logic
@@ -25,11 +25,6 @@ public class MusicPlaylist extends AbstractCommand{
                 initialState(session, args);
                 break;
         }
-        return this;
-    }
-
-    public MusicPlaylist initialState(SessionEntity session, String args) {
-        return this;
     }
 
     /**
@@ -37,8 +32,7 @@ public class MusicPlaylist extends AbstractCommand{
      * @return
      */
     @Override
-    public MusicPlaylist execute(InteractionEntity interaction) {
-        return this;
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override
@@ -49,6 +43,10 @@ public class MusicPlaylist extends AbstractCommand{
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return "";
+    }
+
+    public MusicPlaylist initialState(SessionEntity session, String args) {
+        return this;
     }
 
     private state getState(){

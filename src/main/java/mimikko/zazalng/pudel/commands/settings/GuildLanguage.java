@@ -1,15 +1,31 @@
 package mimikko.zazalng.pudel.commands.settings;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class GuildLanguage extends AbstractCommand {
     @Override
-    public GuildLanguage execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         initialState(session, args);
-        return this;
+    }
+
+    /**
+     * @param interaction
+     * @return
+     */
+    @Override
+    public void execute(InteractionEntity interaction) {
+    }
+
+    @Override
+    public String getDescription(SessionEntity session) {
+        return localize(session,"guild.language.help");
+    }
+
+    @Override
+    public String getDetailedHelp(SessionEntity session) {
+        return localize(session,"guild.language.details");
     }
 
     public GuildLanguage initialState(SessionEntity session, String args) {
@@ -26,24 +42,5 @@ public class GuildLanguage extends AbstractCommand {
         session.getChannel().sendMessage(args).queue();
         super.terminate(session);
         return this;
-    }
-
-    /**
-     * @param interaction
-     * @return
-     */
-    @Override
-    public GuildLanguage execute(InteractionEntity interaction) {
-        return this;
-    }
-
-    @Override
-    public String getDescription(SessionEntity session) {
-        return localize(session,"guild.language.help");
-    }
-
-    @Override
-    public String getDetailedHelp(SessionEntity session) {
-        return localize(session,"guild.language.details");
     }
 }

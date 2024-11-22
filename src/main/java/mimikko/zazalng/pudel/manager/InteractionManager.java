@@ -18,12 +18,15 @@ public class InteractionManager implements Manager{
         this.interactionList = new HashMap<>();
     }
 
-    public InteractionEntity getInteraction(MessageReactionAddEvent e){
-        try{
-            return this.interactionList.get(e.retrieveMessage()).execute(e);
-        }catch (NullPointerException ex){
-            return null;
-        }
+    public void getInteraction(MessageReactionAddEvent e){
+        e.retrieveMessage().queue(message -> {
+            InteractionEntity interaction = this.interactionList.get(message);
+            if (interaction != null) {
+                interaction.execute(e);
+            }
+        }, throwable -> {
+
+        });
     }
 
     public InteractionEntity newInteraction(Message message, SessionEntity session){
@@ -59,8 +62,8 @@ public class InteractionManager implements Manager{
      * @return
      */
     @Override
-    public InteractionManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     /**

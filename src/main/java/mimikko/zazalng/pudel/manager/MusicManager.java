@@ -238,8 +238,8 @@ public class MusicManager implements Manager {
     }
 
     @Override
-    public MusicManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     @Override

@@ -60,8 +60,8 @@ public class PudelManager implements Manager {
     }
 
     @Override
-    public PudelManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     @Override

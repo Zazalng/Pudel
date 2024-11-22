@@ -1,15 +1,13 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class MusicStop extends AbstractCommand {
     @Override
-    public MusicStop execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         initialState(session, args);
-        return this;
     }
 
     /**
@@ -17,8 +15,7 @@ public class MusicStop extends AbstractCommand {
      * @return
      */
     @Override
-    public MusicStop execute(InteractionEntity interaction) {
-        return this;
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override
@@ -37,7 +34,7 @@ public class MusicStop extends AbstractCommand {
         args = localize(session,"music.stop.init",localizationArgs);
         //https://puu.sh/KgAxn.gif
         session.getPudelWorld().getMusicManager().stopPlayer(session);
-        super.terminate(session);
+        terminate(session);
         return this;
     }
 }

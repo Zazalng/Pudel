@@ -43,8 +43,8 @@ public class GuildManager implements Manager {
     }
 
     @Override
-    public GuildManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     @Override

@@ -1,15 +1,31 @@
 package mimikko.zazalng.pudel.commands.settings;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class GuildPrefix extends AbstractCommand {
     @Override
-    public GuildPrefix execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         initialState(session, args);
-        return this;
+    }
+
+    /**
+     * @param interaction
+     * @return
+     */
+    @Override
+    public void execute(InteractionEntity interaction) {
+    }
+
+    @Override
+    public String getDescription(SessionEntity session) {
+        return localize(session, "guild.prefix.help");
+    }
+
+    @Override
+    public String getDetailedHelp(SessionEntity session) {
+        return localize(session, "guild.prefix.details");
     }
 
     public GuildPrefix initialState(SessionEntity session, String args) {
@@ -28,24 +44,5 @@ public class GuildPrefix extends AbstractCommand {
         super.terminate(session);
 
         return this;
-    }
-
-    /**
-     * @param interaction
-     * @return
-     */
-    @Override
-    public GuildPrefix execute(InteractionEntity interaction) {
-        return this;
-    }
-
-    @Override
-    public String getDescription(SessionEntity session) {
-        return localize(session, "guild.prefix.help");
-    }
-
-    @Override
-    public String getDetailedHelp(SessionEntity session) {
-        return localize(session, "guild.prefix.details");
     }
 }

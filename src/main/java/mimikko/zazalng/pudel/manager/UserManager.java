@@ -54,8 +54,8 @@ public class UserManager implements Manager {
     }
 
     @Override
-    public UserManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.commands;
 
 import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import java.util.HashMap;
@@ -11,20 +10,17 @@ public abstract class AbstractCommand implements Command{
     protected Map<String, String> localizationArgs = new HashMap<>();
 
     @Override
-    public <T extends Command> T execute(InteractionEntity interaction){
-        return (T) this;
-    }
-
-    @Override
-    public <T extends Command> T reload(SessionEntity session){
+    public void reload(SessionEntity session){
         terminate(session);
-        return (T) this;
     }
 
     @Override
-    public <T extends Command> T terminate(SessionEntity session){
+    public void terminate(SessionEntity session){
         session.getPudelWorld().getSessionManager().sessionEnd(session);
-        return (T) this;
+    }
+
+    public void terminate(InteractionEntity interaction){
+        interaction.getPudelWorld().getInteractionManager().unregisterInteraction(interaction);
     }
 
     protected String localize(SessionEntity session, String key, Map<String, String> args) {

@@ -4,7 +4,7 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
-import mimikko.zazalng.pudel.commands.utility.UtilityInvite;
+import mimikko.zazalng.pudel.commands.utility.*;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
@@ -33,6 +33,7 @@ public class CommandManager implements Manager {
                 .loadCommand("language", GuildLanguage::new)
                 .loadCommand("prefix", GuildPrefix::new)
                 // Utility category commands
+                .loadCommand("emoji", DevEmojiUnicode::new)
                 .loadCommand("invite", UtilityInvite::new);
     }
 
@@ -137,8 +138,8 @@ public class CommandManager implements Manager {
     }
 
     @Override
-    public CommandManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     @Override

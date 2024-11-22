@@ -5,6 +5,7 @@ import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.manager.InteractionManager;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -76,13 +77,13 @@ public class InteractionEntity {
         return isAuthorizedUser(e.getUser());
     }
 
-    public InteractionEntity startTimeout(Duration duration) {
+    private InteractionEntity startTimeout(Duration duration) {
         this.timeoutTask = Executors.newScheduledThreadPool(1)
                 .schedule(this::terminate, duration.toMillis(), TimeUnit.MILLISECONDS);
         return this;
     }
 
-    public InteractionEntity resetTimeout() {
+    private InteractionEntity resetTimeout() {
         if (timeoutTask != null) {
             timeoutTask.cancel(false);
         }
@@ -90,7 +91,7 @@ public class InteractionEntity {
         return this;
     }
 
-    public void terminate() {
+    private void terminate() {
         this.interactionManager.unregisterInteraction(this);
     }
 
@@ -102,6 +103,10 @@ public class InteractionEntity {
     }
 
     public String getReact(){
-        return getReactAction().getName();
+        if(getReactAction().getType() == Emoji.Type.UNICODE){
+            return getReactAction().asUnicode().getAsCodepoints();
+        } else{
+            return getReactAction().getName();
+        }
     }
 }

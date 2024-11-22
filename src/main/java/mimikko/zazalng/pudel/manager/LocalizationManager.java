@@ -116,8 +116,8 @@ public class LocalizationManager implements Manager{
     }
 
     @Override
-    public LocalizationManager reload() {
-        return this;
+    public void reload() {
+
     }
 
     @Override

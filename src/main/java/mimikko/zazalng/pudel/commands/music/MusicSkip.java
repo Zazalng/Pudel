@@ -1,15 +1,13 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class MusicSkip extends AbstractCommand {
     @Override
-    public MusicSkip execute(SessionEntity session, String args) {
+    public void execute(SessionEntity session, String args) {
         initialState(session, args);
-        return this;
     }
 
     /**
@@ -17,8 +15,7 @@ public class MusicSkip extends AbstractCommand {
      * @return
      */
     @Override
-    public MusicSkip execute(InteractionEntity interaction) {
-        return this;
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override
