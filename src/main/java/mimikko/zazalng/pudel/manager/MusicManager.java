@@ -13,6 +13,7 @@ import dev.lavalink.youtube.clients.*;
 import dev.lavalink.youtube.clients.skeleton.Client;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.handlers.MusicResultHandler;
@@ -65,6 +66,10 @@ public class MusicManager implements Manager {
 
     public MusicPlayerEntity getMusicPlayer(SessionEntity session){
         return this.playerList.computeIfAbsent(session.getGuild(), player -> new MusicPlayerEntity(this));
+    }
+
+    public MusicPlayerEntity getMusicPlayer(InteractionEntity interaction){
+        return this.playerList.computeIfAbsent(getPudelWorld().getGuildManager().getGuildEntity(interaction.getMessage().getGuild()), player -> new MusicPlayerEntity(this));
     }
 
     private AudioPlayerSendHandler getAudioPlayer(MusicPlayerEntity e){
@@ -126,10 +131,15 @@ public class MusicManager implements Manager {
 
     public MusicManager loadAndPlay(SessionEntity session, MusicResultHandler result){
         if(result.getType() == MusicResultHandler.Type.TRACK){
-            queueUp(session,result.getTrack()).nextTrack(session,false);
+            queueUp(getMusicPlayer(session),result.getTrack()).nextTrack(session,false);
         }else{
-            queueUp(session,result.getPlaylist().getTracks()).nextTrack(session,false);
+            queueUp(getMusicPlayer(session),result.getPlaylist().getTracks()).nextTrack(session,false);
         }
+        return this;
+    }
+
+    public MusicManager loadAndPlay(InteractionEntity interaction, Object track){
+        queueUp(getMusicPlayer(interaction),castAudioTrack(track)).nextTrack(interaction, false);
         return this;
     }
 
@@ -197,19 +207,25 @@ public class MusicManager implements Manager {
         return getPlayer(e).getPlayingTrack();
     }
 
-    private MusicManager queueUp(SessionEntity session, AudioTrack track) {
-        getMusicPlayer(session).getActivePlaylist().add(track);
+    private MusicManager queueUp(MusicPlayerEntity entity, AudioTrack track) {
+        entity.getActivePlaylist().add(track);
         return this;
     }
 
-    private MusicManager queueUp(SessionEntity session, List<AudioTrack> playlist) {
-        getMusicPlayer(session).getActivePlaylist().addAll(playlist);
+    private MusicManager queueUp(MusicPlayerEntity entity, List<AudioTrack> playlist) {
+        entity.getActivePlaylist().addAll(playlist);
         return this;
     }
 
     public MusicManager nextTrack(SessionEntity session, boolean isSkip){
         session.getPudelWorld().getPudelManager().openVoiceConnection(session,getAudioPlayer(getMusicPlayer(session)));
         nextTrack(getMusicPlayer(session),isSkip);
+        return this;
+    }
+
+    public MusicManager nextTrack(InteractionEntity interaction, boolean isSkip){
+        interaction.getPudelWorld().getPudelManager().openVoiceConnection(interaction,getAudioPlayer(getMusicPlayer(interaction)));
+        nextTrack(getMusicPlayer(interaction),isSkip);
         return this;
     }
 

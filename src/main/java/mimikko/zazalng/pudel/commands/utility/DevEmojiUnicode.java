@@ -56,9 +56,9 @@ public class DevEmojiUnicode extends AbstractCommand {
     }
 
     private DevEmojiUnicode initialState(InteractionEntity interaction) {
-        System.out.println(interaction.getReact().substring(1));
+        System.out.println(interaction.getReact());
         interaction.getMessage().editMessageEmbeds(interaction.getPudelWorld().getEmbedManager().castEmbedBuilder(interaction.getMessage().getEmbeds().getFirst())
-                .setDescription(stringFormat("`%s`",interaction.getReact().substring(2)))
+                .setDescription(stringFormat("`%s`",interaction.getReact()))
                 .build()).queue();
         return this;
     }

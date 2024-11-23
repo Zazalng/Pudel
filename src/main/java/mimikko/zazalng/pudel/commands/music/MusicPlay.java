@@ -7,9 +7,9 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 import java.util.List;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
-import static mimikko.zazalng.pudel.utility.ListUtility.*;
 
 public class MusicPlay extends AbstractCommand{
+    private List topTracks;
     private state state;
     private enum state {
         SEARCHING
@@ -29,6 +29,13 @@ public class MusicPlay extends AbstractCommand{
     }
     @Override
     public void execute(InteractionEntity interaction) {
+        switch (getState()) {
+            case SEARCHING:
+                handleSearchingState(interaction);
+                break;
+            case null:
+                break;
+        }
     }
 
     // Description and detailed help methods
@@ -100,7 +107,7 @@ public class MusicPlay extends AbstractCommand{
         session.getPudelWorld().getMusicManager().loadAndPlay(session, url).thenAccept(result ->{
             switch (result.getType()) {
                 case SEARCH:
-                    List topTracks = (List) session.addData("music.play.searching.top5",result.getTopTracks()).getData("music.play.searching.top5",false);
+                    topTracks = result.getTopTracks();
                     StringBuilder searchResults = new StringBuilder();
                     for (int i = 0; i < topTracks.size(); i++) {
                         searchResults.append(String.format("[%d. %s](%s)\n",i+1,session.getPudelWorld().getMusicManager().getTrackFormat(topTracks.get(i)),session.getPudelWorld().getMusicManager().getTrackUrl(topTracks.get(i))));
@@ -113,15 +120,16 @@ public class MusicPlay extends AbstractCommand{
                                     .setThumbnail("https://puu.sh/KgdPy.gif")
                                     .setDescription(searchResults.toString())
                                     .build()
-                    ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session,10).getPudelWorld().getPudelManager()
-                            .addRection(e,"U+0031")
-                            .addRection(e,"U+0032")
-                            .addRection(e,"U+0033")
-                            .addRection(e,"U+0034")
-                            .addRection(e,"U+0035")
+                    ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session, 15).getPudelWorld().getPudelManager()
+                            .addRection(e,"U+31U+fe0fU+20e3")
+                            .addRection(e,"U+32U+fe0fU+20e3")
+                            .addRection(e,"U+33U+fe0fU+20e3")
+                            .addRection(e,"U+34U+fe0fU+20e3")
+                            .addRection(e,"U+35U+fe0fU+20e3")
                             .addRection(e,"U+1F528"));
 
                     setState(state.SEARCHING);
+                    super.terminate(session);
                     break;
                 case TRACK:
                     session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
@@ -161,13 +169,17 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
+    private MusicPlay queueTrack(InteractionEntity interaction, int index){
+        interaction.getPudelWorld().getMusicManager().loadAndPlay(interaction, topTracks.get(index));
+        return this;
+    }
+
     // Handle searching state
     private MusicPlay handleSearchingState(SessionEntity session, String args) {
         if (isNumeric(args)) {
             int index = Integer.parseInt(args) - 1;
             try {
-                String trackUrl = session.getPudelWorld().getMusicManager().getTrackUrl(getListObject(session.getData("music.play.searching.top5", true), index));
-                queueTrack(session, trackUrl);
+                queueTrack(session, session.getPudelWorld().getMusicManager().getTrackUrl(topTracks.get(index)));
             } catch (IndexOutOfBoundsException e) {
                 super.terminate(session);
             }
@@ -177,6 +189,17 @@ public class MusicPlay extends AbstractCommand{
 
         return this;
     }
+
+    private MusicPlay handleSearchingState(InteractionEntity interaction) {
+        String react = interaction.getReact();
+        if (react.startsWith("U+3") && react.endsWith("U+20e3")) {
+            int index = Character.getNumericValue(react.charAt(3)) - 1;
+            queueTrack(interaction, index);
+        }
+        interaction.getPudelWorld().getInteractionManager().unregisterInteraction(interaction);
+        return this;
+    }
+
 
     // Send no track currently playing message
     private MusicPlay sendNoTrackMessage(SessionEntity session) {

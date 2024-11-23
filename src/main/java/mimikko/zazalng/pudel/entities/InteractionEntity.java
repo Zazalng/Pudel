@@ -47,7 +47,7 @@ public class InteractionEntity {
         return this.message;
     }
 
-    private UserEntity getInteractor() {
+    public UserEntity getInteractor() {
         return this.interactor;
     }
 
@@ -98,6 +98,8 @@ public class InteractionEntity {
     public InteractionEntity execute(MessageReactionAddEvent e){
         if(isAuthorizedUser(e)){
             resetTimeout().setReactAction(e).getCommand().execute(this);
+        } else{
+            e.retrieveMessage().complete().removeReaction(e.getEmoji(),e.getUser());
         }
         return this;
     }
@@ -106,7 +108,7 @@ public class InteractionEntity {
         if(getReactAction().getType() == Emoji.Type.UNICODE){
             return getReactAction().asUnicode().getAsCodepoints();
         } else{
-            return getReactAction().getName();
+            return getReactAction().asCustom().getFormatted();
         }
     }
 }
