@@ -24,35 +24,30 @@ public class UserEntity {
         return JDAuser;
     }
 
-    public String getNickname(GuildEntity guild) {
-        if(guild.getJDA().getMember(JDAuser).getNickname()!=null){
-            return guild.getJDA().getMember(JDAuser).getNickname();
-        } else{
-            return JDAuser.getName();
-        }
-    }
-
     public long getRoyalty() {
         return royalty;
     }
 
-    public void setRoyalty(long royalty) {
+    public UserEntity setRoyalty(long royalty) {
         this.royalty = royalty;
+        return this;
     }
 
     public long getDiamond() {
         return diamond;
     }
 
-    public void setDiamond(long diamond) {
+    public UserEntity setDiamond(long diamond) {
         this.diamond = diamond;
+        return this;
     }
 
     public int getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public UserEntity setLevel(int level) {
         this.level = level;
+        return this;
     }
 }

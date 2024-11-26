@@ -1,38 +1,21 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MusicSkip extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
     }
 
+    /**
+     * @param interaction
+     * @return
+     */
     @Override
-    protected void initialState(SessionEntity session, String args){
-        session.getGuild().getMusicPlayer().nextTrack(true);
-
-        Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
-        localizationArgs.put("args", args);
-
-        if(args.isEmpty()){
-            args = localize(session, "music.skip.init", localizationArgs);
-        } else{
-            args = localize(session, "music.skip.init.reason", localizationArgs);
-        }
-        session.getChannel().sendMessage(args).queue();
-
-        session.setState("END");
-    }
-
-    @Override
-    public void reload() {
-
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override
@@ -43,5 +26,36 @@ public class MusicSkip extends AbstractCommand {
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return localize(session, "music.skip.details");
+    }
+
+    private MusicSkip initialState(SessionEntity session, String args){
+        session.getPudelWorld().getMusicManager().nextTrack(session,true);
+        if(args.isEmpty()){
+            replyBack(session);
+        } else{
+            replyBack(session,args);
+        }
+
+        super.terminate(session);
+        return this;
+    }
+
+    private MusicSkip replyBack(SessionEntity session){
+        session.getChannel().sendMessageEmbeds(
+                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                        .setTitle("music.skip.title").build()
+        ).queue();
+
+        return this;
+    }
+
+    private MusicSkip replyBack(SessionEntity session, String args){
+        session.getChannel().sendMessageEmbeds(
+                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                        .setTitle("music.skip.title.reason")
+                        .setDescription(String.format("`%s`",args)).build()
+        ).queue();
+
+        return this;
     }
 }

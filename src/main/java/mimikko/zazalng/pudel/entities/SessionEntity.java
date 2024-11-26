@@ -4,45 +4,46 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.manager.SessionManager;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SessionEntity {
+public class SessionEntity{
     protected final SessionManager sessionManager;
     private final UserEntity user;
     private final GuildEntity guild;
     private final MessageChannelUnion channel;
+    private final List<MessageReceivedEvent> sessionCollector = new ArrayList<>();
+    private final Map<String, Object> objectCollector = new HashMap<>();
     private Command command;
-    private final Map<String, String> promptCollection = new HashMap<>();
-    private String sessionState;
+    private MessageReceivedEvent event;
 
     public SessionEntity(SessionManager sessionManager, UserEntity user, GuildEntity guild, MessageChannelUnion channelIssue) {
         this.sessionManager = sessionManager;
         this.user = user;
         this.guild = guild;
         this.channel = channelIssue;
-        this.sessionState = "INIT";
     }
 
-    public void setState(String sessionState) {
-        this.sessionState = sessionState;
+    public List<MessageReceivedEvent> getSessionCollector() {
+        return sessionCollector;
     }
 
-    public String getState() {
-        return this.sessionState;
+    public SessionEntity addData(String key, Object value) {
+        objectCollector.put(key, value);
+        return this;
     }
 
-    public void addData(String sessionState, String value) {
-        promptCollection.put(sessionState, value);
+    public Object getData(String key, boolean delObject) {
+        return delObject ? objectCollector.remove(key) : objectCollector.get(key);
     }
 
-    public Object getData(String sessionState) {
-        return promptCollection.get(sessionState);
-    }
-
-    public void setCommand(Command command){
+    public SessionEntity setCommand(Command command){
         this.command = command;
+        return this;
     }
 
     public Command getCommand(){
@@ -65,7 +66,20 @@ public class SessionEntity {
         return channel;
     }
 
-    public void execute(String args){
-        command.execute(this,args);
+    public SessionEntity execute(String args){
+        getCommand().execute(this,args);
+        return this;
+    }
+
+    public MessageReceivedEvent lastEvent() {
+        return this.event;
+    }
+
+    public SessionEntity setEvent(MessageReceivedEvent e) {
+        if (this.event != null) {
+            this.sessionCollector.add(lastEvent());
+        }
+        this.event = e;
+        return this;
     }
 }

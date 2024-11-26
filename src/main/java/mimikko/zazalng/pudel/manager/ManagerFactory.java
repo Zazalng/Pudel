@@ -11,18 +11,21 @@ public class ManagerFactory {
 
     public ManagerFactory(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
-        managers.put("commandManager", new CommandManager(pudelWorld));
-        managers.put("guildManager", new GuildManager(pudelWorld));
-        managers.put("localizationManager", new LocalizationManager(pudelWorld));
-        managers.put("musicManager", new MusicManager(pudelWorld));
-        managers.put("pudelManager", new PudelManager(pudelWorld));
-        managers.put("sessionManager", new SessionManager(pudelWorld));
-        managers.put("userManager", new UserManager(pudelWorld));
+        loadManager("commandManager", new CommandManager(pudelWorld))
+            .loadManager("embedManager", new EmbedManager(pudelWorld))
+            .loadManager("guildManager", new GuildManager(pudelWorld))
+            .loadManager("interactionManager", new InteractionManager(pudelWorld))
+            .loadManager("localizationManager", new LocalizationManager(pudelWorld))
+            .loadManager("musicManager", new MusicManager(pudelWorld))
+            .loadManager("pudelManager", new PudelManager(pudelWorld))
+            .loadManager("sessionManager", new SessionManager(pudelWorld))
+            .loadManager("userManager", new UserManager(pudelWorld))
+        ;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends Manager> T getManager(String key, Class<T> managerClass) {
-        Manager manager = managers.get(key);
+        Manager manager = this.managers.get(key);
         if (managerClass.isInstance(manager)) {
             return (T) manager;
         } else {
@@ -30,14 +33,22 @@ public class ManagerFactory {
         }
     }
 
-    public void reloadManager(String managerName) {
-        Manager manager = managers.get(managerName);
+    public ManagerFactory loadManager(String name, Manager manager){
+        this.managers.put(name, manager);
+        return this;
+    }
+
+    public ManagerFactory reloadManager(String managerName) {
+        Manager manager = this.managers.get(managerName);
         if (manager != null) {
             manager.reload();
         }
+        return this;
     }
 
-    public void shutdownAllManagers() {
-        managers.values().forEach(Manager::shutdown);
+    public ManagerFactory shutdownAllManagers() {
+        this.managers.values().forEach(Manager::shutdown);
+        this.managers.clear();
+        return this;
     }
 }

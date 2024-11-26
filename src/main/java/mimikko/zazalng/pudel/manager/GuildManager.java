@@ -4,7 +4,9 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import net.dv8tion.jda.api.entities.Guild;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GuildManager implements Manager {
@@ -20,10 +22,15 @@ public class GuildManager implements Manager {
         return this.guildEntity.computeIfAbsent(JDAguild.getId(), Entity -> new GuildEntity(this,JDAguild));
     }
 
-    public void fetchGuildEntity(){
+    public List<GuildEntity> getGuildEntity(){
+        return new ArrayList<>(this.guildEntity.values());
+    }
+
+    public GuildManager fetchGuildEntity(){
         StringBuilder helpMessage = new StringBuilder("Loaded Guild Entity: "+guildEntity.size()+"\n");
         guildEntity.forEach((id, guild) -> helpMessage.append(id).append(" - ").append(guild.getJDA().getName()).append("\n"));
         System.out.println(helpMessage);
+        return this;
     }
     @Override
     public PudelWorld getPudelWorld(){
@@ -31,8 +38,8 @@ public class GuildManager implements Manager {
     }
 
     @Override
-    public void initialize() {
-
+    public GuildManager initialize() {
+        return this;
     }
 
     @Override

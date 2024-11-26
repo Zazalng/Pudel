@@ -1,33 +1,21 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MusicStop extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
     }
 
+    /**
+     * @param interaction
+     * @return
+     */
     @Override
-    protected void initialState(SessionEntity session, String args){
-        Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
-
-        args = localize(session,"music.stop.init",localizationArgs);
-
-        session.getGuild().getMusicPlayer().stop();
-        session.getPudelWorld().getPudelManager().CloseVoiceConnection(session.getGuild());
-        session.getChannel().sendMessage(args).queue();
-        session.setState("END");
-    }
-
-    @Override
-    public void reload() {
-
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override
@@ -38,5 +26,15 @@ public class MusicStop extends AbstractCommand {
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return localize(session,"music.stop.details");
+    }
+
+    private MusicStop initialState(SessionEntity session, String args){
+        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
+
+        args = localize(session,"music.stop.init",localizationArgs);
+        //https://puu.sh/KgAxn.gif
+        session.getPudelWorld().getMusicManager().stopPlayer(session);
+        terminate(session);
+        return this;
     }
 }

@@ -9,10 +9,6 @@ import java.util.Properties;
 public class EnvironmentHandler {
     protected final PudelWorld pudelWorld;
     private final Properties env;
-    private String discordAPI;
-    private String devServerID;
-    private String worldName;
-    private String botName;
     private boolean isLoaded;
 
     public EnvironmentHandler(PudelWorld pudelWorld){
@@ -21,82 +17,60 @@ public class EnvironmentHandler {
         this.isLoaded = false;
     }
 
-    public void loadEnv(String filepath){
-        String methodName = "loadEnv";
+    public EnvironmentHandler loadEnv(String filepath){
+        if(!isLoaded()){
+            System.out.println("Getting filepath: \"" + filepath + "\"");
+            try (FileInputStream fileInputStream = new FileInputStream(filepath)) {
+                this.env.load(fileInputStream);
+                this.pudelWorld.getLocalizationManager().loadLanguages();
+                setLoaded(true);
+            } catch (IOException e) {
 
-        if(isLoaded()){
-            return;
+            }
         }
-
-        System.out.println("Getting filepath: \""+filepath+"\"");
-        try(FileInputStream fileInputStream = new FileInputStream(filepath)){
-            this.env.load(fileInputStream);
-            assignEnvironment();
-        }catch(IOException e){
-
-        }
+        return this;
     }
 
-    public void assignEnvironment(){
-        String methodName = "assignEnvironment";
-        //discord.api.key
-        setDiscordAPI(this.env.getProperty("discord.api.key"));
-        //discord.dev.guildID
-        setDevServerID(this.env.getProperty("discord.dev.guildID"));
-        //world.name
-        setWorldName(this.env.getProperty("world.name"));
-        //bot.name
-        setBotName(this.env.getProperty("bot.name"));
-        setLoaded(true);
-    }
-
-    public void unloadEnv(){
-        String methodName = "unloadEnv";
+    public EnvironmentHandler unloadEnv(){
         this.env.clear();
-        setDiscordAPI(null);
-        setDevServerID(null);
-        setWorldName(null);
-        setBotName(null);
         setLoaded(false);
+        return this;
     }
 
     public String getDiscordAPI() {
-        return discordAPI;
-    }
-
-    public void setDiscordAPI(String discordAPI) {
-        this.discordAPI = discordAPI;
+        return this.env.getProperty("discord.api.key");
     }
 
     public String getDevServerID() {
-        return devServerID;
+        return this.env.getProperty("discord.dev.guildID");
     }
 
-    public void setDevServerID(String devServerID) {
-        this.devServerID = devServerID;
+    public String getDevUserID(){
+        return this.env.getProperty("discord.dev.userID");
+    }
+
+    public String getInviteURL(){
+        return this.env.getProperty("discord.bot.invite");
     }
 
     public String getWorldName() {
-        return worldName;
+        return this.env.getProperty("world.name");
     }
 
-    public void setWorldName(String worldName) {
-        this.worldName = worldName;
+    public String getWorldLocalization(){
+        return this.env.getProperty("pudel.language");
     }
 
-    public String getBotName() {
-        return botName;
-    }
-
-    public void setBotName(String botName) {
-        this.botName = botName;
+    public String getWorldSecret(){
+        return this.env.getProperty("pudel.secret.reply");
     }
 
     public boolean isLoaded() {
-        return isLoaded;
+        return this.isLoaded;
     }
 
-    public void setLoaded(boolean flag) {
-        isLoaded = flag;
+    public EnvironmentHandler setLoaded(boolean flag) {
+        this.isLoaded = flag;
+        return this;
     }
 }

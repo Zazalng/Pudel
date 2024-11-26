@@ -8,14 +8,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 
 public class AudioTrackHandler extends AudioEventAdapter {
-    protected MusicPlayerEntity playerManager;
+    protected MusicPlayerEntity player;
 
-    public AudioTrackHandler(MusicPlayerEntity playerManager) {
-        this.playerManager = playerManager;
+    public AudioTrackHandler(MusicPlayerEntity player) {
+        this.player = player;
     }
 
-    public MusicPlayerEntity getMusicManager(){
-        return this.playerManager;
+    public MusicPlayerEntity getMusicEntity(){
+        return this.player;
     }
 
     @Override
@@ -31,14 +31,25 @@ public class AudioTrackHandler extends AudioEventAdapter {
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         // A track started playing
+        getMusicEntity().getActivePlaylist().remove(track);
+        getMusicEntity().getHistoryPlaylist().addFirst(track);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (endReason.mayStartNext) {
+        if (endReason == AudioTrackEndReason.FINISHED) {
             // Start next track
-            getMusicManager().nextTrack(false);
+            if(getMusicEntity().isLoop()){
+                getMusicEntity().getMusicManager().nextTrack(getMusicEntity(), track.makeClone());
+            } else{
+                getMusicEntity().getMusicManager().nextTrack(getMusicEntity(),false);
+            }
         } else if(endReason == AudioTrackEndReason.STOPPED){
+
+        } else if(endReason == AudioTrackEndReason.REPLACED){
+            player.stopTrack();
+            getMusicEntity().getMusicManager().nextTrack(getMusicEntity(),false);
+        } else if(endReason == AudioTrackEndReason.CLEANUP){
 
         }
 
@@ -52,7 +63,9 @@ public class AudioTrackHandler extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        // An already playing track threw an exception (track end event will still be received separately)
+        if(exception.getMessage().equals("Please sign in")){
+            player.playTrack(track.makeClone());
+        }
     }
 
     @Override

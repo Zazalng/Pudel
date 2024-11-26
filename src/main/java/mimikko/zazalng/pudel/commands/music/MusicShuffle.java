@@ -1,48 +1,23 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
 public class MusicShuffle extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
-        super.execute(session, args);
+        initialState(session, args);
     }
 
+    /**
+     * @param interaction
+     * @return
+     */
     @Override
-    protected void initialState(SessionEntity session, String args) {
-        Map<String, String> localizationArgs = new HashMap<>();
-        localizationArgs.put("username", session.getUser().getNickname(session.getGuild()));
-        localizationArgs.put("args", args);
-
-        if(triggerTrue(args)){
-            session.getGuild().getMusicPlayer().setShuffle(true);
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
-            args = localize(session,"music.shuffle.init.set",localizationArgs);
-        } else if(triggerFalse(args)){
-            session.getGuild().getMusicPlayer().setShuffle(false);
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
-            args = localize(session,"music.shuffle.init.set",localizationArgs);
-        } else if(args.isEmpty()){
-            localizationArgs.put("player.shuffle", session.getPudelWorld().getLocalizationManager().getBooleanText(session.getGuild(),session.getGuild().getMusicPlayer().isShuffle()));
-            args = localize(session,"music.shuffle.init.display",localizationArgs);
-        } else{
-            session.getGuild().getMusicPlayer().shufflePlaylist();
-            args = localize(session,"music.shuffle.init.seed",localizationArgs);
-        }
-        session.getChannel().sendMessage(args).queue();
-
-        session.setState("END");
-    }
-
-    @Override
-    public void reload() {
-
+    public void execute(InteractionEntity interaction) {
     }
 
     @Override
@@ -53,5 +28,48 @@ public class MusicShuffle extends AbstractCommand {
     @Override
     public String getDetailedHelp(SessionEntity session) {
         return localize(session, "music.shuffle.details");
+    }
+
+    private MusicShuffle toggleValue(SessionEntity session, boolean flag){
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.shuffle.title"))
+                .addField(localize(session,"old.value"), localize(session,session.getPudelWorld().getMusicManager().getMusicPlayer(session).isShuffle()),false)
+                .addField(localize(session,"new.value"), localize(session,session.getPudelWorld().getMusicManager().getMusicPlayer(session).setShuffle(flag).isShuffle()),false)
+                .build()).queue();
+        return this;
+    }
+
+    private MusicShuffle showCurrent(SessionEntity session){
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.shuffle.title"))
+                .addField(localize(session,"current.value"), localize(session,session.getPudelWorld().getMusicManager().getMusicPlayer(session).isShuffle()),false)
+                .build()).queue();
+        return this;
+    }
+
+    private MusicShuffle seedShuffle(SessionEntity session, String args){
+        session.getPudelWorld().getMusicManager().getMusicPlayer(session).shufflePlaylist();
+        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+                .setTitle(localize(session,"music.shuffle.seed"))
+                .addField(null, String.format("`%s`",args),false)
+                .build()).queue();
+        return this;
+    }
+
+    private MusicShuffle initialState(SessionEntity session, String args) {
+        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
+        localizationArgs.put("args", args);
+
+        if(toggleLogic(args,true)){
+            toggleValue(session,true);
+        } else if(toggleLogic(args,false)){
+            toggleValue(session,false);
+        } else if(args.isEmpty()){
+            showCurrent(session);
+        } else{
+            seedShuffle(session,args);
+        }
+        super.terminate(session);
+        return this;
     }
 }

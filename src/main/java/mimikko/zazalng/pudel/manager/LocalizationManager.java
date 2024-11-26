@@ -3,7 +3,7 @@ package mimikko.zazalng.pudel.manager;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.GuildEntity;
+import mimikko.zazalng.pudel.entities.SessionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,29 +22,25 @@ public class LocalizationManager implements Manager{
     public LocalizationManager(PudelWorld pudelWorld) {
         this.pudelWorld = pudelWorld;
         this.languageFiles = new HashMap<>();
-        loadAllLanguages();
     }
 
-    public void loadAllLanguages() {
-        loadCSVLanguageFile("localization.csv"); // Assuming you download the CSV manually to this location
+    public LocalizationManager loadLanguages() {
+        loadCSVLanguageFile(this.pudelWorld.getEnvironment().getWorldLocalization()); // Assuming you download the CSV manually to this location
+        return this;
     }
 
-    public void reloadLanguage(String languageCode) {
-        loadAllLanguages();
-    }
-
-    public String getLocalizedText(String key, String languageCode, Map<String, String> args) {
+    public String getLocalizedText(SessionEntity session, String key, Map<String, String> args) {
         // Check if the language code exists
-        Properties properties = languageFiles.get(languageCode);
+        Properties properties = languageFiles.get(session.getGuild().getLanguageCode());
         if (properties == null) {
-            logger.error("No properties found for language: {}", languageCode);
+            logger.error("No properties found for language: {}", session.getGuild().getLanguageCode());
             return key; // Fallback to the key if the language is missing
         }
 
         // Check if the key exists in the language file
         String text = properties.getProperty(key);
         if (text == null) {
-            logger.error("Key '{}' not found for language: {}", key, languageCode);
+            logger.error("Key '{}' not found for language: {}", key, session.getGuild().getLanguageCode());
             return key; // Fallback to the key if the translation is missing
         } else if(text.isEmpty()){
             properties = languageFiles.get("ENG");
@@ -61,8 +57,8 @@ public class LocalizationManager implements Manager{
         return text;
     }
 
-    public void loadCSVLanguageFile(String fileName) {
-        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
+    public LocalizationManager loadCSVLanguageFile(String filePath) {
+        try (CSVReader reader = new CSVReader(new FileReader(Paths.get(filePath).toFile()))) {
             List<String[]> rows = reader.readAll();
             String[] headers = rows.get(0); // First line with language codes
             Map<String, Map<String, String>> tempLanguageMap = new HashMap<>();
@@ -94,17 +90,18 @@ public class LocalizationManager implements Manager{
         } catch (IOException | CsvException e) {
             logger.error("Failed to load CSV file", e);
         }
+        return this;
     }
 
-    public String getLanguageName(GuildEntity guild){
-        return getLocalizedText("lang.name",guild.getLanguageCode(),null);
+    public String getLanguageName(SessionEntity session){
+        return getLocalizedText(session,"lang.name",null);
     }
 
-    public String getBooleanText(GuildEntity guild, boolean flag){
+    public String getBooleanText(SessionEntity session, boolean flag){
         if(flag){
-            return getLocalizedText("boolean.enable",guild.getLanguageCode(),null);
+            return getLocalizedText(session, "boolean.enable", null);
         } else{
-            return getLocalizedText("boolean.disable",guild.getLanguageCode(),null);
+            return getLocalizedText(session, "boolean.disable", null);
         }
     }
 
@@ -114,17 +111,17 @@ public class LocalizationManager implements Manager{
     }
 
     @Override
-    public void initialize() {
-        // Optional: initialization logic
+    public LocalizationManager initialize() {
+        return this;
     }
 
     @Override
     public void reload() {
-        loadAllLanguages(); // Reload all language files
+
     }
 
     @Override
     public void shutdown() {
-        // Optional: shutdown logic
+
     }
 }
