@@ -102,7 +102,8 @@ public class MusicManager implements Manager {
             public void playlistLoaded(AudioPlaylist playlist) {
                 if (playlist.isSearchResult()) {
                     result.setTopTracks(playlist.getTracks().subList(0, Math.min(5, playlist.getTracks().size())))
-                            .setType(MusicResultHandler.Type.SEARCH);
+                            .getTopTracks().forEach(track -> track.setUserData(session.getUser()));
+                    result.setType(MusicResultHandler.Type.SEARCH);
                 } else {
                     playlist.getTracks().forEach(track -> track.setUserData(session.getUser()));
                     result.setPlaylist(playlist)

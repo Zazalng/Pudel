@@ -195,6 +195,8 @@ public class MusicPlay extends AbstractCommand{
         if (react.startsWith("U+3") && react.endsWith("U+20e3")) {
             int index = Character.getNumericValue(react.charAt(3)) - 1;
             queueTrack(interaction, index);
+        } else{
+            interaction.getMessage().delete().queue();
         }
         interaction.getPudelWorld().getInteractionManager().unregisterInteraction(interaction);
         return this;

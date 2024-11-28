@@ -45,7 +45,7 @@ public class CommandLineHandler implements Runnable{
                 logger.info("Starting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
                 pudelWorld.buildShard(pudelWorld.getEnvironment().getDiscordAPI())
                         .setWorldStatus(true)
-                        .getJDAshardManager().setActivity(Activity.streaming("Pudel V2 (Dev. Build)","https://github.com/Zazalng/Pudel"))
+                        .getJDAshardManager().setActivity(Activity.streaming("Pudel V2 (Stable. Build)","https://github.com/Zazalng/Pudel"))
                 ;
             } else{
                 logger.warn("`{}` world is still running.",pudelWorld.getEnvironment().getWorldName());
