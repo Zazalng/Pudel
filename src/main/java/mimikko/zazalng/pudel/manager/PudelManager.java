@@ -34,8 +34,10 @@ public class PudelManager implements Manager {
         return this;
     }
 
-    public PudelManager addRection(Message msg, String unicode){
-        msg.addReaction(Emoji.fromFormatted(unicode)).queue();
+    public PudelManager addRection(Message msg, String... unicodes) {
+        for (String unicode : unicodes) {
+            msg.addReaction(Emoji.fromFormatted(unicode)).queue();
+        }
         return this;
     }
 

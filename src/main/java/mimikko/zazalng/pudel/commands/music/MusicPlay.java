@@ -121,12 +121,13 @@ public class MusicPlay extends AbstractCommand{
                                     .setDescription(searchResults.toString())
                                     .build()
                     ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session, 15).getPudelWorld().getPudelManager()
-                            .addRection(e,"U+31U+fe0fU+20e3")
-                            .addRection(e,"U+32U+fe0fU+20e3")
-                            .addRection(e,"U+33U+fe0fU+20e3")
-                            .addRection(e,"U+34U+fe0fU+20e3")
-                            .addRection(e,"U+35U+fe0fU+20e3")
-                            .addRection(e,"U+1F528"));
+                            .addRection(e,
+                                    "U+31U+fe0fU+20e3",
+                                    "U+32U+fe0fU+20e3",
+                                    "U+33U+fe0fU+20e3",
+                                    "U+34U+fe0fU+20e3",
+                                    "U+35U+fe0fU+20e3",
+                                    "U+1F528"));
 
                     setState(state.SEARCHING);
                     super.terminate(session);
@@ -186,7 +187,6 @@ public class MusicPlay extends AbstractCommand{
         } else {
             super.terminate(session);
         }
-
         return this;
     }
 
@@ -234,10 +234,7 @@ public class MusicPlay extends AbstractCommand{
                                 session.getPudelWorld().getUserManager().castUserEntity(session.getPudelWorld().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
         ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session).getPudelWorld().getPudelManager()
-                .addRection(e,"U+23F9")//STOP
-                .addRection(e,"U+23ED")//SKIP
-                .addRection(e,"U+1F501")//LOOP
-                .addRection(e,"U+1F500"));//SHUFFLE
+                .addRection(e,"U+23F9","U+23ED","U+1F501","U+1F500"));//STOP,SKIP,LOOP,SHUFFLE
         return this;
     }
 
