@@ -122,12 +122,13 @@ public class MusicPlay extends AbstractCommand{
                                     .build()
                     ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session, 15).getPudelWorld().getPudelManager()
                             .addRection(e,
-                                    "U+31U+fe0fU+20e3",
-                                    "U+32U+fe0fU+20e3",
-                                    "U+33U+fe0fU+20e3",
-                                    "U+34U+fe0fU+20e3",
-                                    "U+35U+fe0fU+20e3",
-                                    "U+1F528"));
+                                    "U+31U+fe0fU+20e3",//1
+                                    "U+32U+fe0fU+20e3",//2
+                                    "U+33U+fe0fU+20e3",//3
+                                    "U+34U+fe0fU+20e3",//4
+                                    "U+35U+fe0fU+20e3",//5
+                                    "U+1F528")//hammer
+                    );
 
                     setState(state.SEARCHING);
                     super.terminate(session);

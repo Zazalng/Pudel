@@ -92,6 +92,7 @@ public class InteractionEntity {
     }
 
     private void terminate() {
+        getMessage().clearReactions().queue();
         this.interactionManager.unregisterInteraction(this);
     }
 
