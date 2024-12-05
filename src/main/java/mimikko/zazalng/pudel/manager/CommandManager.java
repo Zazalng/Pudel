@@ -47,6 +47,10 @@ public class CommandManager implements Manager {
         return this;
     }
 
+    public Command getCommand(String command){
+        return commandFactories.get(command.toLowerCase()).get();
+    }
+
     public CommandManager handleCommand(SessionEntity session, MessageReceivedEvent e) {
         String input = e.getMessage().getContentRaw();
         String prefix = session.getGuild().getPrefix();
@@ -115,10 +119,9 @@ public class CommandManager implements Manager {
     }
 
     private CommandManager executeCommand(SessionEntity session, MessageReceivedEvent e, String commandName, String input) {
-        Supplier<Command> commandFactory = commandFactories.get(commandName.toLowerCase());
-        if (commandFactory != null) {
+        Command command = getCommand(commandName);
+        if (command!=null) {
             // Create a new command instance for this session
-            Command command = commandFactory.get();
             session.setCommand(command).execute(input);
         } else {
             e.getChannel().sendMessage("Unknown command!").queue();

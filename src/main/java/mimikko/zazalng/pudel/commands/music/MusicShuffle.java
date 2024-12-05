@@ -18,6 +18,7 @@ public class MusicShuffle extends AbstractCommand {
      */
     @Override
     public void execute(InteractionEntity interaction) {
+        interaction.getPudelWorld().getMusicManager().getMusicPlayer(interaction).toggleShuffle();
     }
 
     @Override

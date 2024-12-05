@@ -12,7 +12,8 @@ public class MusicPlay extends AbstractCommand{
     private List topTracks;
     private state state;
     private enum state {
-        SEARCHING
+        SEARCHING,
+        PLAYER
     }
 
     // Entry point of the command execution
@@ -25,6 +26,9 @@ public class MusicPlay extends AbstractCommand{
             case null:
                 initialState(session, args);
                 break;
+            case PLAYER:
+                super.terminate(session);
+                break;
         }
     }
     @Override
@@ -32,6 +36,9 @@ public class MusicPlay extends AbstractCommand{
         switch (getState()) {
             case SEARCHING:
                 handleSearchingState(interaction);
+                break;
+            case PLAYER:
+                handlePlayerState(interaction);
                 break;
             case null:
                 break;
@@ -121,7 +128,7 @@ public class MusicPlay extends AbstractCommand{
                                     .setDescription(searchResults.toString())
                                     .build()
                     ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session, 15).getPudelWorld().getPudelManager()
-                            .addRection(e,
+                            .addReactions(e,
                                     "U+31U+fe0fU+20e3",//1
                                     "U+32U+fe0fU+20e3",//2
                                     "U+33U+fe0fU+20e3",//3
@@ -199,7 +206,32 @@ public class MusicPlay extends AbstractCommand{
         } else{
             interaction.getMessage().delete().queue();
         }
-        interaction.getPudelWorld().getInteractionManager().unregisterInteraction(interaction);
+        super.terminate(interaction);
+        return this;
+    }
+
+    private MusicPlay handlePlayerState(InteractionEntity interaction){
+        switch(interaction.getReact()){
+            case "U+23f9"://Stop
+                interaction.getPudelWorld().getCommandManager().getCommand("stop").execute(interaction);
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                super.terminate(interaction);
+                break;
+            case "U+23ed"://next
+                interaction.getPudelWorld().getCommandManager().getCommand("skip").execute(interaction);
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                break;
+            case "U+1f501"://loop
+                interaction.getPudelWorld().getCommandManager().getCommand("loop").execute(interaction);
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                break;
+            case "U+1f500"://shuffle
+                interaction.getPudelWorld().getCommandManager().getCommand("shuffle").execute(interaction);
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                break;
+            default:
+                break;
+        }
         return this;
     }
 
@@ -218,6 +250,7 @@ public class MusicPlay extends AbstractCommand{
 
     // Send current track details
     private MusicPlay sendCurrentTrackMessage(SessionEntity session) {
+        setState(state.PLAYER);
         String trackFormat = session.getPudelWorld().getMusicManager().getTrackFormat(session.getPudelWorld().getMusicManager().getPlayingTrack(session));
         session.getChannel().sendMessageEmbeds(
                 session.getPudelWorld().getEmbedManager().embedCommand(session)
@@ -235,7 +268,7 @@ public class MusicPlay extends AbstractCommand{
                                 session.getPudelWorld().getUserManager().castUserEntity(session.getPudelWorld().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
         ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session).getPudelWorld().getPudelManager()
-                .addRection(e,"U+23F9","U+23ED","U+1F501","U+1F500"));//STOP,SKIP,LOOP,SHUFFLE
+                .addReactions(e,"U+23f9","U+23ed","U+1f501","U+1f500"));//STOP,SKIP,LOOP,SHUFFLE
         return this;
     }
 

@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.requests.RestAction;
 
 public class PudelManager implements Manager {
     protected PudelWorld pudelWorld;
@@ -34,10 +35,19 @@ public class PudelManager implements Manager {
         return this;
     }
 
-    public PudelManager addRection(Message msg, String... unicodes) {
-        for (String unicode : unicodes) {
-            msg.addReaction(Emoji.fromFormatted(unicode)).queue();
+    public PudelManager addReactions(Message msg, String... unicodes) {
+        if (unicodes == null || unicodes.length == 0) return this;
+
+        RestAction<Void> reactionChain = msg.addReaction(Emoji.fromFormatted(unicodes[0]));
+
+        for (int i = 1; i < unicodes.length; i++) {
+            String unicode = unicodes[i]; // Create a final copy for the lambda
+            reactionChain = reactionChain.flatMap(ignored -> msg.addReaction(Emoji.fromFormatted(unicode)));
         }
+
+        // Queue the chained reactions
+        reactionChain.queue();
+
         return this;
     }
 

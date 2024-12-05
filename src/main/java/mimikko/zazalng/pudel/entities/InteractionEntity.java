@@ -29,6 +29,7 @@ public class InteractionEntity {
         this.interactor = interactor;
         this.issueCommand = issueCommand;
         this.defaultTimeout = defaultTimeout;
+        startTimeout(Duration.ofSeconds(this.defaultTimeout));
     }
 
     public InteractionEntity(InteractionManager manager, Message message, SessionEntity session) {
@@ -55,7 +56,7 @@ public class InteractionEntity {
         return this.issueCommand;
     }
 
-    private EmojiUnion getReactAction(){
+    public EmojiUnion getReactAction(){
         return this.reactAction;
     }
 
@@ -92,7 +93,6 @@ public class InteractionEntity {
     }
 
     private void terminate() {
-        getMessage().clearReactions().queue();
         this.interactionManager.unregisterInteraction(this);
     }
 

@@ -16,7 +16,10 @@ public class MusicSkip extends AbstractCommand {
      */
     @Override
     public void execute(InteractionEntity interaction) {
+        replyBack(interaction);
     }
+
+
 
     @Override
     public String getDescription(SessionEntity session) {
@@ -46,6 +49,11 @@ public class MusicSkip extends AbstractCommand {
                         .setTitle("music.skip.title").build()
         ).queue();
 
+        return this;
+    }
+
+    private MusicSkip replyBack(InteractionEntity interaction) {
+        interaction.getPudelWorld().getMusicManager().nextTrack(interaction,true);
         return this;
     }
 

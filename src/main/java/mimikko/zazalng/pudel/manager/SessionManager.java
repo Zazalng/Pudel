@@ -4,13 +4,13 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.utility.StringUtility;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import static mimikko.zazalng.pudel.utility.StringUtility.stringFormat;
@@ -42,16 +42,7 @@ public class SessionManager implements Manager{
     }
 
     public SessionManager sessionTerminate(SessionEntity session) {
-        Iterator<Map.Entry<String, SessionEntity>> iterator = this.sessions.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry<String, SessionEntity> entry = iterator.next();
-            if (entry.getValue().equals(session)) {
-                logger.info(String.format("[Terminate Session] %s", entry.getKey()));
-                iterator.remove();
-            }
-        }
-
+        logger.info(StringUtility.stringFormat("[Terminate Session] %s", createSessionKey(this.sessions.remove(createSessionKey(session)))));
         return this;
     }
 
@@ -63,6 +54,10 @@ public class SessionManager implements Manager{
 
     private String createSessionKey(MessageReceivedEvent e) {
         return e.getGuild().getId() + ":" + e.getChannel().getId() + ":" + e.getAuthor().getId();
+    }
+
+    private String createSessionKey(SessionEntity session){
+        return session.getGuild().getJDA().getId() + ":" + session.getChannel().getId() + ":" + session.getUser().getJDA().getId();
     }
 
     @Override

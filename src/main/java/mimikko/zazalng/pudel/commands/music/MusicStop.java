@@ -16,6 +16,7 @@ public class MusicStop extends AbstractCommand {
      */
     @Override
     public void execute(InteractionEntity interaction) {
+        interaction.getPudelWorld().getMusicManager().stopPlayer(interaction);
     }
 
     @Override

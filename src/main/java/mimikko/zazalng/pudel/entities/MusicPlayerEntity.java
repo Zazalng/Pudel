@@ -46,12 +46,22 @@ public class MusicPlayerEntity {
         return this;
     }
 
+    public MusicPlayerEntity toggleLoop(){
+        this.flagLoop = !this.flagLoop;
+        return this;
+    }
+
     public boolean isShuffle() {
         return this.flagShuffle;
     }
 
     public MusicPlayerEntity setShuffle(boolean flag) {
         this.flagShuffle = flag;
+        return this;
+    }
+
+    public MusicPlayerEntity toggleShuffle() {
+        this.flagShuffle = !this.flagShuffle;
         return this;
     }
 }

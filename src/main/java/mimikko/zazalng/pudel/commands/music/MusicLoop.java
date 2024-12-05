@@ -18,6 +18,7 @@ public class MusicLoop extends AbstractCommand{
      */
     @Override
     public void execute(InteractionEntity interaction) {
+        interaction.getPudelWorld().getMusicManager().getMusicPlayer(interaction).toggleLoop();
     }
 
     @Override

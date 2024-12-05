@@ -81,6 +81,11 @@ public class MusicManager implements Manager {
         return this;
     }
 
+    public MusicManager stopPlayer(InteractionEntity interaction){
+        getPudelWorld().getPudelManager().closeVoiceConnection(interaction).getPudelWorld().getMusicManager().getPlayer(interaction).stopTrack();
+        return this;
+    }
+
     /**
      * Loads and plays a track or playlist based on the given track URL.
      * Returns a result object to inform the calling command about the outcome.
@@ -184,6 +189,10 @@ public class MusicManager implements Manager {
 
     private AudioPlayer getPlayer(SessionEntity session){
         return getPlayer(getMusicPlayer(session));
+    }
+
+    private AudioPlayer getPlayer(InteractionEntity interaction){
+        return getPlayer(getMusicPlayer(interaction));
     }
 
     private AudioPlayer getPlayer(MusicPlayerEntity e){

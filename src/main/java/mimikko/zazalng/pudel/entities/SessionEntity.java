@@ -71,13 +71,13 @@ public class SessionEntity{
         return this;
     }
 
-    public MessageReceivedEvent lastEvent() {
+    private MessageReceivedEvent latestEvent() {
         return this.event;
     }
 
     public SessionEntity setEvent(MessageReceivedEvent e) {
         if (this.event != null) {
-            this.sessionCollector.add(lastEvent());
+            this.sessionCollector.add(latestEvent());
         }
         this.event = e;
         return this;

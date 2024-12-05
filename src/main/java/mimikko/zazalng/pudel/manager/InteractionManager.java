@@ -38,6 +38,7 @@ public class InteractionManager implements Manager{
     }
 
     public InteractionManager unregisterInteraction(InteractionEntity interaction) {
+        interaction.getMessage().clearReactions().queue();
         interactionList.remove(interaction.getMessage());
         return this;
     }
