@@ -3,6 +3,8 @@ package mimikko.zazalng.pudel.manager;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.entities.GuildEntity;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,18 +31,26 @@ public class LocalizationManager implements Manager{
         return this;
     }
 
-    public String getLocalizedText(SessionEntity session, String key, Map<String, String> args) {
+    public String getLocalizedText(SessionEntity session, String key, Map<String, String> args){
+        return getLocalizedText(session.getGuild(),key,args);
+    }
+
+    public String getLocalizedText(InteractionEntity interaction, String key, Map<String, String> args){
+        return getLocalizedText(getPudelWorld().getGuildManager().getGuildEntity(interaction.getMessage().getGuild()),key,args);
+    }
+
+    public String getLocalizedText(GuildEntity guild, String key, Map<String, String> args) {
         // Check if the language code exists
-        Properties properties = languageFiles.get(session.getGuild().getLanguageCode());
+        Properties properties = languageFiles.get(guild.getLanguageCode());
         if (properties == null) {
-            logger.error("No properties found for language: {}", session.getGuild().getLanguageCode());
+            logger.error("No properties found for language: {}", guild.getLanguageCode());
             return key; // Fallback to the key if the language is missing
         }
 
         // Check if the key exists in the language file
         String text = properties.getProperty(key);
         if (text == null) {
-            logger.error("Key '{}' not found for language: {}", key, session.getGuild().getLanguageCode());
+            logger.error("Key '{}' not found for language: {}", key, guild.getLanguageCode());
             return key; // Fallback to the key if the translation is missing
         } else if(text.isEmpty()){
             properties = languageFiles.get("ENG");

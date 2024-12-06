@@ -214,20 +214,24 @@ public class MusicPlay extends AbstractCommand{
         switch(interaction.getReact()){
             case "U+23f9"://Stop
                 interaction.getPudelWorld().getCommandManager().getCommand("stop").execute(interaction);
-                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 super.terminate(interaction);
                 break;
             case "U+23ed"://next
                 interaction.getPudelWorld().getCommandManager().getCommand("skip").execute(interaction);
-                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 break;
             case "U+1f501"://loop
                 interaction.getPudelWorld().getCommandManager().getCommand("loop").execute(interaction);
-                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 break;
             case "U+1f500"://shuffle
                 interaction.getPudelWorld().getCommandManager().getCommand("shuffle").execute(interaction);
-                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getInteractor().getJDA()).queue();
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
+                break;
+            case "U+2764U+fe0f"://Favorite
+                //Implementation for Database
+                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 break;
             default:
                 break;
@@ -268,7 +272,7 @@ public class MusicPlay extends AbstractCommand{
                                 session.getPudelWorld().getUserManager().castUserEntity(session.getPudelWorld().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
         ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session).getPudelWorld().getPudelManager()
-                .addReactions(e,"U+23f9","U+23ed","U+1f501","U+1f500"));//STOP,SKIP,LOOP,SHUFFLE
+                .addReactions(e,"U+23f9","U+23ed","U+1f501","U+1f500","U+2764U+fe0f"));//STOP,SKIP,LOOP,SHUFFLE,Favorite
         return this;
     }
 

@@ -5,6 +5,7 @@ import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.manager.InteractionManager;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -48,8 +49,16 @@ public class InteractionEntity {
         return this.message;
     }
 
-    public UserEntity getInteractor() {
+    public GuildEntity getGuild(){
+        return getPudelWorld().getGuildManager().getGuildEntity(getMessage().getGuild());
+    }
+
+    public UserEntity getUser() {
         return this.interactor;
+    }
+
+    public MessageChannelUnion getChannel(){
+        return getMessage().getChannel();
     }
 
     private Command getCommand() {
@@ -71,7 +80,7 @@ public class InteractionEntity {
     }
 
     private boolean isAuthorizedUser(User user){
-        return getInteractor().getJDA()==user;
+        return getUser().getJDA()==user;
     }
 
     private boolean isAuthorizedUser(MessageReactionAddEvent e){

@@ -6,7 +6,6 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class MusicPlaylist extends AbstractCommand{
     private state state;
-    private Object lookupTrack;
     private enum state {
         REMOVE,
         SWAP
@@ -46,6 +45,7 @@ public class MusicPlaylist extends AbstractCommand{
     }
 
     public MusicPlaylist initialState(SessionEntity session, String args) {
+        session.getPudelWorld().getEmbedManager().embedCommand(session);
         return this;
     }
 

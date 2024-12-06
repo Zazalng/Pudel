@@ -57,7 +57,7 @@ public class PudelManager implements Manager {
     }
 
     public PudelManager openVoiceConnection(InteractionEntity interaction, AudioSendHandler audio){
-        openVoiceConnection(interaction.getMessage().getGuild(),interaction.getInteractor().getJDA(),audio);
+        openVoiceConnection(interaction.getMessage().getGuild(),interaction.getUser().getJDA(),audio);
         return this;
     }
 
