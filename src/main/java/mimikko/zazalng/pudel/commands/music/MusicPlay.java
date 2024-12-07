@@ -206,7 +206,6 @@ public class MusicPlay extends AbstractCommand{
         } else{
             interaction.getMessage().delete().queue();
         }
-        super.terminate(interaction);
         return this;
     }
 
@@ -231,7 +230,6 @@ public class MusicPlay extends AbstractCommand{
                 break;
             case "U+2764U+fe0f"://Favorite
                 //Implementation for Database
-                interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 break;
             default:
                 break;
