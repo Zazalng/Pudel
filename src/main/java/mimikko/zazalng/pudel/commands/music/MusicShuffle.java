@@ -6,6 +6,7 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
+@Deprecated
 public class MusicShuffle extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {

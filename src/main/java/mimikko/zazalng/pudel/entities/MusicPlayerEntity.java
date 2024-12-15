@@ -11,7 +11,7 @@ public class MusicPlayerEntity {
     protected final MusicManager musicManager;
     private final List<AudioTrack> activePlaylist;
     private final List<AudioTrack> historyPlaylist;
-    private boolean flagLoop;
+    private int flagLoop = 1;
     private boolean flagShuffle;
 
     public MusicPlayerEntity(MusicManager musicManager){
@@ -37,17 +37,19 @@ public class MusicPlayerEntity {
         return this;
     }
 
-    public boolean isLoop(){
+    public int getFlagLoop(){
         return this.flagLoop;
     }
 
-    public MusicPlayerEntity setLoop(boolean flag){
-        this.flagLoop = flag;
-        return this;
-    }
-
     public MusicPlayerEntity toggleLoop(){
-        this.flagLoop = !this.flagLoop;
+        switch (this.flagLoop) {
+            case 1, 2:
+                this.flagLoop++;
+                break;
+            case 3:
+                this.flagLoop/=3;
+                break;
+        }
         return this;
     }
 

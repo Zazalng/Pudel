@@ -6,6 +6,7 @@ import mimikko.zazalng.pudel.entities.SessionEntity;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
+@Deprecated
 public class MusicLoop extends AbstractCommand{
     @Override
     public void execute(SessionEntity session, String args) {
@@ -33,9 +34,9 @@ public class MusicLoop extends AbstractCommand{
 
     private MusicLoop initialState(SessionEntity session, String args) {
         if (toggleLogic(args,true)) { //Handle when input was logical able (TRUE result)
-            toggleValue(session,true);
+            //toggleValue(session,true);
         } else if (toggleLogic(args,false)) { //Handle when input was logical able (FALSE result)
-            toggleValue(session,false);
+            //toggleValue(session,false);
         } else {
             showCurrent(session);
         }
@@ -43,19 +44,19 @@ public class MusicLoop extends AbstractCommand{
         return this;
     }
 
-    private MusicLoop toggleValue(SessionEntity session, boolean flag){
+    /*private MusicLoop toggleValue(SessionEntity session, boolean flag){
         session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
                 .setTitle(localize(session,"music.loop.title"))
-                .addField(localize(session,"old.value"), localize(session,session.getPudelWorld().getMusicManager().getMusicPlayer(session).isLoop()),false)
+                .addField(localize(session,"old.value"), localize(session,session.getPudelWorld().getMusicManager().getMusicPlayer(session).getFlagLoop()),false)
                 .addField(localize(session,"new.value"), localize(session,session.getPudelWorld().getMusicManager().getMusicPlayer(session).setLoop(flag).isLoop()),false)
                 .build()).queue();
         return this;
-    }
+    }*/
 
     private MusicLoop showCurrent(SessionEntity session){
         session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
                 .setTitle(localize(session,"music.loop.title"))
-                .addField(localize(session,"current.value"), localize(session,session.getPudelWorld().getMusicManager().getMusicPlayer(session).isLoop()),false)
+                .addField(localize(session,"current.value"), localize(session, localize(session,session.getPudelWorld().getMusicManager().getLoopKey(session))), true)
                 .build()).queue();
         return this;
     }

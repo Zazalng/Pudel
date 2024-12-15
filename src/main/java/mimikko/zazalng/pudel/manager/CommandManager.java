@@ -24,8 +24,7 @@ public class CommandManager implements Manager {
         this.commandFactories = new HashMap<>();
 
         // Music category commands
-        loadCommand("loop", MusicLoop::new)
-                .loadCommand("play", MusicPlay::new)
+        loadCommand("play", MusicPlay::new)
                 .loadCommand("shuffle", MusicShuffle::new)
                 .loadCommand("skip", MusicSkip::new)
                 .loadCommand("stop", MusicStop::new)

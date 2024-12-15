@@ -187,6 +187,23 @@ public class MusicManager implements Manager {
         return (AudioTrack) track;
     }
 
+    public String getLoopKey(SessionEntity session){
+        return getLoopKey(getMusicPlayer(session).getFlagLoop());
+    }
+
+    public String getLoopKey(InteractionEntity interaction){
+        return getLoopKey(getMusicPlayer(interaction).getFlagLoop());
+    }
+
+    public String getLoopKey(int flagLoop){
+        return switch (flagLoop) {
+            case 1 -> "music.loop.off";
+            case 2 -> "music.loop.playlist";
+            case 3 -> "music.loop.track";
+            default -> "music.loop.error";
+        };
+    }
+
     private AudioPlayer getPlayer(SessionEntity session){
         return getPlayer(getMusicPlayer(session));
     }

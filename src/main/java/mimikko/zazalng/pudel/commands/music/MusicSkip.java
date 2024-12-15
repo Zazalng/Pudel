@@ -4,6 +4,7 @@ import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
+@Deprecated
 public class MusicSkip extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {

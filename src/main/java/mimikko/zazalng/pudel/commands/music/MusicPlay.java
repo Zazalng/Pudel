@@ -259,7 +259,7 @@ public class MusicPlay extends AbstractCommand{
                         .setTitle(trackFormat, session.getPudelWorld().getMusicManager().getTrackUrl(session.getPudelWorld().getMusicManager().getPlayingTrack(session)))
                         .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(session.getPudelWorld().getMusicManager().getPlayingTrack(session)))
                         .addField(localize(session, "music.play.loop"),
-                                localize(session, session.getPudelWorld().getMusicManager().getMusicPlayer(session).isLoop()), true)
+                                localize(session, localize(session,session.getPudelWorld().getMusicManager().getLoopKey(session))), true)
                         .addField(localize(session, "music.play.shuffle"),
                                 localize(session, session.getPudelWorld().getMusicManager().getMusicPlayer(session).isShuffle()), true)
                         .addField(localize(session, "music.play.remaining"),
