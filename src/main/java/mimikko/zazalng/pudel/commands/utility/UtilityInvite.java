@@ -1,7 +1,6 @@
 package mimikko.zazalng.pudel.commands.utility;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
@@ -22,7 +21,7 @@ public class UtilityInvite extends AbstractCommand {
 
     @Override
     public String getDescription(SessionEntity session) {
-        localizationArgs.put("bot.name", session.getPudelWorld().getPudelManager().getName(session));
+        localizationArgs.put("bot.name", session.getManager().getPudelManager().getName(session));
         return localize(session, "utility.invite.help",localizationArgs);
     }
 
@@ -32,7 +31,7 @@ public class UtilityInvite extends AbstractCommand {
     }
 
     private UtilityInvite initialState(SessionEntity session, String args) {
-        localizationArgs.put("inviteurl", session.getPudelWorld().getEnvironment().getInviteURL());
+        localizationArgs.put("inviteurl", session.getManager().getPudelManager().getInviteURL());
 
         args = localize(session,"utility.invite.init",localizationArgs);
 

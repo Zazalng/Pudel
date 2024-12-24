@@ -33,7 +33,7 @@ public class MusicSkip extends AbstractCommand {
     }
 
     private MusicSkip initialState(SessionEntity session, String args){
-        session.getPudelWorld().getMusicManager().nextTrack(session,true);
+        session.getManager().getMusicManager().nextTrack(session,true);
         if(args.isEmpty()){
             replyBack(session);
         } else{
@@ -46,7 +46,7 @@ public class MusicSkip extends AbstractCommand {
 
     private MusicSkip replyBack(SessionEntity session){
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle("music.skip.title").build()
         ).queue();
 
@@ -54,13 +54,13 @@ public class MusicSkip extends AbstractCommand {
     }
 
     private MusicSkip replyBack(InteractionEntity interaction) {
-        interaction.getPudelWorld().getMusicManager().nextTrack(interaction,true);
+        interaction.getManager().getMusicManager().nextTrack(interaction,true);
         return this;
     }
 
     private MusicSkip replyBack(SessionEntity session, String args){
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle("music.skip.title.reason")
                         .setDescription(String.format("`%s`",args)).build()
         ).queue();

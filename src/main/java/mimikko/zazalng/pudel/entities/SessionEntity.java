@@ -1,6 +1,5 @@
 package mimikko.zazalng.pudel.entities;
 
-import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.manager.SessionManager;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -50,8 +49,8 @@ public class SessionEntity{
         return this.command;
     }
     // Getters for entities
-    public PudelWorld getPudelWorld(){
-        return sessionManager.getPudelWorld();
+    public SessionManager getManager(){
+        return sessionManager;
     }
 
     public UserEntity getUser() {

@@ -19,7 +19,7 @@ public class MusicLoop extends AbstractCommand{
      */
     @Override
     public void execute(InteractionEntity interaction) {
-        interaction.getPudelWorld().getMusicManager().getMusicPlayer(interaction).toggleLoop();
+        interaction.getManager().getMusicManager().getMusicPlayer(interaction).toggleLoop();
     }
 
     @Override
@@ -54,9 +54,9 @@ public class MusicLoop extends AbstractCommand{
     }*/
 
     private MusicLoop showCurrent(SessionEntity session){
-        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+        session.getChannel().sendMessageEmbeds(session.getManager().getEmbedManager().embedCommand(session)
                 .setTitle(localize(session,"music.loop.title"))
-                .addField(localize(session,"current.value"), localize(session, localize(session,session.getPudelWorld().getMusicManager().getLoopKey(session))), true)
+                .addField(localize(session,"current.value"), localize(session, localize(session,session.getManager().getMusicManager().getLoopKey(session))), true)
                 .build()).queue();
         return this;
     }

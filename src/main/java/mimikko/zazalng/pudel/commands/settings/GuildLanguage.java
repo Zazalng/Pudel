@@ -29,14 +29,14 @@ public class GuildLanguage extends AbstractCommand {
     }
 
     public GuildLanguage initialState(SessionEntity session, String args) {
-        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
+        localizationArgs.put("username", session.getManager().getUserManager().getUserName(session));
 
         if(args.isEmpty()){
-            localizationArgs.put("lang.name", session.getPudelWorld().getLocalizationManager().getLanguageName(session));
+            localizationArgs.put("lang.name", session.getManager().getLocalizationManager().getLanguageName(session));
             args = localize(session,"guild.language.init.display",localizationArgs);
         } else{
             session.getGuild().setLanguageCode(args);
-            localizationArgs.put("lang.name", session.getPudelWorld().getLocalizationManager().getLanguageName(session));
+            localizationArgs.put("lang.name", session.getManager().getLocalizationManager().getLanguageName(session));
             args = localize(session,"guild.language.init.accept",localizationArgs);
         }
         session.getChannel().sendMessage(args).queue();

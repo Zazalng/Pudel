@@ -45,7 +45,7 @@ public class MusicPlaylist extends AbstractCommand{
     }
 
     public MusicPlaylist initialState(SessionEntity session, String args) {
-        session.getPudelWorld().getEmbedManager().embedCommand(session);
+        session.getManager().getEmbedManager().embedCommand(session);
         return this;
     }
 

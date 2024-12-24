@@ -29,7 +29,7 @@ public class GuildPrefix extends AbstractCommand {
     }
 
     public GuildPrefix initialState(SessionEntity session, String args) {
-        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
+        localizationArgs.put("username", session.getManager().getUserManager().getUserName(session));
 
         if (args.isEmpty()) {
             localizationArgs.put("guild.prefix", session.getGuild().getPrefix());

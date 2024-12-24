@@ -9,12 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GuildManager implements Manager {
-    protected final PudelWorld pudelWorld;
+public class GuildManager extends AbstractManager {
     private final Map<String, GuildEntity> guildEntity;
 
     public GuildManager(PudelWorld pudelWorld){
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
         this.guildEntity = new HashMap<>();
     }
 
@@ -31,10 +30,6 @@ public class GuildManager implements Manager {
         guildEntity.forEach((id, guild) -> helpMessage.append(id).append(" - ").append(guild.getJDA().getName()).append("\n"));
         System.out.println(helpMessage);
         return this;
-    }
-    @Override
-    public PudelWorld getPudelWorld(){
-        return this.pudelWorld;
     }
 
     @Override

@@ -16,18 +16,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class LocalizationManager implements Manager{
-    protected final PudelWorld pudelWorld;
+public class LocalizationManager extends AbstractManager{
     private static final Logger logger = LoggerFactory.getLogger(LocalizationManager.class);
     private final Map<String, Properties> languageFiles;
 
     public LocalizationManager(PudelWorld pudelWorld) {
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
         this.languageFiles = new HashMap<>();
     }
 
     public LocalizationManager loadLanguages() {
-        loadCSVLanguageFile(this.pudelWorld.getEnvironment().getWorldLocalization()); // Assuming you download the CSV manually to this location
+        loadCSVLanguageFile(getPudelWorld().getEnvironment().getWorldLocalization()); // Assuming you download the CSV manually to this location
         return this;
     }
 
@@ -36,7 +35,7 @@ public class LocalizationManager implements Manager{
     }
 
     public String getLocalizedText(InteractionEntity interaction, String key, Map<String, String> args){
-        return getLocalizedText(getPudelWorld().getGuildManager().getGuildEntity(interaction.getMessage().getGuild()),key,args);
+        return getLocalizedText(getGuildManager().getGuildEntity(interaction.getMessage().getGuild()),key,args);
     }
 
     public String getLocalizedText(GuildEntity guild, String key, Map<String, String> args) {
@@ -70,7 +69,7 @@ public class LocalizationManager implements Manager{
     public LocalizationManager loadCSVLanguageFile(String filePath) {
         try (CSVReader reader = new CSVReader(new FileReader(Paths.get(filePath).toFile()))) {
             List<String[]> rows = reader.readAll();
-            String[] headers = rows.get(0); // First line with language codes
+            String[] headers = rows.getFirst(); // First line with language codes
             Map<String, Map<String, String>> tempLanguageMap = new HashMap<>();
 
             // Initialize a map for each language column
@@ -113,11 +112,6 @@ public class LocalizationManager implements Manager{
         } else{
             return getLocalizedText(session, "boolean.disable", null);
         }
-    }
-
-    @Override
-    public PudelWorld getPudelWorld() {
-        return this.pudelWorld;
     }
 
     @Override

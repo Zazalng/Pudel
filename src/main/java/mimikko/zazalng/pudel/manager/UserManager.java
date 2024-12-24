@@ -8,12 +8,11 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserManager implements Manager {
-    protected final PudelWorld pudelWorld;
+public class UserManager extends AbstractManager {
     protected final Map<String, UserEntity> userEntity;
 
     public UserManager(PudelWorld pudelWorld) {
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
         this.userEntity = new HashMap<>();
     }
 
@@ -41,11 +40,6 @@ public class UserManager implements Manager {
         StringBuilder helpMessage = new StringBuilder("Loaded User Entity: "+userEntity.size()+"\n");
         userEntity.forEach((id, user) -> helpMessage.append(id).append(" - ").append(user.getJDA().getName()).append("\n"));
         System.out.println(helpMessage);
-    }
-
-    @Override
-    public PudelWorld getPudelWorld(){
-        return this.pudelWorld;
     }
 
     @Override

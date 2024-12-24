@@ -50,42 +50,6 @@ public class PudelWorld {
     public ManagerFactory getManagerFactory() {
         return this.managerFactory;
     }
-
-    public CommandManager getCommandManager(){
-        return this.managerFactory.getManager("commandManager", CommandManager.class);
-    }
-
-    public EmbedManager getEmbedManager(){
-        return this.managerFactory.getManager("embedManager", EmbedManager.class);
-    }
-
-    public GuildManager getGuildManager(){
-        return this.managerFactory.getManager("guildManager", GuildManager.class);
-    }
-
-    public InteractionManager getInteractionManager(){
-        return this.managerFactory.getManager("interactionManager", InteractionManager.class);
-    }
-
-    public LocalizationManager getLocalizationManager(){
-        return this.managerFactory.getManager("localizationManager", LocalizationManager.class);
-    }
-
-    public MusicManager getMusicManager(){
-        return this.managerFactory.getManager("musicManager", MusicManager.class);
-    }
-
-    public PudelManager getPudelManager(){
-        return this.managerFactory.getManager("pudelManager", PudelManager.class);
-    }
-
-    public SessionManager getSessionManager(){
-        return this.managerFactory.getManager("sessionManager", SessionManager.class);
-    }
-
-    public UserManager getUserManager(){
-        return this.managerFactory.getManager("userManager", UserManager.class);
-    }
     
     public boolean getWorldStatus(){
         return this.worldStatus;
@@ -108,7 +72,7 @@ public class PudelWorld {
     /*Action Method: Method that will only work when getting 'new' and with correct constructor*/
     ///////////////////////////////////////////////////
     public PudelWorld buildShard(String api){
-        setJDAshardManager(buildJDAshardManager(this,api));
+        setJDAshardManager(buildJDAshardManager(getManagerFactory().getManager("pudelManager", PudelManager.class),api));
         return this;
     }
 
@@ -118,9 +82,7 @@ public class PudelWorld {
     }
 
     public PudelWorld shutdownWorld() {
-        CompletableFuture<Void> shutdownFuture = CompletableFuture.runAsync(() -> {
-            getManagerFactory().shutdownAllManagers();
-        });
+        CompletableFuture<Void> shutdownFuture = CompletableFuture.runAsync(() -> getManagerFactory().shutdownAllManagers());
         shutdownFuture.join();
 
         // Shut down JDA shard manager gracefully
@@ -141,5 +103,4 @@ public class PudelWorld {
 
         return this;
     }
-
 }

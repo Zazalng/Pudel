@@ -1,4 +1,4 @@
-package mimikko.zazalng.pudel.commands.utility;
+package mimikko.zazalng.pudel.commands.dev;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
@@ -45,19 +45,19 @@ public class DevEmojiUnicode extends AbstractCommand {
     }
 
     private DevEmojiUnicode initialState(SessionEntity session){
-        session.getChannel().sendMessageEmbeds(session.getPudelWorld().getEmbedManager().embedCommand(session)
+        session.getChannel().sendMessageEmbeds(session.getManager().getEmbedManager().embedCommand(session)
                 .setTitle("Debug get Emoji Unicode name")
                 .setThumbnail("https://puu.sh/KgAxn.gif")
                 .setDescription("`Placeholder`")
                 .build()
-        ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e, session, 10));
+        ).queue(e -> session.getManager().getInteractionManager().newInteraction(e, session, 10));
         super.terminate(session);
         return this;
     }
 
     private DevEmojiUnicode initialState(InteractionEntity interaction) {
         System.out.println(interaction.getReact());
-        interaction.getMessage().editMessageEmbeds(interaction.getPudelWorld().getEmbedManager().castEmbedBuilder(interaction.getMessage().getEmbeds().getFirst())
+        interaction.getMessage().editMessageEmbeds(interaction.getManager().getEmbedManager().castEmbedBuilder(interaction.getMessage().getEmbeds().getFirst())
                 .setDescription(stringFormat("`%s`",interaction.getReact()))
                 .build()).queue();
         return this;

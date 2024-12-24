@@ -9,12 +9,11 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InteractionManager implements Manager{
-    protected final PudelWorld pudelWorld;
+public class InteractionManager extends AbstractManager{
     private final Map<Message,InteractionEntity> interactionList;
 
     public InteractionManager(PudelWorld pudelWorld) {
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
         this.interactionList = new HashMap<>();
     }
 
@@ -41,14 +40,6 @@ public class InteractionManager implements Manager{
         interaction.getMessage().clearReactions().queue();
         interactionList.remove(interaction.getMessage());
         return this;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public PudelWorld getPudelWorld() {
-        return this.pudelWorld;
     }
 
     /**

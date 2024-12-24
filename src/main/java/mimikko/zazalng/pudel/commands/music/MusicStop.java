@@ -24,7 +24,7 @@ public class MusicStop extends AbstractCommand {
      */
     @Override
     public void execute(InteractionEntity interaction) {
-        interaction.getPudelWorld().getMusicManager().stopPlayer(interaction);
+        interaction.getManager().getMusicManager().stopPlayer(interaction);
     }
 
     @Override
@@ -38,11 +38,11 @@ public class MusicStop extends AbstractCommand {
     }
 
     private MusicStop initialState(SessionEntity session, String args){
-        localizationArgs.put("username", session.getPudelWorld().getUserManager().getUserName(session));
+        localizationArgs.put("username", session.getManager().getUserManager().getUserName(session));
 
         args = localize(session,"music.stop.init",localizationArgs);
         //https://puu.sh/KgAxn.gif
-        session.getPudelWorld().getMusicManager().stopPlayer(session);
+        session.getManager().getMusicManager().stopPlayer(session);
         terminate(session);
         return this;
     }

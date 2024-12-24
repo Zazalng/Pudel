@@ -1,7 +1,7 @@
 package mimikko.zazalng.pudel.handlers;
 
-import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.manager.PudelManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -9,15 +9,15 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 public class EventHandler extends ListenerAdapter{
-    protected final PudelWorld pudelWorld;
+    protected final PudelManager pudel;
 
-    public EventHandler(PudelWorld pudelWorld) {
-        this.pudelWorld = pudelWorld;
+    public EventHandler(PudelManager pudel) {
+        this.pudel = pudel;
     }
 
     @Override
     public void onReady(@NotNull ReadyEvent e) {
-        this.pudelWorld.getPudelManager().setPudelEntity(pudelWorld.getUserManager().getUserEntity(e.getJDA().getSelfUser()));
+        this.pudel.setPudelEntity(this.pudel.getUserManager().getUserEntity(e.getJDA().getSelfUser()));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class EventHandler extends ListenerAdapter{
             return;
         }
 
-        SessionEntity session = this.pudelWorld.getSessionManager().getSession(e);
+        SessionEntity session = this.pudel.getSessionManager().getSession(e);
             /*
                 Still Possible to implement command for direct message interacting
                 - A possible thing that can happen (from what I have discovery)
@@ -42,13 +42,13 @@ public class EventHandler extends ListenerAdapter{
             //e.getChannel().sendTyping().queue();
 
 
-        this.pudelWorld.getCommandManager().handleCommand(session, e);
+        this.pudel.getCommandManager().handleCommand(session, e);
     }
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent e){
         if(!e.getUser().isBot()){
-            this.pudelWorld.getInteractionManager().getInteraction(e);
+            this.pudel.getInteractionManager().getInteraction(e);
         }
     }
 }

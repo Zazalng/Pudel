@@ -15,19 +15,18 @@ import java.util.Map;
 
 import static mimikko.zazalng.pudel.utility.StringUtility.stringFormat;
 
-public class SessionManager implements Manager{
+public class SessionManager extends AbstractManager{
     private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
-    protected final PudelWorld pudelWorld;
     private final Map<String, SessionEntity> sessions;
 
     public SessionManager(PudelWorld pudelWorld){
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
         this.sessions = new HashMap<>();
     }
 
     public SessionEntity getSession(MessageReceivedEvent e) {
-        UserEntity user = getPudelWorld().getUserManager().getUserEntity(e.getAuthor());
-        GuildEntity guild = getPudelWorld().getGuildManager().getGuildEntity(e.getGuild());
+        UserEntity user = getUserManager().getUserEntity(e.getAuthor());
+        GuildEntity guild = getGuildManager().getGuildEntity(e.getGuild());
         MessageChannelUnion channelIssue = e.getChannel();
         String sessionKey = createSessionKey(e);
 
@@ -58,11 +57,6 @@ public class SessionManager implements Manager{
 
     private String createSessionKey(SessionEntity session){
         return session.getGuild().getJDA().getId() + ":" + session.getChannel().getId() + ":" + session.getUser().getJDA().getId();
-    }
-
-    @Override
-    public PudelWorld getPudelWorld() {
-        return this.pudelWorld;
     }
 
     @Override

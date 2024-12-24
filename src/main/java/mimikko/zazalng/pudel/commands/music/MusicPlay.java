@@ -71,7 +71,7 @@ public class MusicPlay extends AbstractCommand{
 
     // Handle case when no arguments are provided
     private MusicPlay handleNoArgs(SessionEntity session) {
-        if (session.getPudelWorld().getMusicManager().getPlayingTrack(session) == null) {
+        if (session.getManager().getMusicManager().getPlayingTrack(session) == null) {
             sendNoTrackMessage(session);
         } else {
             sendCurrentTrackMessage(session);
@@ -89,7 +89,7 @@ public class MusicPlay extends AbstractCommand{
     // Handle case when user is not in a voice channel
     private MusicPlay sendNotInVoiceChat(SessionEntity session) {
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle(localize(session, "music.play.error.voicechat"))
                         .setThumbnail("https://puu.sh/KgP67.gif")
                         .build()
@@ -111,23 +111,23 @@ public class MusicPlay extends AbstractCommand{
 
     // Queue a song URL
     private MusicPlay queueTrack(SessionEntity session, String url) {
-        session.getPudelWorld().getMusicManager().loadAndPlay(session, url).thenAccept(result ->{
+        session.getManager().getMusicManager().loadAndPlay(session, url).thenAccept(result ->{
             switch (result.getType()) {
                 case SEARCH:
                     topTracks = result.getTopTracks();
                     StringBuilder searchResults = new StringBuilder();
                     for (int i = 0; i < topTracks.size(); i++) {
-                        searchResults.append(String.format("[%d. %s](%s)\n",i+1,session.getPudelWorld().getMusicManager().getTrackFormat(topTracks.get(i)),session.getPudelWorld().getMusicManager().getTrackUrl(topTracks.get(i))));
+                        searchResults.append(String.format("[%d. %s](%s)\n",i+1,session.getManager().getMusicManager().getTrackFormat(topTracks.get(i)),session.getManager().getMusicManager().getTrackUrl(topTracks.get(i))));
                     }
                     searchResults.append(localize(session,"music.play.searching.tooltips"));
 
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().embedCommand(session)
+                            session.getManager().getEmbedManager().embedCommand(session)
                                     .setTitle(localize(session, "music.play.searching") + "\n" + result.getInput().substring(9))
                                     .setThumbnail("https://puu.sh/KgdPy.gif")
                                     .setDescription(searchResults.toString())
                                     .build()
-                    ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session, 15).getPudelWorld().getPudelManager()
+                    ).queue(e -> session.getManager().getInteractionManager().newInteraction(e,session, 15).getManager().getPudelManager()
                             .addReactions(e,
                                     "U+31U+fe0fU+20e3",//1
                                     "U+32U+fe0fU+20e3",//2
@@ -141,20 +141,20 @@ public class MusicPlay extends AbstractCommand{
                     super.terminate(session);
                     break;
                 case TRACK:
-                    session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
+                    session.getManager().getMusicManager().loadAndPlay(session, result);
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().embedCommand(session)
-                                    .setTitle(session.getPudelWorld().getMusicManager().getTrackFormat(result.getTrack()), session.getPudelWorld().getMusicManager().getTrackUrl(result.getTrack()))
-                                    .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(result.getTrack()))
+                            session.getManager().getEmbedManager().embedCommand(session)
+                                    .setTitle(session.getManager().getMusicManager().getTrackFormat(result.getTrack()), session.getManager().getMusicManager().getTrackUrl(result.getTrack()))
+                                    .setThumbnail(session.getManager().getMusicManager().getTrackThumbnail(result.getTrack()))
                                     .setDescription(localize(session, "music.play.accept"))
                                     .build()
                     ).queue();
                     super.terminate(session);
                     break;
                 case PLAYLIST:
-                    session.getPudelWorld().getMusicManager().loadAndPlay(session, result);
+                    session.getManager().getMusicManager().loadAndPlay(session, result);
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().embedCommand(session)
+                            session.getManager().getEmbedManager().embedCommand(session)
                                     .setTitle(result.getPlaylist().getName(), result.getInput())
                                     .setThumbnail("https://puu.sh/KgxX3.gif")
                                     .setDescription(localize(session, "music.play.playlist"))
@@ -164,7 +164,7 @@ public class MusicPlay extends AbstractCommand{
                     break;
                 default:
                     session.getChannel().sendMessageEmbeds(
-                            session.getPudelWorld().getEmbedManager().embedCommand(session)
+                            session.getManager().getEmbedManager().embedCommand(session)
                                     .setTitle(localize(session, "music.play.exception"))
                                     .setThumbnail("https://puu.sh/KgAxi.gif")
                                     .setDescription(result.getInput())
@@ -179,7 +179,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     private MusicPlay queueTrack(InteractionEntity interaction, int index){
-        interaction.getPudelWorld().getMusicManager().loadAndPlay(interaction, topTracks.get(index));
+        interaction.getManager().getMusicManager().loadAndPlay(interaction, topTracks.get(index));
         return this;
     }
 
@@ -188,7 +188,7 @@ public class MusicPlay extends AbstractCommand{
         if (isNumeric(args)) {
             int index = Integer.parseInt(args) - 1;
             try {
-                queueTrack(session, session.getPudelWorld().getMusicManager().getTrackUrl(topTracks.get(index)));
+                queueTrack(session, session.getManager().getMusicManager().getTrackUrl(topTracks.get(index)));
             } catch (IndexOutOfBoundsException e) {
                 super.terminate(session);
             }
@@ -212,20 +212,20 @@ public class MusicPlay extends AbstractCommand{
     private MusicPlay handlePlayerState(InteractionEntity interaction){
         switch(interaction.getReact()){
             case "U+23f9"://Stop
-                interaction.getPudelWorld().getCommandManager().getCommand("stop").execute(interaction);
+                interaction.getManager().getCommandManager().getCommand("stop").execute(interaction);
                 interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 super.terminate(interaction);
                 break;
             case "U+23ed"://next
-                interaction.getPudelWorld().getCommandManager().getCommand("skip").execute(interaction);
+                interaction.getManager().getCommandManager().getCommand("skip").execute(interaction);
                 interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 break;
             case "U+1f501"://loop
-                interaction.getPudelWorld().getCommandManager().getCommand("loop").execute(interaction);
+                interaction.getManager().getCommandManager().getCommand("loop").execute(interaction);
                 interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 break;
             case "U+1f500"://shuffle
-                interaction.getPudelWorld().getCommandManager().getCommand("shuffle").execute(interaction);
+                interaction.getManager().getCommandManager().getCommand("shuffle").execute(interaction);
                 interaction.getMessage().removeReaction(interaction.getReactAction(),interaction.getUser().getJDA()).queue();
                 break;
             case "U+2764U+fe0f"://Favorite
@@ -241,7 +241,7 @@ public class MusicPlay extends AbstractCommand{
     // Send no track currently playing message
     private MusicPlay sendNoTrackMessage(SessionEntity session) {
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().embedCommand(session)
+                session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle(localize(session, "music.play.empty"))
                         .setThumbnail("https://puu.sh/KgLS9.gif")
                         .build()
@@ -253,23 +253,23 @@ public class MusicPlay extends AbstractCommand{
     // Send current track details
     private MusicPlay sendCurrentTrackMessage(SessionEntity session) {
         setState(state.PLAYER);
-        String trackFormat = session.getPudelWorld().getMusicManager().getTrackFormat(session.getPudelWorld().getMusicManager().getPlayingTrack(session));
+        String trackFormat = session.getManager().getMusicManager().getTrackFormat(session.getManager().getMusicManager().getPlayingTrack(session));
         session.getChannel().sendMessageEmbeds(
-                session.getPudelWorld().getEmbedManager().embedCommand(session)
-                        .setTitle(trackFormat, session.getPudelWorld().getMusicManager().getTrackUrl(session.getPudelWorld().getMusicManager().getPlayingTrack(session)))
-                        .setThumbnail(session.getPudelWorld().getMusicManager().getTrackThumbnail(session.getPudelWorld().getMusicManager().getPlayingTrack(session)))
+                session.getManager().getEmbedManager().embedCommand(session)
+                        .setTitle(trackFormat, session.getManager().getMusicManager().getTrackUrl(session.getManager().getMusicManager().getPlayingTrack(session)))
+                        .setThumbnail(session.getManager().getMusicManager().getTrackThumbnail(session.getManager().getMusicManager().getPlayingTrack(session)))
                         .addField(localize(session, "music.play.loop"),
-                                localize(session, session.getPudelWorld().getMusicManager().getLoopKey(session)), true)
+                                localize(session, session.getManager().getMusicManager().getLoopKey(session)), true)
                         .addField(localize(session, "music.play.shuffle"),
-                                localize(session, session.getPudelWorld().getMusicManager().getMusicPlayer(session).isShuffle()), true)
+                                localize(session, session.getManager().getMusicManager().getMusicPlayer(session).isShuffle()), true)
                         .addField(localize(session, "music.play.remaining"),
-                                String.valueOf(session.getPudelWorld().getMusicManager().getMusicPlayer(session).getActivePlaylist().size()),true)
+                                String.valueOf(session.getManager().getMusicManager().getMusicPlayer(session).getActivePlaylist().size()),true)
                         .addField(localize(session, "music.play.duration"),
-                                session.getPudelWorld().getMusicManager().getTrackDuration(session.getPudelWorld().getMusicManager().getPlayingTrack(session)), true)
+                                session.getManager().getMusicManager().getTrackDuration(session.getManager().getMusicManager().getPlayingTrack(session)), true)
                         .addField(localize(session, "music.play.queueby"),
-                                session.getPudelWorld().getUserManager().castUserEntity(session.getPudelWorld().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
+                                session.getManager().getUserManager().castUserEntity(session.getManager().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
-        ).queue(e -> session.getPudelWorld().getInteractionManager().newInteraction(e,session).getPudelWorld().getPudelManager()
+        ).queue(e -> session.getManager().getInteractionManager().newInteraction(e,session).getManager().getPudelManager()
                 .addReactions(e,"U+23f9","U+23ed","U+1f501","U+1f500","U+2764U+fe0f"));//STOP,SKIP,LOOP,SHUFFLE,Favorite
         return this;
     }

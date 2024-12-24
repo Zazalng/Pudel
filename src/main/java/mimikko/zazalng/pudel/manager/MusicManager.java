@@ -31,15 +31,14 @@ import java.util.regex.Pattern;
 
 import static mimikko.zazalng.pudel.utility.IntegerUtility.randomInt;
 
-public class MusicManager implements Manager {
+public class MusicManager extends AbstractManager {
     private static final Logger logger = LoggerFactory.getLogger(MusicManager.class);
-    protected final PudelWorld pudelWorld;
     private final AudioPlayerManager playerManager;
     private final Map<GuildEntity,MusicPlayerEntity> playerList;
     private final Map<MusicPlayerEntity, AudioPlayerSendHandler> audioList;
 
     public MusicManager(PudelWorld pudelWorld) {
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
         this.playerList = new HashMap<>();
         this.audioList = new HashMap<>();
         YoutubeAudioSourceManager ytSourceManager = new YoutubeAudioSourceManager(
@@ -69,7 +68,7 @@ public class MusicManager implements Manager {
     }
 
     public MusicPlayerEntity getMusicPlayer(InteractionEntity interaction){
-        return this.playerList.computeIfAbsent(getPudelWorld().getGuildManager().getGuildEntity(interaction.getMessage().getGuild()), player -> new MusicPlayerEntity(this));
+        return this.playerList.computeIfAbsent(getGuildManager().getGuildEntity(interaction.getMessage().getGuild()), player -> new MusicPlayerEntity(this));
     }
 
     private AudioPlayerSendHandler getAudioPlayer(MusicPlayerEntity e){
@@ -77,12 +76,12 @@ public class MusicManager implements Manager {
     }
 
     public MusicManager stopPlayer(SessionEntity session){
-        getPudelWorld().getPudelManager().closeVoiceConnection(session).getPudelWorld().getMusicManager().getPlayer(session).stopTrack();
+        getPudelManager().closeVoiceConnection(session).getMusicManager().getPlayer(session).stopTrack();
         return this;
     }
 
     public MusicManager stopPlayer(InteractionEntity interaction){
-        getPudelWorld().getPudelManager().closeVoiceConnection(interaction).getPudelWorld().getMusicManager().getPlayer(interaction).stopTrack();
+        getPudelManager().closeVoiceConnection(interaction).getMusicManager().getPlayer(interaction).stopTrack();
         return this;
     }
 
@@ -245,13 +244,13 @@ public class MusicManager implements Manager {
     }
 
     public MusicManager nextTrack(SessionEntity session, boolean isSkip){
-        session.getPudelWorld().getPudelManager().openVoiceConnection(session,getAudioPlayer(getMusicPlayer(session)));
+        session.getManager().getPudelManager().openVoiceConnection(session,getAudioPlayer(getMusicPlayer(session)));
         nextTrack(getMusicPlayer(session),isSkip);
         return this;
     }
 
     public MusicManager nextTrack(InteractionEntity interaction, boolean isSkip){
-        interaction.getPudelWorld().getPudelManager().openVoiceConnection(interaction,getAudioPlayer(getMusicPlayer(interaction)));
+        interaction.getManager().getPudelManager().openVoiceConnection(interaction,getAudioPlayer(getMusicPlayer(interaction)));
         nextTrack(getMusicPlayer(interaction),isSkip);
         return this;
     }
@@ -268,11 +267,6 @@ public class MusicManager implements Manager {
             nextTrack(e,trackSelection(e));
         }
         return this;
-    }
-
-    @Override
-    public PudelWorld getPudelWorld() {
-        return this.pudelWorld;
     }
 
     @Override

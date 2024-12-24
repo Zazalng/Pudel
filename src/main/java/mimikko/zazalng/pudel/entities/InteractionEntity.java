@@ -1,6 +1,5 @@
 package mimikko.zazalng.pudel.entities;
 
-import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
 import mimikko.zazalng.pudel.manager.InteractionManager;
 import net.dv8tion.jda.api.entities.Message;
@@ -41,8 +40,8 @@ public class InteractionEntity {
         this(manager, message, session.getUser(), session.getCommand(), timeout);
     }
 
-    public PudelWorld getPudelWorld() {
-        return this.interactionManager.getPudelWorld();
+    public InteractionManager getManager() {
+        return this.interactionManager;
     }
 
     public Message getMessage() {
@@ -50,7 +49,7 @@ public class InteractionEntity {
     }
 
     public GuildEntity getGuild(){
-        return getPudelWorld().getGuildManager().getGuildEntity(getMessage().getGuild());
+        return getManager().getGuildManager().getGuildEntity(getMessage().getGuild());
     }
 
     public UserEntity getUser() {
@@ -109,7 +108,7 @@ public class InteractionEntity {
         if(isAuthorizedUser(e)){
             resetTimeout().setReactAction(e).getCommand().execute(this);
         } else{
-            e.retrieveMessage().complete().removeReaction(e.getEmoji(),e.getUser());
+            e.retrieveMessage().complete().removeReaction(e.getEmoji(),e.getUser()).queue();
         }
         return this;
     }

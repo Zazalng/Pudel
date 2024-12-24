@@ -10,12 +10,11 @@ import org.slf4j.LoggerFactory;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class EmbedManager implements Manager {
-    private final PudelWorld pudelWorld; // Your bot world
+public class EmbedManager extends AbstractManager {
     private final Logger logger = LoggerFactory.getLogger(EmbedManager.class);
 
     public EmbedManager(PudelWorld pudelWorld) {
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
     }
 
     private EmbedBuilder createEmbed(SessionEntity session){
@@ -31,15 +30,15 @@ public class EmbedManager implements Manager {
 
     public EmbedBuilder embedHelp(SessionEntity session){
         return createEmbed(session)
-                .setColor(session.getGuild().getJDA().getMember(getPudelWorld().getPudelManager().getPudelEntity().getJDA()).getColor())
+                .setColor(session.getGuild().getJDA().getMember(getPudelManager().getPudelEntity().getJDA()).getColor())
                 .setThumbnail("https://puu.sh/KgdPy.gif")
-                .setTitle(getPudelWorld().getLocalizationManager().getLocalizedText(session, "command.available",null))
+                .setTitle(getLocalizationManager().getLocalizedText(session, "command.available",null))
                 .setFooter("Help Command",session.getGuild().getJDA().getIconUrl());
     }
 
     public EmbedBuilder embedDetail(SessionEntity session){
         return createEmbed(session)
-                .setColor(session.getGuild().getJDA().getMember(getPudelWorld().getPudelManager().getPudelEntity().getJDA()).getColor())
+                .setColor(session.getGuild().getJDA().getMember(getPudelManager().getPudelEntity().getJDA()).getColor())
                 .setThumbnail("https://puu.sh/KgdPy.gif")
                 .setFooter("Help Command",session.getGuild().getJDA().getIconUrl());
     }
@@ -50,11 +49,6 @@ public class EmbedManager implements Manager {
 
     public EmbedBuilder castEmbedBuilder(MessageEmbed msg){
         return new EmbedBuilder(msg);
-    }
-
-    @Override
-    public PudelWorld getPudelWorld() {
-        return pudelWorld;
     }
 
     @Override

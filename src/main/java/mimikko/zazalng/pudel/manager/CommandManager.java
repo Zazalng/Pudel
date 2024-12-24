@@ -2,6 +2,7 @@ package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.commands.Command;
+import mimikko.zazalng.pudel.commands.dev.*;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.*;
@@ -14,13 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class CommandManager implements Manager {
-    protected final PudelWorld pudelWorld;
+public class CommandManager extends AbstractManager {
     private final Map<String, Supplier<Command>> commandFactories;
     private final Logger logger = LoggerFactory.getLogger(CommandManager.class);
 
     public CommandManager(PudelWorld pudelWorld) {
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
         this.commandFactories = new HashMap<>();
 
         // Music category commands
@@ -66,9 +66,9 @@ public class CommandManager implements Manager {
                 System.out.printf("%s in %s by %s say:\n%s%n",
                         session.getGuild().getJDA().getName(),
                         session.getChannel().getName(),
-                        getPudelWorld().getUserManager().getUserName(session),
+                        getUserManager().getUserName(session),
                         input);
-                getPudelWorld().getSessionManager().sessionEnd(session);
+                getSessionManager().sessionEnd(session);
             }
         }
         return this;
@@ -93,7 +93,7 @@ public class CommandManager implements Manager {
         } else {
             showCommandDetails(session, e, input);
         }
-        getPudelWorld().getSessionManager().sessionEnd(session);
+        getSessionManager().sessionEnd(session);
         return this;
     }
 
@@ -124,14 +124,9 @@ public class CommandManager implements Manager {
             session.setCommand(command).execute(input);
         } else {
             e.getChannel().sendMessage("Unknown command!").queue();
-            getPudelWorld().getSessionManager().sessionEnd(session);
+            getSessionManager().sessionEnd(session);
         }
         return this;
-    }
-
-    @Override
-    public PudelWorld getPudelWorld(){
-        return this.pudelWorld;
     }
 
     @Override

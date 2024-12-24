@@ -23,21 +23,21 @@ public abstract class AbstractCommand implements Command{
     }
 
     @Override
-    public void reload(SessionEntity session){
-        terminate(session);
+    public void reload(){
+
     }
 
     @Override
     public void terminate(SessionEntity session){
-        session.getPudelWorld().getSessionManager().sessionEnd(session);
+        session.getManager().sessionEnd(session);
     }
 
     public void terminate(InteractionEntity interaction){
-        interaction.getPudelWorld().getInteractionManager().unregisterInteraction(interaction);
+        interaction.getManager().getInteractionManager().unregisterInteraction(interaction);
     }
 
     protected String localize(SessionEntity session, String key, Map<String, String> args) {
-        return session.getPudelWorld().getLocalizationManager().getLocalizedText(session, key, args);
+        return session.getManager().getLocalizationManager().getLocalizedText(session, key, args);
     }
 
     protected String localize(SessionEntity session, String key) {
@@ -45,10 +45,10 @@ public abstract class AbstractCommand implements Command{
     }
 
     protected String localize(SessionEntity session, Boolean flag) {
-        return session.getPudelWorld().getLocalizationManager().getBooleanText(session, flag);
+        return session.getManager().getLocalizationManager().getBooleanText(session, flag);
     }
 
     protected String localize(InteractionEntity interaction, String key) {
-        return interaction.getPudelWorld().getLocalizationManager().getLocalizedText(interaction, key, null);
+        return interaction.getManager().getLocalizationManager().getLocalizedText(interaction, key, null);
     }
 }

@@ -11,19 +11,22 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.requests.RestAction;
 
-public class PudelManager implements Manager {
-    protected PudelWorld pudelWorld;
+public class PudelManager extends AbstractManager {
     private UserEntity PudelEntity;
 
     public PudelManager(PudelWorld pudelWorld){
-        this.pudelWorld = pudelWorld;
+        super(pudelWorld);
     }
     public String getName(SessionEntity session) {
         if(session.getGuild().getJDA().getMemberById(getPudelEntity().getJDA().getId()).getNickname()==null){
-            return this.pudelWorld.getLocalizationManager().getLocalizedText(session,"bot.name",null);
+            return getLocalizationManager().getLocalizedText(session,"bot.name",null);
         } else{
             return session.getGuild().getJDA().getMemberById(getPudelEntity().getJDA().getId()).getNickname();
         }
+    }
+
+    public String getInviteURL(){
+        return getPudelWorld().getEnvironment().getInviteURL();
     }
 
     public UserEntity getPudelEntity(){
@@ -81,11 +84,6 @@ public class PudelManager implements Manager {
         g.getAudioManager().closeAudioConnection();
         g.getAudioManager().setSendingHandler(null);
         return this;
-    }
-
-    @Override
-    public PudelWorld getPudelWorld() {
-        return this.pudelWorld;
     }
 
     @Override
