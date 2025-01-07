@@ -20,9 +20,10 @@ public class LocalizationManager extends AbstractManager{
     private static final Logger logger = LoggerFactory.getLogger(LocalizationManager.class);
     private final Map<String, Properties> languageFiles;
 
-    public LocalizationManager(PudelWorld pudelWorld) {
+    protected LocalizationManager(PudelWorld pudelWorld) {
         super(pudelWorld);
         this.languageFiles = new HashMap<>();
+        initialize();
     }
 
     public LocalizationManager loadLanguages() {
@@ -116,6 +117,7 @@ public class LocalizationManager extends AbstractManager{
 
     @Override
     public LocalizationManager initialize() {
+        loadLanguages();
         return this;
     }
 

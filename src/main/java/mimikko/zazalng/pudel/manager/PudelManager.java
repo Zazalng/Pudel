@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 public class PudelManager extends AbstractManager {
     private UserEntity PudelEntity;
 
-    public PudelManager(PudelWorld pudelWorld){
+    protected PudelManager(PudelWorld pudelWorld){
         super(pudelWorld);
     }
     public String getName(SessionEntity session) {
@@ -33,8 +33,8 @@ public class PudelManager extends AbstractManager {
         return this.PudelEntity;
     }
 
-    public PudelManager setPudelEntity(UserEntity pudelEntity) {
-        this.PudelEntity = pudelEntity;
+    public PudelManager setPudelEntity(User pudelEntity) {
+        this.PudelEntity = getUserManager().getUserEntity(pudelEntity);
         return this;
     }
 

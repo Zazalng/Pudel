@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 public class EmbedManager extends AbstractManager {
     private final Logger logger = LoggerFactory.getLogger(EmbedManager.class);
 
-    public EmbedManager(PudelWorld pudelWorld) {
+    protected EmbedManager(PudelWorld pudelWorld) {
         super(pudelWorld);
     }
 

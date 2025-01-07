@@ -12,7 +12,7 @@ import java.util.Map;
 public class InteractionManager extends AbstractManager{
     private final Map<Message,InteractionEntity> interactionList;
 
-    public InteractionManager(PudelWorld pudelWorld) {
+    protected InteractionManager(PudelWorld pudelWorld) {
         super(pudelWorld);
         this.interactionList = new HashMap<>();
     }

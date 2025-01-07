@@ -19,7 +19,7 @@ public class SessionManager extends AbstractManager{
     private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
     private final Map<String, SessionEntity> sessions;
 
-    public SessionManager(PudelWorld pudelWorld){
+    protected SessionManager(PudelWorld pudelWorld){
         super(pudelWorld);
         this.sessions = new HashMap<>();
     }

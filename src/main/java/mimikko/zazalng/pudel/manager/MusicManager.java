@@ -37,7 +37,7 @@ public class MusicManager extends AbstractManager {
     private final Map<GuildEntity,MusicPlayerEntity> playerList;
     private final Map<MusicPlayerEntity, AudioPlayerSendHandler> audioList;
 
-    public MusicManager(PudelWorld pudelWorld) {
+    protected MusicManager(PudelWorld pudelWorld) {
         super(pudelWorld);
         this.playerList = new HashMap<>();
         this.audioList = new HashMap<>();

@@ -12,7 +12,7 @@ import java.util.Map;
 public class GuildManager extends AbstractManager {
     private final Map<String, GuildEntity> guildEntity;
 
-    public GuildManager(PudelWorld pudelWorld){
+    protected GuildManager(PudelWorld pudelWorld){
         super(pudelWorld);
         this.guildEntity = new HashMap<>();
     }

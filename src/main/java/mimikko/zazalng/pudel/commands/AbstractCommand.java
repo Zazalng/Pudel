@@ -29,7 +29,7 @@ public abstract class AbstractCommand implements Command{
 
     @Override
     public void terminate(SessionEntity session){
-        session.getManager().sessionEnd(session);
+        session.getManager().getSessionManager().sessionEnd(session);
     }
 
     public void terminate(InteractionEntity interaction){

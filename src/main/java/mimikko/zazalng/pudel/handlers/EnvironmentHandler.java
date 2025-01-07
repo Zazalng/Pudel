@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.handlers;
 
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.contracts.ManagersEnum;
 import mimikko.zazalng.pudel.manager.LocalizationManager;
 
 import java.io.FileInputStream;
@@ -23,7 +24,6 @@ public class EnvironmentHandler {
             System.out.println("Getting filepath: \"" + filepath + "\"");
             try (FileInputStream fileInputStream = new FileInputStream(filepath)) {
                 this.env.load(fileInputStream);
-                this.pudelWorld.getManagerFactory().getManager("localizationManager", LocalizationManager.class).loadLanguages();
                 setLoaded(true);
             } catch (IOException e) {
 

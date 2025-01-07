@@ -32,10 +32,11 @@ public class CommandLineHandler implements Runnable{
             logger.info("Disconnecting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
             pudelWorld.shutdownWorld()
                     .setJDAshardManager(null)
-                    .setWorldStatus(false);
+                    .setWorldStatus(false)
+                    .getManagerFactory().shutdownAllManagers();
             logger.info("`{}` world has stopped.", pudelWorld.getEnvironment().getWorldName());
         } else{
-            logger.warn("`{}` world is not running currently.",pudelWorld.getEnvironment().getWorldName());
+            logger.warn("`{}` world is not running currently.", pudelWorld.getEnvironment().getWorldName());
         }
     }
 
@@ -45,7 +46,7 @@ public class CommandLineHandler implements Runnable{
                 logger.info("Starting World called `{}`.", pudelWorld.getEnvironment().getWorldName());
                 pudelWorld.buildShard(pudelWorld.getEnvironment().getDiscordAPI())
                         .setWorldStatus(true)
-                        .getJDAshardManager().setActivity(Activity.streaming("Pudel V2 (Stable. Build)","https://github.com/Zazalng/Pudel"))
+                        .getJDAshardManager().setActivity(Activity.streaming("Pudel V2.2 (Stable Build)","https://github.com/Zazalng/Pudel"))
                 ;
             } else{
                 logger.warn("`{}` world is still running.",pudelWorld.getEnvironment().getWorldName());

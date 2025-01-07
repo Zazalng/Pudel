@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel.entities;
 
 import mimikko.zazalng.pudel.commands.Command;
+import mimikko.zazalng.pudel.manager.AbstractManager;
 import mimikko.zazalng.pudel.manager.InteractionManager;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -40,7 +41,7 @@ public class InteractionEntity {
         this(manager, message, session.getUser(), session.getCommand(), timeout);
     }
 
-    public InteractionManager getManager() {
+    public AbstractManager getManager() {
         return this.interactionManager;
     }
 

@@ -11,7 +11,7 @@ import java.util.Map;
 public class UserManager extends AbstractManager {
     protected final Map<String, UserEntity> userEntity;
 
-    public UserManager(PudelWorld pudelWorld) {
+    protected UserManager(PudelWorld pudelWorld) {
         super(pudelWorld);
         this.userEntity = new HashMap<>();
     }

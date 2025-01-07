@@ -1,6 +1,8 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
+import mimikko.zazalng.pudel.contracts.ManagersEnum;
+import mimikko.zazalng.pudel.entities.UserEntity;
 
 public abstract class AbstractManager implements Manager{
     private final PudelWorld pudelWorld;
@@ -13,39 +15,43 @@ public abstract class AbstractManager implements Manager{
         return this.pudelWorld;
     }
 
+    boolean isAuthorized(UserEntity user){
+        return user.getJDA().getId().equals(getPudelWorld().getEnvironment().getDevUserID());
+    }
+
     public CommandManager getCommandManager(){
-        return getPudelWorld().getManagerFactory().getManager("commandManager", CommandManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.COMMAND);
     }
 
     public EmbedManager getEmbedManager(){
-        return getPudelWorld().getManagerFactory().getManager("embedManager", EmbedManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.EMBED);
     }
 
     public GuildManager getGuildManager(){
-        return getPudelWorld().getManagerFactory().getManager("guildManager", GuildManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.GUILD);
     }
 
     public InteractionManager getInteractionManager(){
-        return getPudelWorld().getManagerFactory().getManager("interactionManager", InteractionManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.INTERACTION);
     }
 
     public LocalizationManager getLocalizationManager(){
-        return getPudelWorld().getManagerFactory().getManager("localizationManager", LocalizationManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.LOCALIZATION);
     }
 
     public MusicManager getMusicManager(){
-        return getPudelWorld().getManagerFactory().getManager("musicManager", MusicManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.MUSIC);
     }
 
     public PudelManager getPudelManager(){
-        return getPudelWorld().getManagerFactory().getManager("pudelManager", PudelManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.PUDEL);
     }
 
     public SessionManager getSessionManager(){
-        return getPudelWorld().getManagerFactory().getManager("sessionManager", SessionManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.SESSION);
     }
 
     public UserManager getUserManager(){
-        return getPudelWorld().getManagerFactory().getManager("userManager", UserManager.class);
+        return getPudelWorld().getManagerFactory().getManager(ManagersEnum.USER);
     }
 }

@@ -7,6 +7,7 @@ import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.*;
 import mimikko.zazalng.pudel.entities.SessionEntity;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,12 @@ public class CommandManager extends AbstractManager {
     private final Map<String, Supplier<Command>> commandFactories;
     private final Logger logger = LoggerFactory.getLogger(CommandManager.class);
 
-    public CommandManager(PudelWorld pudelWorld) {
+    protected CommandManager(PudelWorld pudelWorld) {
         super(pudelWorld);
         this.commandFactories = new HashMap<>();
+    }
 
+    protected CommandManager loadDefault(){
         // Music category commands
         loadCommand("play", MusicPlay::new)
                 .loadCommand("shuffle", MusicShuffle::new)
@@ -33,7 +36,9 @@ public class CommandManager extends AbstractManager {
                 .loadCommand("prefix", GuildPrefix::new)
                 // Utility category commands
                 .loadCommand("emoji", DevEmojiUnicode::new)
-                .loadCommand("invite", UtilityInvite::new);
+                .loadCommand("invite", UtilityInvite::new)
+        ;
+        return this;
     }
 
     public CommandManager loadCommand(String name, Supplier<Command> commandFactory) {
@@ -47,7 +52,11 @@ public class CommandManager extends AbstractManager {
     }
 
     public Command getCommand(String command){
-        return commandFactories.get(command.toLowerCase()).get();
+        try{
+            return commandFactories.get(command.toLowerCase()).get();
+        } catch (NullPointerException ex){
+            return null;
+        }
     }
 
     public CommandManager handleCommand(SessionEntity session, MessageReceivedEvent e) {
@@ -130,17 +139,20 @@ public class CommandManager extends AbstractManager {
     }
 
     @Override
-    public CommandManager initialize() {
-        return this;
+    public void initialize(User requester) {
+        if(super.isAuthorized(getUserManager().getUserEntity(requester))){
+            return;
+        }
+        loadDefault();
     }
 
     @Override
-    public void reload() {
+    public void reload(User requester) {
 
     }
 
     @Override
-    public void shutdown() {
+    public void shutdown(User requester) {
 
     }
 }
