@@ -7,7 +7,6 @@ import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.*;
 import mimikko.zazalng.pudel.entities.SessionEntity;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,20 +22,23 @@ public class CommandManager extends AbstractManager {
     protected CommandManager(PudelWorld pudelWorld) {
         super(pudelWorld);
         this.commandFactories = new HashMap<>();
+        loadDefault();
     }
 
     protected CommandManager loadDefault(){
-        // Music category commands
-        loadCommand("play", MusicPlay::new)
-                .loadCommand("shuffle", MusicShuffle::new)
-                .loadCommand("skip", MusicSkip::new)
-                .loadCommand("stop", MusicStop::new)
-                // Settings category commands
-                .loadCommand("language", GuildLanguage::new)
-                .loadCommand("prefix", GuildPrefix::new)
-                // Utility category commands
-                .loadCommand("emoji", DevEmojiUnicode::new)
-                .loadCommand("invite", UtilityInvite::new)
+            // Music category commands
+            loadCommand("play", MusicPlay::new).
+            loadCommand("shuffle", MusicShuffle::new).
+            //loadCommand("skip", MusicSkip::new).
+            //loadCommand("stop", MusicStop::new).
+
+            // Settings category commands
+            loadCommand("language", GuildLanguage::new).
+            loadCommand("prefix", GuildPrefix::new).
+            // Utility category commands
+            loadCommand("emoji", DevEmojiUnicode::new).
+            loadCommand("invite", UtilityInvite::new).
+            loadCommand("time", UtilityTimeFormatting::new)
         ;
         return this;
     }
@@ -139,20 +141,17 @@ public class CommandManager extends AbstractManager {
     }
 
     @Override
-    public void initialize(User requester) {
-        if(super.isAuthorized(getUserManager().getUserEntity(requester))){
-            return;
-        }
-        loadDefault();
+    public CommandManager initialize() {
+        return this;
     }
 
     @Override
-    public void reload(User requester) {
+    public void reload() {
 
     }
 
     @Override
-    public void shutdown(User requester) {
+    public void shutdown() {
 
     }
 }

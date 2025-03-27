@@ -3,19 +3,18 @@ package mimikko.zazalng.pudel.manager;
 import mimikko.zazalng.pudel.PudelWorld;
 
 public class DatabaseManager extends AbstractManager{
-    private final String [] connection;
+    //private final String [] connection;
 
     protected DatabaseManager(PudelWorld pudelWorld) {
         super(pudelWorld);
     }
 
     /**
-     * @param <T>
      * @return
      */
     @Override
-    public <T extends Manager> T initialize() {
-        return null;
+    public DatabaseManager initialize() {
+        return this;
     }
 
     /**

@@ -9,6 +9,10 @@ public class BooleanUtility {
         };
     }
 
+    public static boolean betweenNumeric(int test, int min, int max) {
+        return betweenNumeric(test, min, max, false);
+    }
+
     public static boolean betweenNumeric(int test, int min, int max, boolean inclusive) {
         if (inclusive) {
             return test >= min && test <= max;

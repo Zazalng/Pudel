@@ -1,8 +1,6 @@
 package mimikko.zazalng.pudel.handlers;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.contracts.ManagersEnum;
-import mimikko.zazalng.pudel.manager.LocalizationManager;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -54,6 +52,10 @@ public class EnvironmentHandler {
         return this.env.getProperty("discord.bot.invite");
     }
 
+    public String getOpcode(){
+        return this.env.getProperty("world.opcode");
+    }
+
     public String getWorldName() {
         return this.env.getProperty("world.name");
     }
@@ -63,7 +65,7 @@ public class EnvironmentHandler {
     }
 
     public String getWorldSecret(){
-        return this.env.getProperty("pudel.secret.reply");
+        return this.env.getProperty("pudel.secret");
     }
 
     public boolean isLoaded() {

@@ -4,6 +4,7 @@ import mimikko.zazalng.pudel.manager.*;
 
 public enum ManagersEnum {
     COMMAND(CommandManager.class),
+    DATABASE(DatabaseManager.class),
     EMBED(EmbedManager.class),
     GUILD(GuildManager.class),
     INTERACTION(InteractionManager.class),

@@ -4,8 +4,6 @@ import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.contracts.ManagersEnum;
 
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ManagerFactory {
     protected final PudelWorld pudelWorld;
@@ -46,6 +44,7 @@ public class ManagerFactory {
 
     public ManagerFactory startAllManagers() {
         loadManager(ManagersEnum.COMMAND, new CommandManager(pudelWorld))
+                .loadManager(ManagersEnum.DATABASE, new DatabaseManager(pudelWorld))
                 .loadManager(ManagersEnum.EMBED, new EmbedManager(pudelWorld))
                 .loadManager(ManagersEnum.GUILD, new GuildManager(pudelWorld))
                 .loadManager(ManagersEnum.INTERACTION, new InteractionManager(pudelWorld))

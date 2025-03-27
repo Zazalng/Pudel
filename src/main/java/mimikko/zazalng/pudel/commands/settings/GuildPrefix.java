@@ -1,21 +1,12 @@
 package mimikko.zazalng.pudel.commands.settings;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 
 public class GuildPrefix extends AbstractCommand {
     @Override
     public void execute(SessionEntity session, String args) {
         initialState(session, args);
-    }
-
-    /**
-     * @param interaction
-     * @return
-     */
-    @Override
-    public void execute(InteractionEntity interaction) {
     }
 
     @Override

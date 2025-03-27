@@ -65,6 +65,5 @@ public class EmbedManager extends AbstractManager {
     @Override
     public void shutdown() {
         logger.info("EmbedManager shut down.");
-
     }
 }

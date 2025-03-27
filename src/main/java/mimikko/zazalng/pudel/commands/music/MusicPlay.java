@@ -237,7 +237,6 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
-
     // Send no track currently playing message
     private MusicPlay sendNoTrackMessage(SessionEntity session) {
         session.getChannel().sendMessageEmbeds(
