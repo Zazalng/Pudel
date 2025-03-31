@@ -18,15 +18,17 @@ import java.util.concurrent.TimeUnit;
 public class InteractionEntity {
     protected final InteractionManager interactionManager;
     private final Message message;
+    private final boolean selfDeleted;
     private final UserEntity interactor;
     private final Command issueCommand;
     private final int defaultTimeout;
     private EmojiUnion reactAction;
     private ScheduledFuture<?> timeoutTask;
 
-    private InteractionEntity(InteractionManager manager, Message message, UserEntity interactor, Command issueCommand, int defaultTimeout) {
+    private InteractionEntity(InteractionManager manager, Message message, UserEntity interactor, Command issueCommand, int defaultTimeout , boolean selfDeleted) {
         this.interactionManager = manager;
         this.message = message;
+        this.selfDeleted = selfDeleted;
         this.interactor = interactor;
         this.issueCommand = issueCommand;
         this.defaultTimeout = defaultTimeout;
@@ -34,11 +36,22 @@ public class InteractionEntity {
     }
 
     public InteractionEntity(InteractionManager manager, Message message, SessionEntity session) {
-        this(manager, message, session.getUser(), session.getCommand(), 60);
+        this(manager, message, session.getUser(), session.getCommand(), 60, true);
     }
 
-    public InteractionEntity(InteractionManager manager, Message message, SessionEntity session, int timeout) {
-        this(manager, message, session.getUser(), session.getCommand(), timeout);
+    // Overloaded constructor with specified defaultTimeout and inferred mayDeletedMessage
+    public InteractionEntity(InteractionManager manager, Message message, SessionEntity session, int defaultTimeout) {
+        this(manager, message, session.getUser(), session.getCommand(), defaultTimeout, true); // Defaulting mayDeletedMessage to true
+    }
+
+    // Overloaded constructor with specified mayDeletedMessage and inferred defaultTimeout
+    public InteractionEntity(InteractionManager manager, Message message, SessionEntity session, boolean selfDeleted) {
+        this(manager, message, session.getUser(), session.getCommand(), 60, selfDeleted); // Defaulting defaultTimeout to 60
+    }
+
+    // Overloaded constructor with specified defaultTimeout and mayDeletedMessage
+    public InteractionEntity(InteractionManager manager, Message message, SessionEntity session, int defaultTimeout, boolean selfDeleted) {
+        this(manager, message, session.getUser(), session.getCommand(), defaultTimeout, selfDeleted);
     }
 
     public AbstractManager getManager() {
@@ -101,8 +114,15 @@ public class InteractionEntity {
         return this;
     }
 
-    private void terminate() {
-        this.interactionManager.unregisterInteraction(this);
+    private InteractionEntity cancelTimeout(){
+        if(timeoutTask != null){
+            timeoutTask.cancel(false);
+        }
+        return this;
+    }
+
+    public void terminate() {
+        this.cancelTimeout().interactionManager.unregisterInteraction(this, this.selfDeleted);
     }
 
     public InteractionEntity execute(MessageReactionAddEvent e){

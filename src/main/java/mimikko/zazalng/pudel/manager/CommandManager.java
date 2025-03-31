@@ -29,9 +29,9 @@ public class CommandManager extends AbstractManager {
             // Music category commands
             loadCommand("play", MusicPlay::new).
             loadCommand("shuffle", MusicShuffle::new).
-            //loadCommand("skip", MusicSkip::new).
-            //loadCommand("stop", MusicStop::new).
-
+            loadCommand("skip", MusicSkip::new).
+            loadCommand("stop", MusicStop::new).
+            loadCommand("loop", MusicLoop::new).
             // Settings category commands
             loadCommand("language", GuildLanguage::new).
             loadCommand("prefix", GuildPrefix::new).

@@ -5,11 +5,14 @@ import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.SessionEntity;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class InteractionManager extends AbstractManager{
+    private static final Logger logger = LoggerFactory.getLogger(InteractionManager.class);
     private final Map<Message,InteractionEntity> interactionList;
 
     protected InteractionManager(PudelWorld pudelWorld) {
@@ -23,9 +26,7 @@ public class InteractionManager extends AbstractManager{
             if (interaction != null) {
                 interaction.execute(e);
             }
-        }, throwable -> {
-
-        });
+        }, throwable -> {});
     }
 
     public InteractionEntity newInteraction(Message message, SessionEntity session){
@@ -36,8 +37,19 @@ public class InteractionManager extends AbstractManager{
         return this.interactionList.computeIfAbsent(message, Entity -> new InteractionEntity(this, message, session, setTimeout));
     }
 
-    public InteractionManager unregisterInteraction(InteractionEntity interaction) {
+    public InteractionEntity newInteraction(Message message, SessionEntity session, boolean selfDeleted){
+        return this.interactionList.computeIfAbsent(message, Entity -> new InteractionEntity(this, message, session, selfDeleted));
+    }
+
+    public InteractionEntity newInteraction(Message message, SessionEntity session, int setTimeout, boolean selfDeleted){
+        return this.interactionList.computeIfAbsent(message, Entity -> new InteractionEntity(this, message, session, setTimeout, selfDeleted));
+    }
+
+    public InteractionManager unregisterInteraction(InteractionEntity interaction, boolean selfDeleted) {
         interaction.getMessage().clearReactions().queue();
+        if(selfDeleted){
+            interaction.getMessage().delete().queue();
+        }
         interactionList.remove(interaction.getMessage());
         return this;
     }
@@ -50,17 +62,11 @@ public class InteractionManager extends AbstractManager{
         return this;
     }
 
-    /**
-     * @return
-     */
     @Override
     public void reload() {
 
     }
 
-    /**
-     *
-     */
     @Override
     public void shutdown() {
 

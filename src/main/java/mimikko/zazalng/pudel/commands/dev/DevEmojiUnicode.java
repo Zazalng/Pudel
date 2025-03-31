@@ -26,24 +26,6 @@ public class DevEmojiUnicode extends AbstractCommand {
         initialState(interaction);
     }
 
-    /**
-     * @param session
-     * @return
-     */
-    @Override
-    public String getDescription(SessionEntity session) {
-        return "";
-    }
-
-    /**
-     * @param session
-     * @return
-     */
-    @Override
-    public String getDetailedHelp(SessionEntity session) {
-        return "";
-    }
-
     private DevEmojiUnicode initialState(SessionEntity session){
         session.getChannel().sendMessageEmbeds(session.getManager().getEmbedManager().embedCommand(session)
                 .setTitle("Debug get Emoji Unicode name")

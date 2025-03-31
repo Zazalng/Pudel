@@ -28,6 +28,10 @@ public class SessionEntity{
         this.channel = channelIssue;
     }
 
+    public void terminate(){
+        this.sessionManager.sessionEnd(this);
+    }
+
     public List<MessageReceivedEvent> getSessionCollector() {
         return sessionCollector;
     }

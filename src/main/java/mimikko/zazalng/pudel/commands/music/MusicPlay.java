@@ -204,7 +204,7 @@ public class MusicPlay extends AbstractCommand{
             int index = Character.getNumericValue(react.charAt(3)) - 1;
             queueTrack(interaction, index);
         } else{
-            interaction.getMessage().delete().queue();
+            super.terminate(interaction);
         }
         return this;
     }
@@ -268,7 +268,7 @@ public class MusicPlay extends AbstractCommand{
                         .addField(localize(session, "music.play.queueby"),
                                 session.getManager().getUserManager().castUserEntity(session.getManager().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
-        ).queue(e -> session.getManager().getInteractionManager().newInteraction(e,session).getManager().getPudelManager()
+        ).queue(e -> session.getManager().getInteractionManager().newInteraction(e,session, false).getManager().getPudelManager()
                 .addReactions(e,"U+23f9","U+23ed","U+1f501","U+1f500","U+2764U+fe0f"));//STOP,SKIP,LOOP,SHUFFLE,Favorite
         return this;
     }

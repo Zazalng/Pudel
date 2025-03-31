@@ -12,13 +12,13 @@ public abstract class AbstractCommand implements Command{
 
     @Override
     public void execute(SessionEntity session, String args){
-        session.getChannel().sendMessage(localize(session,"not.implemented")).queueAfter(10, TimeUnit.SECONDS, e -> e.delete().queue());
+        session.getChannel().sendMessage(localize(session,"command.abstract.implement")).queueAfter(10, TimeUnit.SECONDS, e -> e.delete().queue());
         terminate(session);
     }
 
     @Override
     public void execute(InteractionEntity interaction){
-        interaction.getMessage().getChannel().sendMessage(localize(interaction,"not.implemented")).queueAfter(10, TimeUnit.SECONDS, e -> e.delete().queue());
+        interaction.getMessage().getChannel().sendMessage(localize(interaction,"command.abstract.implement")).queueAfter(10, TimeUnit.SECONDS, e -> e.delete().queue());
         terminate(interaction);
     }
 
@@ -29,11 +29,22 @@ public abstract class AbstractCommand implements Command{
 
     @Override
     public void terminate(SessionEntity session){
-        session.getManager().getSessionManager().sessionEnd(session);
+        session.terminate();
     }
 
+    @Override
     public void terminate(InteractionEntity interaction){
-        interaction.getManager().getInteractionManager().unregisterInteraction(interaction);
+        interaction.terminate();
+    }
+
+    @Override
+    public String getDescription(SessionEntity session){
+        return localize(session, "command.abstract.nohelp");
+    }
+
+    @Override
+    public String getDetailedHelp(SessionEntity session){
+        return localize(session, "command.abstract.nodetail");
     }
 
     protected String localize(SessionEntity session, String key, Map<String, String> args) {
