@@ -46,11 +46,10 @@ public class InteractionManager extends AbstractManager{
     }
 
     public InteractionManager unregisterInteraction(InteractionEntity interaction, boolean selfDeleted) {
-        interaction.getMessage().clearReactions().queue();
-        if(selfDeleted){
-            interaction.getMessage().delete().queue();
-        }
-        interactionList.remove(interaction.getMessage());
+        interaction.getMessage().clearReactions().queue(unused -> {
+            interactionList.remove(interaction.getMessage());
+            if(selfDeleted) interaction.getMessage().delete().queue();
+        });
         return this;
     }
 
