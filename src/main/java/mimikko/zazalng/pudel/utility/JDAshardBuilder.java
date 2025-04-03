@@ -30,7 +30,7 @@ public class JDAshardBuilder{
                 )
                 .setToken(discordAPI)
                 .setSessionController(new SessionControllerAdapter())
-                .setActivity(Activity.watching("Generating Puddle's World Instance..."))
+                .setActivity(Activity.watching("Generating Pudel's World Instance..."))
                 .setBulkDeleteSplittingEnabled(false)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .setChunkingFilter(ChunkingFilter.NONE)

@@ -133,8 +133,8 @@ public class MusicPlay extends AbstractCommand{
                                     "U+32U+fe0fU+20e3",//2
                                     "U+33U+fe0fU+20e3",//3
                                     "U+34U+fe0fU+20e3",//4
-                                    "U+35U+fe0fU+20e3",//5
-                                    "U+1F528")//hammer
+                                    "U+35U+fe0fU+20e3")//5
+                                    //"U+1F528")//hammer
                     );
 
                     setState(state.SEARCHING);

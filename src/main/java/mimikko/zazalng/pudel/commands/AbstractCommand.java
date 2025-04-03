@@ -12,13 +12,13 @@ public abstract class AbstractCommand implements Command{
 
     @Override
     public void execute(SessionEntity session, String args){
-        session.getChannel().sendMessage(localize(session,"command.abstract.implement")).queueAfter(10, TimeUnit.SECONDS, e -> e.delete().queue());
+        session.getChannel().sendMessage(localize(session,"command.abstract.implement")).complete().delete().queueAfter(10, TimeUnit.SECONDS);
         terminate(session);
     }
 
     @Override
     public void execute(InteractionEntity interaction){
-        interaction.getMessage().getChannel().sendMessage(localize(interaction,"command.abstract.implement")).queueAfter(10, TimeUnit.SECONDS, e -> e.delete().queue());
+        interaction.getMessage().getChannel().sendMessage(localize(interaction,"command.abstract.implement")).complete().delete().queueAfter(10, TimeUnit.SECONDS);
         terminate(interaction);
     }
 
