@@ -194,7 +194,7 @@ public class MusicManager extends AbstractManager {
         return getLoopKey(getMusicPlayer(interaction).getFlagLoop());
     }
 
-    public String getLoopKey(int flagLoop){
+    private String getLoopKey(int flagLoop){
         return switch (flagLoop) {
             case 1 -> "music.loop.off";
             case 2 -> "music.loop.playlist";
