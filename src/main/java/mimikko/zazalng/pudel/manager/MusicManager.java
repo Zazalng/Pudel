@@ -174,7 +174,7 @@ public class MusicManager extends AbstractManager {
         return String.format("%s / %s", castDuration(castAudioTrack(track).getPosition()), castDuration(castAudioTrack(track).getDuration()));
     }
 
-    public String castDuration(long duration) {
+    private String castDuration(long duration) {
         long seconds = duration / 1000;
         long hours = seconds / 3600;
         long minutes = (seconds % 3600) / 60;
@@ -182,7 +182,7 @@ public class MusicManager extends AbstractManager {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
-    public AudioTrack castAudioTrack(Object track) {
+    private AudioTrack castAudioTrack(Object track) {
         return (AudioTrack) track;
     }
 
@@ -229,7 +229,7 @@ public class MusicManager extends AbstractManager {
         return getPlayer(session).getPlayingTrack();
     }
 
-    public AudioTrack getPlayingTrack(MusicPlayerEntity e){
+    private AudioTrack getPlayingTrack(MusicPlayerEntity e){
         return getPlayer(e).getPlayingTrack();
     }
 
