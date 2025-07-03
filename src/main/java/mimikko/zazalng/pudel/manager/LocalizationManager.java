@@ -5,7 +5,10 @@ import com.opencsv.exceptions.CsvException;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
+import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +26,7 @@ public class LocalizationManager extends AbstractManager{
     protected LocalizationManager(PudelWorld pudelWorld) {
         super(pudelWorld);
         this.languageFiles = new HashMap<>();
-        initialize();
+        loadLanguages();
     }
 
     public LocalizationManager loadLanguages() {
@@ -31,12 +34,8 @@ public class LocalizationManager extends AbstractManager{
         return this;
     }
 
-    public String getLocalizedText(SessionEntity session, String key, Map<String, String> args){
+    public String getLocalizedText(InteractionEntity session, String key, Map<String, String> args){
         return getLocalizedText(session.getGuild(),key,args);
-    }
-
-    public String getLocalizedText(InteractionEntity interaction, String key, Map<String, String> args){
-        return getLocalizedText(getGuildManager().getGuildEntity(interaction.getMessage().getGuild()),key,args);
     }
 
     public String getLocalizedText(GuildEntity guild, String key, Map<String, String> args) {
@@ -67,7 +66,7 @@ public class LocalizationManager extends AbstractManager{
         return text;
     }
 
-    public LocalizationManager loadCSVLanguageFile(String filePath) {
+    public boolean loadCSVLanguageFile(String filePath) {
         try (CSVReader reader = new CSVReader(new FileReader(Paths.get(filePath).toFile()))) {
             List<String[]> rows = reader.readAll();
             String[] headers = rows.getFirst(); // First line with language codes
@@ -99,15 +98,16 @@ public class LocalizationManager extends AbstractManager{
             }
         } catch (IOException | CsvException e) {
             logger.error("Failed to load CSV file", e);
+            return false;
         }
-        return this;
+        return true;
     }
 
-    public String getLanguageName(SessionEntity session){
+    public String getLanguageName(InteractionEntity session){
         return getLocalizedText(session,"lang.name",null);
     }
 
-    public String getBooleanText(SessionEntity session, boolean flag){
+    public String getBooleanText(InteractionEntity session, boolean flag){
         if(flag){
             return getLocalizedText(session, "boolean.enable", null);
         } else{
@@ -116,18 +116,32 @@ public class LocalizationManager extends AbstractManager{
     }
 
     @Override
-    public LocalizationManager initialize() {
-        loadLanguages();
-        return this;
+    public boolean initialize(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void reload() {
+    public boolean reload(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 
     @Override
-    public void shutdown() {
+    public boolean shutdown(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 }

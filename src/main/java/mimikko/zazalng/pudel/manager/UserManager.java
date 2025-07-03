@@ -1,35 +1,33 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.SessionEntity;
 import mimikko.zazalng.pudel.entities.UserEntity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserManager extends AbstractManager {
-    protected final Map<String, UserEntity> userEntity;
+    private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
+    protected final Map<User, UserEntity> userEntity = new HashMap<>();
 
     protected UserManager(PudelWorld pudelWorld) {
         super(pudelWorld);
-        this.userEntity = new HashMap<>();
     }
 
-    public String getUserName(SessionEntity session){
-        if(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getNickname()!=null){
-            return session.getGuild().getJDA().getMember(session.getUser().getJDA()).getNickname();
-        } else{
-            return session.getUser().getJDA().getName();
-        }
+    public boolean isVoiceActive(Guild guild, User user){
+        return guild.getMember(user).getVoiceState().inAudioChannel();
     }
 
-    public boolean isVoiceActive(SessionEntity session){
-        return session.getGuild().getJDA().getMember(session.getUser().getJDA()).getVoiceState().inAudioChannel();
+    public UserEntity getEntity(User JDAuser){
+        return this.userEntity.computeIfAbsent(JDAuser, Entity -> new UserEntity(this, JDAuser));
     }
 
-    public UserEntity getUserEntity(User JDAuser){
-        return this.userEntity.computeIfAbsent(JDAuser.getId(), Entity -> new UserEntity(this, JDAuser));
+    public UserEntity requestEntity(String id){
+        return getEntity(getPudelManager().getPudelEntity().getJDA().getUserById(id));
     }
 
     public UserEntity castUserEntity(Object user){
@@ -38,22 +36,37 @@ public class UserManager extends AbstractManager {
 
     public void fetchUserEntity(){
         StringBuilder helpMessage = new StringBuilder("Loaded User Entity: "+userEntity.size()+"\n");
-        userEntity.forEach((id, user) -> helpMessage.append(id).append(" - ").append(user.getJDA().getName()).append("\n"));
+        userEntity.forEach((jda, ignore) -> helpMessage.append(jda.getId()).append(" - ").append(jda.getName()).append("\n"));
         System.out.println(helpMessage);
     }
 
     @Override
-    public UserManager initialize() {
-        return this;
+    public boolean initialize(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void reload() {
+    public boolean reload(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 
     @Override
-    public void shutdown() {
+    public boolean shutdown(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 }

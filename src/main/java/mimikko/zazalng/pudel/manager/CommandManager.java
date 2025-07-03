@@ -6,7 +6,9 @@ import mimikko.zazalng.pudel.commands.dev.*;
 import mimikko.zazalng.pudel.commands.music.*;
 import mimikko.zazalng.pudel.commands.settings.*;
 import mimikko.zazalng.pudel.commands.utility.*;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,7 @@ public class CommandManager extends AbstractManager {
         loadDefault();
     }
 
-    protected CommandManager loadDefault(){
+    private CommandManager loadDefault(){
             // Music category commands
             loadCommand("play", MusicPlay::new).
             loadCommand("shuffle", MusicShuffle::new).
@@ -61,7 +63,7 @@ public class CommandManager extends AbstractManager {
         }
     }
 
-    public CommandManager handleCommand(SessionEntity session, MessageReceivedEvent e) {
+    public CommandManager handleCommand(TextEntity session, MessageReceivedEvent e) {
         String input = e.getMessage().getContentRaw();
         String prefix = session.getGuild().getPrefix();
 
@@ -85,7 +87,7 @@ public class CommandManager extends AbstractManager {
         return this;
     }
 
-    private CommandManager processInitialCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
+    private CommandManager processInitialCommand(TextEntity session, MessageReceivedEvent e, String input, String prefix) {
         String[] parts = input.substring(prefix.length()).split(" ", 2);
         String commandName = parts[0].toLowerCase();
         input = parts.length > 1 ? parts[1] : "";
@@ -98,7 +100,7 @@ public class CommandManager extends AbstractManager {
         return this;
     }
 
-    private CommandManager handleHelpCommand(SessionEntity session, MessageReceivedEvent e, String input, String prefix) {
+    private CommandManager handleHelpCommand(TextEntity session, MessageReceivedEvent e, String input, String prefix) {
         if (input.isEmpty()) {
             showCommandList(session, e, prefix);
         } else {
@@ -108,7 +110,7 @@ public class CommandManager extends AbstractManager {
         return this;
     }
 
-    private CommandManager showCommandList(SessionEntity session, MessageReceivedEvent e, String prefix) {
+    private CommandManager showCommandList(TextEntity session, MessageReceivedEvent e, String prefix) {
         StringBuilder helpMessage = new StringBuilder("Available commands:\n");
         commandFactories.forEach((name, commandFactory) ->
                 helpMessage.append("`").append(prefix).append(name).append("` - ")
@@ -118,7 +120,7 @@ public class CommandManager extends AbstractManager {
         return this;
     }
 
-    private CommandManager showCommandDetails(SessionEntity session, MessageReceivedEvent e, String input) {
+    private CommandManager showCommandDetails(TextEntity session, MessageReceivedEvent e, String input) {
         Supplier<Command> commandFactory = commandFactories.get(input.toLowerCase());
         if (commandFactory != null) {
             e.getChannel().sendMessage(commandFactory.get().getDetailedHelp(session)).queue();
@@ -128,7 +130,7 @@ public class CommandManager extends AbstractManager {
         return this;
     }
 
-    private CommandManager executeCommand(SessionEntity session, MessageReceivedEvent e, String commandName, String input) {
+    private CommandManager executeCommand(TextEntity session, MessageReceivedEvent e, String commandName, String input) {
         Command command = getCommand(commandName);
         if (command!=null) {
             // Create a new command instance for this session
@@ -141,17 +143,32 @@ public class CommandManager extends AbstractManager {
     }
 
     @Override
-    public CommandManager initialize() {
-        return this;
+    public boolean initialize(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void reload() {
+    public boolean reload(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 
     @Override
-    public void shutdown() {
+    public boolean shutdown(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 }

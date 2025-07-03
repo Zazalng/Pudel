@@ -1,15 +1,15 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 
 import static mimikko.zazalng.pudel.utility.BooleanUtility.*;
 
 @Deprecated
 public class MusicShuffle extends AbstractCommand {
     @Override
-    public void execute(SessionEntity session, String args) {
+    public void execute(TextEntity session, String args) {
         initialState(session, args);
     }
 
@@ -18,21 +18,21 @@ public class MusicShuffle extends AbstractCommand {
      * @return
      */
     @Override
-    public void execute(InteractionEntity interaction) {
+    public void execute(ReactionEntity interaction) {
         interaction.getManager().getMusicManager().getMusicPlayer(interaction).toggleShuffle();
     }
 
     @Override
-    public String getDescription(SessionEntity session) {
+    public String getDescription(TextEntity session) {
         return localize(session, "music.shuffle.help");
     }
 
     @Override
-    public String getDetailedHelp(SessionEntity session) {
+    public String getDetailedHelp(TextEntity session) {
         return localize(session, "music.shuffle.details");
     }
 
-    private MusicShuffle toggleValue(SessionEntity session, boolean flag){
+    private MusicShuffle toggleValue(TextEntity session, boolean flag){
         session.getChannel().sendMessageEmbeds(session.getManager().getEmbedManager().embedCommand(session)
                 .setTitle(localize(session,"music.shuffle.title"))
                 .addField(localize(session,"old.value"), localize(session,session.getManager().getMusicManager().getMusicPlayer(session).isShuffle()),false)
@@ -41,7 +41,7 @@ public class MusicShuffle extends AbstractCommand {
         return this;
     }
 
-    private MusicShuffle showCurrent(SessionEntity session){
+    private MusicShuffle showCurrent(TextEntity session){
         session.getChannel().sendMessageEmbeds(session.getManager().getEmbedManager().embedCommand(session)
                 .setTitle(localize(session,"music.shuffle.title"))
                 .addField(localize(session,"current.value"), localize(session,session.getManager().getMusicManager().getMusicPlayer(session).isShuffle()),false)
@@ -49,7 +49,7 @@ public class MusicShuffle extends AbstractCommand {
         return this;
     }
 
-    private MusicShuffle seedShuffle(SessionEntity session, String args){
+    private MusicShuffle seedShuffle(TextEntity session, String args){
         session.getManager().getMusicManager().getMusicPlayer(session).shufflePlaylist();
         session.getChannel().sendMessageEmbeds(session.getManager().getEmbedManager().embedCommand(session)
                 .setTitle(localize(session,"music.shuffle.seed"))
@@ -58,7 +58,7 @@ public class MusicShuffle extends AbstractCommand {
         return this;
     }
 
-    private MusicShuffle initialState(SessionEntity session, String args) {
+    private MusicShuffle initialState(TextEntity session, String args) {
         localizationArgs.put("username", session.getManager().getUserManager().getUserName(session));
         localizationArgs.put("args", args);
 

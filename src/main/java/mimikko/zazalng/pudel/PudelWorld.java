@@ -1,6 +1,7 @@
 package mimikko.zazalng.pudel;
 
-import mimikko.zazalng.pudel.contracts.ManagersEnum;
+import mimikko.zazalng.pudel.contracts.ManagersType;
+import mimikko.zazalng.pudel.entities.UserEntity;
 import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import mimikko.zazalng.pudel.handlers.EnvironmentHandler;
 import mimikko.zazalng.pudel.manager.*;
@@ -74,11 +75,11 @@ public class PudelWorld {
     ///////////////////////////////////////////////////
     public PudelWorld buildShard(String api){
         getManagerFactory().startAllManagers();
-        setJDAshardManager(buildJDAshardManager(getManagerFactory().getManager(ManagersEnum.PUDEL),api));
+        setJDAshardManager(buildJDAshardManager(getManagerFactory().getManager(ManagersType.PUDEL),api));
         return this;
     }
 
-    public PudelWorld reloadManager(ManagersEnum managerName) {
+    public PudelWorld reloadManager(ManagersType managerName) {
         getManagerFactory().reloadManager(managerName);
         return this;
     }

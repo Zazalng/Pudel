@@ -1,34 +1,15 @@
 package mimikko.zazalng.pudel.commands.settings;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 
 public class GuildLanguage extends AbstractCommand {
     @Override
-    public void execute(SessionEntity session, String args) {
+    public void execute(TextEntity session, String args) {
         initialState(session, args);
     }
 
-    /**
-     * @param interaction
-     * @return
-     */
-    @Override
-    public void execute(InteractionEntity interaction) {
-    }
-
-    @Override
-    public String getDescription(SessionEntity session) {
-        return localize(session,"guild.language.help");
-    }
-
-    @Override
-    public String getDetailedHelp(SessionEntity session) {
-        return localize(session,"guild.language.details");
-    }
-
-    public GuildLanguage initialState(SessionEntity session, String args) {
+    public GuildLanguage initialState(TextEntity session, String args) {
         localizationArgs.put("username", session.getManager().getUserManager().getUserName(session));
 
         if(args.isEmpty()){

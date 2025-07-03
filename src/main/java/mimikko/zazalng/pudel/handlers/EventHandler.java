@@ -1,6 +1,6 @@
 package mimikko.zazalng.pudel.handlers;
 
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.contracts.InteractionType;
 import mimikko.zazalng.pudel.manager.PudelManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -26,29 +26,19 @@ public class EventHandler extends ListenerAdapter{
             return;
         }
 
-        if(e.getAuthor().isBot()){
+        if(e.getAuthor().isBot()) {
             return;
         }
 
-        SessionEntity session = this.pudel.getSessionManager().getSession(e);
-            /*
-                Still Possible to implement command for direct message interacting
-                - A possible thing that can happen (from what I have discovery)
-                1. Message from Guild asTextChannel
-                2. Message from Guild asVoiceChannel
-                3. Message from Direct Message
-             */
-
-            //e.getChannel().sendTyping().queue();
-
-
-        this.pudel.getCommandManager().handleCommand(session, e);
+        this.pudel.getSessionManager().dispatch(InteractionType.TEXT,e).getCommandManager().handleCommand(this.pudel.getSessionManager().getSession(InteractionType.TEXT,e), e);
     }
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent e){
-        if(!e.getUser().isBot()){
-            this.pudel.getInteractionManager().getInteraction(e);
+        if(e.getUser().isBot()){
+            return;
         }
+
+        this.pudel.getSessionManager().getSession(InteractionType.REACTION, e);
     }
 }

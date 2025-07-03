@@ -1,23 +1,26 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
-import mimikko.zazalng.pudel.entities.UserEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.requests.RestAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PudelManager extends AbstractManager {
-    private UserEntity PudelEntity;
+    private static final Logger logger = LoggerFactory.getLogger(MusicManager.class);
+    private User PudelEntity;
 
     protected PudelManager(PudelWorld pudelWorld){
         super(pudelWorld);
     }
-    public String getName(SessionEntity session) {
+
+    public String getName(TextEntity session) {
         if(session.getGuild().getJDA().getMemberById(getPudelEntity().getJDA().getId()).getNickname()==null){
             return getLocalizationManager().getLocalizedText(session,"bot.name",null);
         } else{
@@ -29,12 +32,17 @@ public class PudelManager extends AbstractManager {
         return getPudelWorld().getEnvironment().getInviteURL();
     }
 
-    public UserEntity getPudelEntity(){
+    protected User getPudelEntity(){
         return this.PudelEntity;
     }
 
     public PudelManager setPudelEntity(User pudelEntity) {
-        this.PudelEntity = getUserManager().getUserEntity(pudelEntity);
+        if(getPudelEntity() != null) {
+            logger.error("Attempt to reassign Pudel's entity");
+            return this;
+        }
+
+        this.PudelEntity = pudelEntity;
         return this;
     }
 
@@ -54,12 +62,12 @@ public class PudelManager extends AbstractManager {
         return this;
     }
 
-    public PudelManager openVoiceConnection(SessionEntity session, AudioSendHandler audio){
+    public PudelManager openVoiceConnection(TextEntity session, AudioSendHandler audio){
         openVoiceConnection(session.getGuild().getJDA(),session.getUser().getJDA(),audio);
         return this;
     }
 
-    public PudelManager openVoiceConnection(InteractionEntity interaction, AudioSendHandler audio){
+    public PudelManager openVoiceConnection(ReactionEntity interaction, AudioSendHandler audio){
         openVoiceConnection(interaction.getMessage().getGuild(),interaction.getUser().getJDA(),audio);
         return this;
     }
@@ -70,12 +78,12 @@ public class PudelManager extends AbstractManager {
         return this;
     }
 
-    public PudelManager closeVoiceConnection(SessionEntity session){
+    public PudelManager closeVoiceConnection(TextEntity session){
         closeVoiceConnection(session.getGuild().getJDA());
         return this;
     }
 
-    public PudelManager closeVoiceConnection(InteractionEntity interaction){
+    public PudelManager closeVoiceConnection(ReactionEntity interaction){
         closeVoiceConnection(interaction.getMessage().getGuild());
         return this;
     }
@@ -87,17 +95,32 @@ public class PudelManager extends AbstractManager {
     }
 
     @Override
-    public PudelManager initialize() {
-        return this;
+    public boolean initialize(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void reload() {
+    public boolean reload(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 
     @Override
-    public void shutdown() {
+    public boolean shutdown(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 }

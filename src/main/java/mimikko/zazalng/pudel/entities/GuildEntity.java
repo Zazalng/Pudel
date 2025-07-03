@@ -9,7 +9,7 @@ import java.util.List;
 public class GuildEntity{
     //Import variable
     protected final GuildManager guildManager;
-    private final Guild guild;
+    private final transient Guild guild;
 
     //Class variable
     private final List<String> ignoreChannel;
@@ -17,6 +17,7 @@ public class GuildEntity{
     private String languageCode;
     private String prefix;
     private String staffLogChannel;
+    private int replyLevel;
 
     public GuildEntity(GuildManager guildManager, Guild guild){
         this.guildManager = guildManager;
@@ -26,13 +27,14 @@ public class GuildEntity{
         this.languageCode = "ENG";
         this.prefix = "p!";
         this.staffLogChannel = "";
+        this.replyLevel = 0;
     }
 
     public GuildManager getGuildManager(){
         return this.guildManager;
     }
 
-    public Guild getJDA() {
+    protected Guild getJDA() {
         return this.guild;
     }
 

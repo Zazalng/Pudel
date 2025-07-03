@@ -1,6 +1,6 @@
 package mimikko.zazalng.pudel.contracts;
 
-public enum InteractionSourceType {
+public enum InteractionType {
     TEXT,           // From message command
     REACTION,       // From emoji reaction
     SLASH,          // Slash command

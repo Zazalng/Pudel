@@ -1,13 +1,13 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 
 @Deprecated
 public class MusicSkip extends AbstractCommand {
     @Override
-    public void execute(SessionEntity session, String args) {
+    public void execute(TextEntity session, String args) {
         initialState(session, args);
     }
 
@@ -16,23 +16,23 @@ public class MusicSkip extends AbstractCommand {
      * @return
      */
     @Override
-    public void execute(InteractionEntity interaction) {
+    public void execute(ReactionEntity interaction) {
         replyBack(interaction);
     }
 
 
 
     @Override
-    public String getDescription(SessionEntity session) {
+    public String getDescription(TextEntity session) {
         return localize(session, "music.skip.help");
     }
 
     @Override
-    public String getDetailedHelp(SessionEntity session) {
+    public String getDetailedHelp(TextEntity session) {
         return localize(session, "music.skip.details");
     }
 
-    private MusicSkip initialState(SessionEntity session, String args){
+    private MusicSkip initialState(TextEntity session, String args){
         session.getManager().getMusicManager().nextTrack(session,true);
         if(args.isEmpty()){
             replyBack(session);
@@ -44,7 +44,7 @@ public class MusicSkip extends AbstractCommand {
         return this;
     }
 
-    private MusicSkip replyBack(SessionEntity session){
+    private MusicSkip replyBack(TextEntity session){
         session.getChannel().sendMessageEmbeds(
                 session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle("music.skip.title").build()
@@ -53,12 +53,12 @@ public class MusicSkip extends AbstractCommand {
         return this;
     }
 
-    private MusicSkip replyBack(InteractionEntity interaction) {
+    private MusicSkip replyBack(ReactionEntity interaction) {
         interaction.getManager().getMusicManager().nextTrack(interaction,true);
         return this;
     }
 
-    private MusicSkip replyBack(SessionEntity session, String args){
+    private MusicSkip replyBack(TextEntity session, String args){
         session.getChannel().sendMessageEmbeds(
                 session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle("music.skip.title.reason")

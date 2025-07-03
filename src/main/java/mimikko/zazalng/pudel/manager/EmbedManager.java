@@ -1,9 +1,10 @@
 package mimikko.zazalng.pudel.manager;
 
 import mimikko.zazalng.pudel.PudelWorld;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,18 +18,18 @@ public class EmbedManager extends AbstractManager {
         super(pudelWorld);
     }
 
-    private EmbedBuilder createEmbed(SessionEntity session){
+    private EmbedBuilder createEmbed(TextEntity session){
         return new EmbedBuilder().setTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
-                .setAuthor(session.getUser().getUserManager().getUserName(session), null, session.getUser().getJDA().getAvatarUrl());
+                .setAuthor(session.getUser().getName(), null, session.getUser().getJDA().getAvatarUrl());
     }
 
-    public EmbedBuilder embedCommand(SessionEntity session) {
+    public EmbedBuilder embedCommand(TextEntity session) {
         return createEmbed(session)
                 .setColor(session.getGuild().getJDA().getMember(session.getUser().getJDA()).getColor())
                 .setFooter(session.getCommand().getClass().getSimpleName(),session.getGuild().getJDA().getIconUrl());
     }
 
-    public EmbedBuilder embedHelp(SessionEntity session){
+    public EmbedBuilder embedHelp(TextEntity session){
         return createEmbed(session)
                 .setColor(session.getGuild().getJDA().getMember(getPudelManager().getPudelEntity().getJDA()).getColor())
                 .setThumbnail("https://puu.sh/KgdPy.gif")
@@ -36,14 +37,14 @@ public class EmbedManager extends AbstractManager {
                 .setFooter("Help Command",session.getGuild().getJDA().getIconUrl());
     }
 
-    public EmbedBuilder embedDetail(SessionEntity session){
+    public EmbedBuilder embedDetail(TextEntity session){
         return createEmbed(session)
                 .setColor(session.getGuild().getJDA().getMember(getPudelManager().getPudelEntity().getJDA()).getColor())
                 .setThumbnail("https://puu.sh/KgdPy.gif")
                 .setFooter("Help Command",session.getGuild().getJDA().getIconUrl());
     }
 
-    public EmbedBuilder castEmbedBuilder(SessionEntity session, String key){
+    public EmbedBuilder castEmbedBuilder(TextEntity session, String key){
         return (EmbedBuilder) session.getData(key,false);
     }
 
@@ -52,18 +53,32 @@ public class EmbedManager extends AbstractManager {
     }
 
     @Override
-    public EmbedManager initialize() {
-        logger.info("EmbedManager initialized.");
-        return this;
+    public boolean initialize(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void reload() {
-        logger.info("EmbedManager reloaded.");
+    public boolean reload(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void shutdown() {
-        logger.info("EmbedManager shut down.");
+    public boolean shutdown(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 }

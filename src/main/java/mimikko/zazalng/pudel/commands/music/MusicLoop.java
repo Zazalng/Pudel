@@ -1,7 +1,7 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
 
 @Deprecated
 public class MusicLoop extends AbstractCommand{
@@ -10,7 +10,7 @@ public class MusicLoop extends AbstractCommand{
      * @return
      */
     @Override
-    public void execute(InteractionEntity interaction) {
+    public void execute(ReactionEntity interaction) {
         interaction.getManager().getMusicManager().getMusicPlayer(interaction).toggleLoop();
     }
 }

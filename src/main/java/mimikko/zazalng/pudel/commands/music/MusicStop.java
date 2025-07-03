@@ -1,8 +1,8 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 
 /**
  *
@@ -14,7 +14,7 @@ public class MusicStop extends AbstractCommand {
      * @param args
      */
     @Override
-    public void execute(SessionEntity session, String args) {
+    public void execute(TextEntity session, String args) {
         initialState(session, args);
     }
 
@@ -23,21 +23,21 @@ public class MusicStop extends AbstractCommand {
      * @return
      */
     @Override
-    public void execute(InteractionEntity interaction) {
+    public void execute(ReactionEntity interaction) {
         interaction.getManager().getMusicManager().stopPlayer(interaction);
     }
 
     @Override
-    public String getDescription(SessionEntity session) {
+    public String getDescription(TextEntity session) {
         return localize(session,"music.stop.help");
     }
 
     @Override
-    public String getDetailedHelp(SessionEntity session) {
+    public String getDetailedHelp(TextEntity session) {
         return localize(session,"music.stop.details");
     }
 
-    private MusicStop initialState(SessionEntity session, String args){
+    private MusicStop initialState(TextEntity session, String args){
         localizationArgs.put("username", session.getManager().getUserManager().getUserName(session));
 
         args = localize(session,"music.stop.init",localizationArgs);

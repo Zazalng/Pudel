@@ -1,8 +1,8 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class MusicPlay extends AbstractCommand{
 
     // Entry point of the command execution
     @Override
-    public void execute(SessionEntity session, String args) {
+    public void execute(TextEntity session, String args) {
         switch (getState()) {
             case SEARCHING:
                 handleSearchingState(session, args);
@@ -32,7 +32,7 @@ public class MusicPlay extends AbstractCommand{
         }
     }
     @Override
-    public void execute(InteractionEntity interaction) {
+    public void execute(ReactionEntity interaction) {
         switch (getState()) {
             case SEARCHING:
                 handleSearchingState(interaction);
@@ -47,17 +47,17 @@ public class MusicPlay extends AbstractCommand{
 
     // Description and detailed help methods
     @Override
-    public String getDescription(SessionEntity session) {
+    public String getDescription(TextEntity session) {
         return localize(session, "music.play.help");
     }
 
     @Override
-    public String getDetailedHelp(SessionEntity session) {
+    public String getDetailedHelp(TextEntity session) {
         return localize(session, "music.play.details");
     }
 
     // ---- Private Methods ----
-    private MusicPlay initialState(SessionEntity session, String args) {
+    private MusicPlay initialState(TextEntity session, String args) {
         if (args.isEmpty()) {
             handleNoArgs(session);
         } else if (!isUserInVoiceChat(session)) {
@@ -70,7 +70,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Handle case when no arguments are provided
-    private MusicPlay handleNoArgs(SessionEntity session) {
+    private MusicPlay handleNoArgs(TextEntity session) {
         if (session.getManager().getMusicManager().getPlayingTrack(session) == null) {
             sendNoTrackMessage(session);
         } else {
@@ -82,12 +82,12 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Check if user is in a voice channel
-    private boolean isUserInVoiceChat(SessionEntity session) {
+    private boolean isUserInVoiceChat(TextEntity session) {
         return session.getUser().getUserManager().isVoiceActive(session);
     }
 
     // Handle case when user is not in a voice channel
-    private MusicPlay sendNotInVoiceChat(SessionEntity session) {
+    private MusicPlay sendNotInVoiceChat(TextEntity session) {
         session.getChannel().sendMessageEmbeds(
                 session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle(localize(session, "music.play.error.voicechat"))
@@ -100,7 +100,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Queue the song or search
-    private MusicPlay queueSong(SessionEntity session, String args) {
+    private MusicPlay queueSong(TextEntity session, String args) {
         if (!args.startsWith("http://") && !args.startsWith("https://")) {
             args = "ytsearch:" + args;
         }
@@ -110,7 +110,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Queue a song URL
-    private MusicPlay queueTrack(SessionEntity session, String url) {
+    private MusicPlay queueTrack(TextEntity session, String url) {
         session.getManager().getMusicManager().loadAndPlay(session, url).thenAccept(result ->{
             switch (result.getType()) {
                 case SEARCH:
@@ -127,7 +127,7 @@ public class MusicPlay extends AbstractCommand{
                                     .setThumbnail("https://puu.sh/KgdPy.gif")
                                     .setDescription(searchResults.toString())
                                     .build()
-                    ).queue(e -> session.getManager().getInteractionManager().newInteraction(e,session, 15).getManager().getPudelManager()
+                    ).queue(e -> session.getManager().getReactionManager().newReaction(e,session, 15).getManager().getPudelManager()
                             .addReactions(e,
                                     "U+31U+fe0fU+20e3",//1
                                     "U+32U+fe0fU+20e3",//2
@@ -178,13 +178,13 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
-    private MusicPlay queueTrack(InteractionEntity interaction, int index){
+    private MusicPlay queueTrack(ReactionEntity interaction, int index){
         interaction.getManager().getMusicManager().loadAndPlay(interaction, topTracks.get(index));
         return this;
     }
 
     // Handle searching state
-    private MusicPlay handleSearchingState(SessionEntity session, String args) {
+    private MusicPlay handleSearchingState(TextEntity session, String args) {
         if (isNumeric(args)) {
             int index = Integer.parseInt(args) - 1;
             try {
@@ -198,7 +198,7 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
-    private MusicPlay handleSearchingState(InteractionEntity interaction) {
+    private MusicPlay handleSearchingState(ReactionEntity interaction) {
         String react = interaction.getReact();
         if (react.startsWith("U+3") && react.endsWith("U+20e3")) {
             int index = Character.getNumericValue(react.charAt(3)) - 1;
@@ -209,7 +209,7 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
-    private MusicPlay handlePlayerState(InteractionEntity interaction){
+    private MusicPlay handlePlayerState(ReactionEntity interaction){
         switch(interaction.getReact()){
             case "U+23f9"://Stop
                 interaction.getManager().getCommandManager().getCommand("stop").execute(interaction);
@@ -238,7 +238,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Send no track currently playing message
-    private MusicPlay sendNoTrackMessage(SessionEntity session) {
+    private MusicPlay sendNoTrackMessage(TextEntity session) {
         session.getChannel().sendMessageEmbeds(
                 session.getManager().getEmbedManager().embedCommand(session)
                         .setTitle(localize(session, "music.play.empty"))
@@ -250,7 +250,7 @@ public class MusicPlay extends AbstractCommand{
     }
 
     // Send current track details
-    private MusicPlay sendCurrentTrackMessage(SessionEntity session) {
+    private MusicPlay sendCurrentTrackMessage(TextEntity session) {
         setState(state.PLAYER);
         String trackFormat = session.getManager().getMusicManager().getTrackFormat(session.getManager().getMusicManager().getPlayingTrack(session));
         session.getChannel().sendMessageEmbeds(
@@ -268,7 +268,7 @@ public class MusicPlay extends AbstractCommand{
                         .addField(localize(session, "music.play.queueby"),
                                 session.getManager().getUserManager().castUserEntity(session.getManager().getMusicManager().getPlayingTrack(session).getUserData()).getJDA().getAsMention(), true)
                         .build()
-        ).queue(e -> session.getManager().getInteractionManager().newInteraction(e,session, false).getManager().getPudelManager()
+        ).queue(e -> session.getManager().getReactionManager().newReaction(e,session, false).getManager().getPudelManager()
                 .addReactions(e,"U+23f9","U+23ed","U+1f501","U+1f500","U+2764U+fe0f"));//STOP,SKIP,LOOP,SHUFFLE,Favorite
         return this;
     }

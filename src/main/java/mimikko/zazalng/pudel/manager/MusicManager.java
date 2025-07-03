@@ -13,12 +13,13 @@ import dev.lavalink.youtube.clients.*;
 import dev.lavalink.youtube.clients.skeleton.Client;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 import mimikko.zazalng.pudel.handlers.MusicResultHandler;
 import mimikko.zazalng.pudel.handlers.audiohandler.AudioPlayerSendHandler;
 import mimikko.zazalng.pudel.handlers.audiohandler.AudioTrackHandler;
+import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,24 +64,24 @@ public class MusicManager extends AbstractManager {
         return audioPlayer;
     }
 
-    public MusicPlayerEntity getMusicPlayer(SessionEntity session){
+    public MusicPlayerEntity getMusicPlayer(TextEntity session){
         return this.playerList.computeIfAbsent(session.getGuild(), player -> new MusicPlayerEntity(this));
     }
 
-    public MusicPlayerEntity getMusicPlayer(InteractionEntity interaction){
-        return this.playerList.computeIfAbsent(getGuildManager().getGuildEntity(interaction.getMessage().getGuild()), player -> new MusicPlayerEntity(this));
+    public MusicPlayerEntity getMusicPlayer(ReactionEntity interaction){
+        return this.playerList.computeIfAbsent(getGuildManager().getEntity(interaction.getMessage().getGuild()), player -> new MusicPlayerEntity(this));
     }
 
     private AudioPlayerSendHandler getAudioPlayer(MusicPlayerEntity e){
         return this.audioList.computeIfAbsent(e, audio -> new AudioPlayerSendHandler(musicManagerBuilder(e)));
     }
 
-    public MusicManager stopPlayer(SessionEntity session){
+    public MusicManager stopPlayer(TextEntity session){
         getPudelManager().closeVoiceConnection(session).getMusicManager().getPlayer(session).stopTrack();
         return this;
     }
 
-    public MusicManager stopPlayer(InteractionEntity interaction){
+    public MusicManager stopPlayer(ReactionEntity interaction){
         getPudelManager().closeVoiceConnection(interaction).getMusicManager().getPlayer(interaction).stopTrack();
         return this;
     }
@@ -89,7 +90,7 @@ public class MusicManager extends AbstractManager {
      * Loads and plays a track or playlist based on the given track URL.
      * Returns a result object to inform the calling command about the outcome.
      */
-    public CompletableFuture<MusicResultHandler> loadAndPlay(SessionEntity session, String trackURL) {
+    public CompletableFuture<MusicResultHandler> loadAndPlay(TextEntity session, String trackURL) {
         CompletableFuture<MusicResultHandler> resultFuture = new CompletableFuture<>();
         MusicResultHandler result = new MusicResultHandler(trackURL);
 
@@ -134,7 +135,7 @@ public class MusicManager extends AbstractManager {
     }
 
 
-    public MusicManager loadAndPlay(SessionEntity session, MusicResultHandler result){
+    public MusicManager loadAndPlay(TextEntity session, MusicResultHandler result){
         if(result.getType() == MusicResultHandler.Type.TRACK){
             queueUp(getMusicPlayer(session),result.getTrack()).nextTrack(session,false);
         }else{
@@ -143,7 +144,7 @@ public class MusicManager extends AbstractManager {
         return this;
     }
 
-    public MusicManager loadAndPlay(InteractionEntity interaction, Object track){
+    public MusicManager loadAndPlay(ReactionEntity interaction, Object track){
         queueUp(getMusicPlayer(interaction),castAudioTrack(track)).nextTrack(interaction, false);
         return this;
     }
@@ -186,11 +187,11 @@ public class MusicManager extends AbstractManager {
         return (AudioTrack) track;
     }
 
-    public String getLoopKey(SessionEntity session){
+    public String getLoopKey(TextEntity session){
         return getLoopKey(getMusicPlayer(session).getFlagLoop());
     }
 
-    public String getLoopKey(InteractionEntity interaction){
+    public String getLoopKey(ReactionEntity interaction){
         return getLoopKey(getMusicPlayer(interaction).getFlagLoop());
     }
 
@@ -203,11 +204,11 @@ public class MusicManager extends AbstractManager {
         };
     }
 
-    private AudioPlayer getPlayer(SessionEntity session){
+    private AudioPlayer getPlayer(TextEntity session){
         return getPlayer(getMusicPlayer(session));
     }
 
-    private AudioPlayer getPlayer(InteractionEntity interaction){
+    private AudioPlayer getPlayer(ReactionEntity interaction){
         return getPlayer(getMusicPlayer(interaction));
     }
 
@@ -225,7 +226,7 @@ public class MusicManager extends AbstractManager {
         }
     }
 
-    public AudioTrack getPlayingTrack(SessionEntity session){
+    public AudioTrack getPlayingTrack(TextEntity session){
         return getPlayer(session).getPlayingTrack();
     }
 
@@ -243,13 +244,13 @@ public class MusicManager extends AbstractManager {
         return this;
     }
 
-    public MusicManager nextTrack(SessionEntity session, boolean isSkip){
+    public MusicManager nextTrack(TextEntity session, boolean isSkip){
         session.getManager().getPudelManager().openVoiceConnection(session,getAudioPlayer(getMusicPlayer(session)));
         nextTrack(getMusicPlayer(session),isSkip);
         return this;
     }
 
-    public MusicManager nextTrack(InteractionEntity interaction, boolean isSkip){
+    public MusicManager nextTrack(ReactionEntity interaction, boolean isSkip){
         interaction.getManager().getPudelManager().openVoiceConnection(interaction,getAudioPlayer(getMusicPlayer(interaction)));
         nextTrack(getMusicPlayer(interaction),isSkip);
         return this;
@@ -270,17 +271,32 @@ public class MusicManager extends AbstractManager {
     }
 
     @Override
-    public MusicManager initialize() {
-        return this;
+    public boolean initialize(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void reload() {
+    public boolean reload(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 
     @Override
-    public void shutdown() {
+    public boolean shutdown(User user){
+        if(!super.isAuthorized(user)){
+            logger.error("400 Bad Request");
+            return false;
+        }
 
+        return true;
     }
 }

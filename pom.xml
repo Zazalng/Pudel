@@ -52,12 +52,12 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.3.0</version>
+            <version>5.5.1</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.6</version>
+            <version>1.5.13</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>5.5.2</version>
+            <version>5.11</version>
         </dependency>
     </dependencies>
 </project>

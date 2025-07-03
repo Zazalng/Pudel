@@ -1,14 +1,12 @@
 package mimikko.zazalng.pudel.commands;
 
 import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import org.jetbrains.annotations.Nullable;
 
 public interface Command{
-    void execute(SessionEntity session, String args);
-    void execute(InteractionEntity interaction);
+    void execute(InteractionEntity session, @Nullable String args);
     void reload();
-    void terminate(SessionEntity session);
-    void terminate(InteractionEntity interaction);
-    String getDescription(SessionEntity session);
-    String getDetailedHelp(SessionEntity session);
+    void terminate(InteractionEntity session);
+    String getDescription(InteractionEntity session);
+    String getDetailedHelp(InteractionEntity session);
 }

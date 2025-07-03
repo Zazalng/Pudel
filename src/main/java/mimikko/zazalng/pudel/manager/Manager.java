@@ -1,7 +1,9 @@
 package mimikko.zazalng.pudel.manager;
 
+import net.dv8tion.jda.api.entities.User;
+
 public interface Manager {
-    <T extends Manager> T initialize();  // Setup logic
-    void reload();      // Reload logic (for hotfix updates)
-    void shutdown();    // Gracefully shutdown
+    boolean initialize(User user);  // Setup logic
+    boolean reload(User user);      // Reload logic (for hotfix updates)
+    boolean shutdown(User user);    // Gracefully shutdown
 }

@@ -14,7 +14,7 @@ public class AudioTrackHandler extends AudioEventAdapter {
         this.player = player;
     }
 
-    public MusicPlayerEntity getMusicEntity(){
+    private MusicPlayerEntity getMusicEntity(){
         return this.player;
     }
 

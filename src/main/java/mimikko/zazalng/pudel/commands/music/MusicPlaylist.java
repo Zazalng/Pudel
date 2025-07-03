@@ -1,8 +1,8 @@
 package mimikko.zazalng.pudel.commands.music;
 
 import mimikko.zazalng.pudel.commands.AbstractCommand;
-import mimikko.zazalng.pudel.entities.InteractionEntity;
-import mimikko.zazalng.pudel.entities.SessionEntity;
+import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
+import mimikko.zazalng.pudel.entities.interaction.TextEntity;
 
 public class MusicPlaylist extends AbstractCommand{
     private state state;
@@ -12,7 +12,7 @@ public class MusicPlaylist extends AbstractCommand{
     }
 
     @Override
-    public void execute(SessionEntity session, String args) {
+    public void execute(TextEntity session, String args) {
         switch (getState()) {
             case REMOVE:
                 // Remove logic
@@ -31,20 +31,20 @@ public class MusicPlaylist extends AbstractCommand{
      * @return
      */
     @Override
-    public void execute(InteractionEntity interaction) {
+    public void execute(ReactionEntity interaction) {
     }
 
     @Override
-    public String getDescription(SessionEntity session) {
+    public String getDescription(TextEntity session) {
         return "";
     }
 
     @Override
-    public String getDetailedHelp(SessionEntity session) {
+    public String getDetailedHelp(TextEntity session) {
         return "";
     }
 
-    public MusicPlaylist initialState(SessionEntity session, String args) {
+    public MusicPlaylist initialState(TextEntity session, String args) {
         session.getManager().getEmbedManager().embedCommand(session);
         return this;
     }
