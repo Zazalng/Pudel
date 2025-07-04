@@ -69,7 +69,7 @@ public class MusicPlay extends AbstractCommand{
         return this;
     }
 
-    // Handle case when no arguments are provided
+    // Handle a case when no arguments are provided
     private MusicPlay handleNoArgs(TextEntity session) {
         if (session.getManager().getMusicManager().getPlayingTrack(session) == null) {
             sendNoTrackMessage(session);
@@ -86,7 +86,7 @@ public class MusicPlay extends AbstractCommand{
         return session.getUser().getUserManager().isVoiceActive(session);
     }
 
-    // Handle case when user is not in a voice channel
+    // Handle a case when a user is not in a voice channel
     private MusicPlay sendNotInVoiceChat(TextEntity session) {
         session.getChannel().sendMessageEmbeds(
                 session.getManager().getEmbedManager().embedCommand(session)

@@ -21,7 +21,7 @@ public class PudelWorld {
     protected final ManagerFactory managerFactory;
     //Get API Class
     protected ShardManager JDAshardManager;
-    //Get In Puddle's World Class
+    //Get In Pudel's World Class
     private boolean worldStatus;
     
     public PudelWorld(){
@@ -93,6 +93,7 @@ public class PudelWorld {
             try {
                 // Wait for all shutdown processes to complete
                 for (JDA jda : getJDAshardManager().getShards()) {
+                    jda.shutdown();
                     if (!jda.awaitShutdown(Duration.ofSeconds(10))) {
                         jda.shutdownNow(); // Cancel all remaining requests
                         jda.awaitShutdown(); // Wait until shutdown is complete (indefinitely)

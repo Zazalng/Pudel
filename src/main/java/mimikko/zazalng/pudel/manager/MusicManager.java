@@ -10,7 +10,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import dev.lavalink.youtube.clients.*;
-import dev.lavalink.youtube.clients.skeleton.Client;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
 import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
@@ -46,13 +45,8 @@ public class MusicManager extends AbstractManager {
                 true,   // Allow search
                 true,   // Allow direct video IDs
                 true,    // Allow direct playlist IDs
-                new Client[]
-                        {
-                                new Music(),
-                                new Web(),
-                                new WebEmbedded()
-                        }
-        );
+                new Music(),
+                new Web());
         this.playerManager = new DefaultAudioPlayerManager();
         this.playerManager.registerSourceManager(ytSourceManager);
         AudioSourceManagers.registerRemoteSources(this.playerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);

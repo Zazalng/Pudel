@@ -5,29 +5,39 @@ import mimikko.zazalng.pudel.handlers.CommandLineHandler;
 import java.util.Scanner;
 
 public class CommandProcessing implements Runnable {
-    private final Scanner scanner;
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final Object onLock = new Object();
+
+    public static Scanner getScanner(){
+        return scanner;
+    }
+
+    public static Object getOnLock(){
+        return onLock;
+    }
+
     private final CommandLineHandler worldCommand;
     private boolean isOperate;
 
     public CommandProcessing(CommandLineHandler worldCommand) {
         this.worldCommand = worldCommand;
-        this.scanner = new Scanner(System.in);
         this.isOperate = true;
     }
 
     @Override
     public void run() {
         while (isOperate) {
-            System.out.print(">_");
-            String command = scanner.nextLine();
-            processCommand(command);
+            synchronized (getOnLock()){
+                System.out.print(">_");
+                executing(scanner.nextLine());
+            }
         }
     }
 
-    private void processCommand(String input) {
+    private void executing(String input) {
         String[] parts = input.split(" ", 2);
         String command = parts[0].toLowerCase();
-        String args = parts.length > 1 ? parts[1] : "";
+        String args = parts.length > 1 ? parts[1] : null;
 
         switch (command) {
             case "exit":
