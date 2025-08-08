@@ -1,5 +1,6 @@
 package mimikko.zazalng.pudel.utility;
 
+import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.handlers.EventHandler;
 import mimikko.zazalng.pudel.manager.PudelManager;
 import net.dv8tion.jda.api.entities.Activity;
@@ -14,7 +15,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import java.util.EnumSet;
 
 public class JDAshardBuilder{
-    public static ShardManager buildJDAshardManager(PudelManager pudel, String discordAPI){
+    public static ShardManager buildJDAshardManager(PudelWorld pudelWorld, String discordAPI){
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.create(
                         EnumSet.of(
                                 GatewayIntent.GUILD_MEMBERS,
@@ -40,7 +41,7 @@ public class JDAshardBuilder{
                 .setContextEnabled(true)
                 .setShardsTotal(1);
 
-        builder.addEventListeners(new EventHandler(pudel));
+        builder.addEventListeners(new EventHandler(pudelWorld));
 
         return builder.build();
     }

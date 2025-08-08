@@ -28,7 +28,7 @@ public class ReactionEntity extends AbstractInteractionEntity {
     private ScheduledFuture<?> timeoutTask;
 
     public ReactionEntity(SessionManager manager, Message message, TextEntity session, int defaultTimeout , boolean selfDeleted) {
-        super(manager,session.getUser(),session.getGuild());
+        super(manager, session.getUser(), session.getGuild());
         this.message = message;
         this.selfDeleted = selfDeleted;
         this.issueCommand = session.getCommand();

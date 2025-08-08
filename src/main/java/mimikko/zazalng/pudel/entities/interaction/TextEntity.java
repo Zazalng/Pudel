@@ -19,6 +19,8 @@ public class TextEntity extends AbstractInteractionEntity {
     private final MessageChannelUnion channel;
     private final List<MessageReceivedEvent> sessionCollector = new ArrayList<>();
     private final Map<String, Object> objectCollector = new HashMap<>();
+    private final String key;
+    private String args;
     private Command command;
     private MessageReceivedEvent event;
 
@@ -38,7 +40,7 @@ public class TextEntity extends AbstractInteractionEntity {
 
     @Override
     public void terminate(){
-        getManager().sessionEnd(this);
+        getManager().terminateSession(InteractionType.TEXT, getKey());
     }
 
     public List<MessageReceivedEvent> getSessionCollector() {

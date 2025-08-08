@@ -12,6 +12,7 @@ import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import dev.lavalink.youtube.clients.*;
 import mimikko.zazalng.pudel.PudelWorld;
 import mimikko.zazalng.pudel.entities.GuildEntity;
+import mimikko.zazalng.pudel.entities.InteractionEntity;
 import mimikko.zazalng.pudel.entities.interaction.ReactionEntity;
 import mimikko.zazalng.pudel.entities.MusicPlayerEntity;
 import mimikko.zazalng.pudel.entities.interaction.TextEntity;
@@ -58,12 +59,8 @@ public class MusicManager extends AbstractManager {
         return audioPlayer;
     }
 
-    public MusicPlayerEntity getMusicPlayer(TextEntity session){
+    public <T extends InteractionEntity> MusicPlayerEntity getMusicPlayer(T session){
         return this.playerList.computeIfAbsent(session.getGuild(), player -> new MusicPlayerEntity(this));
-    }
-
-    public MusicPlayerEntity getMusicPlayer(ReactionEntity interaction){
-        return this.playerList.computeIfAbsent(getGuildManager().getEntity(interaction.getMessage().getGuild()), player -> new MusicPlayerEntity(this));
     }
 
     private AudioPlayerSendHandler getAudioPlayer(MusicPlayerEntity e){

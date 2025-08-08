@@ -32,7 +32,15 @@ public class PudelManager extends AbstractManager {
         return getPudelWorld().getEnvironment().getInviteURL();
     }
 
-    protected User getPudelEntity(){
+    public User getPudelEntity(PudelWorld pudelWorld){
+        if(pudelWorld != getPudelWorld()){
+            return null;
+        } else{
+            return this.PudelEntity;
+        }
+    }
+
+    private User getPudelEntity(){
         return this.PudelEntity;
     }
 

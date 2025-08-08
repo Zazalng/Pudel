@@ -24,10 +24,6 @@ public abstract class AbstractCommand implements Command{
     }
 
     @Override
-    public void reload(){
-    }
-
-    @Override
     public void terminate(InteractionEntity session){
         session.terminate();
     }

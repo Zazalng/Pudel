@@ -75,7 +75,7 @@ public class PudelWorld {
     ///////////////////////////////////////////////////
     public PudelWorld buildShard(String api){
         getManagerFactory().startAllManagers();
-        setJDAshardManager(buildJDAshardManager(getManagerFactory().getManager(ManagersType.PUDEL),api));
+        setJDAshardManager(buildJDAshardManager(this, api));
         return this;
     }
 

@@ -5,7 +5,7 @@ import mimikko.zazalng.pudel.manager.SessionManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
-public class AbstractInteractionEntity implements InteractionEntity{
+public abstract class AbstractInteractionEntity implements InteractionEntity{
     protected final SessionManager sessionManager;
     private final UserEntity user;
     private final GuildEntity guild;

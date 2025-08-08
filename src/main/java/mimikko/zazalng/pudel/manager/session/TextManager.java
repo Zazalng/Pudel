@@ -31,7 +31,7 @@ public class TextManager implements SessionInterface<TextEntity, MessageReceived
     @Override
     public TextEntity createSession(MessageReceivedEvent e) {
         TextEntity session;
-        if(e.getChannelType().isGuild()){
+        if(e.isFromGuild()){
             session = new TextEntity(getManager(), e.getChannel(), getManager().getUserManager().getEntity(e.getAuthor()), getManager().getGuildManager().getEntity(e.getGuild())).setEvent(e);
         } else{
             session = new TextEntity(getManager(), e.getChannel(), getManager().getUserManager().getEntity(e.getAuthor())).setEvent(e);
